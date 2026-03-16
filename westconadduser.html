@@ -39,7 +39,7 @@
 
     .form-grid {
       display: grid;
-      grid-template-columns: 210px 1fr;
+      grid-template-columns: 230px 1fr;
       gap: 30px 28px;
       align-items: center;
     }
@@ -139,14 +139,14 @@
       flex-shrink: 0;
     }
 
-    .cost-row {
+    .value-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
       min-height: 60px;
     }
 
-    .cost-value {
+    .value-big {
       font-size: 38px;
       font-weight: 800;
       color: #ffffff;
@@ -199,6 +199,8 @@
       min-height: 28px;
       font-size: 15px;
       font-weight: 700;
+      white-space: pre-wrap;
+      word-break: break-word;
     }
 
     .status.info { color: #9fc2ff; }
@@ -229,7 +231,7 @@
         font-size: 17px;
       }
 
-      .cost-value {
+      .value-big {
         font-size: 30px;
         text-align: left;
       }
@@ -320,9 +322,15 @@
           </div>
 
           <div class="label">Monthly Cost</div>
-          <div class="cost-row">
+          <div class="value-row">
             <div></div>
-            <div class="cost-value" id="monthlyCost">$0</div>
+            <div class="value-big" id="monthlyCost">$0</div>
+          </div>
+
+          <div class="label">Tokens Purchased</div>
+          <div class="value-row">
+            <div></div>
+            <div class="value-big" id="tokensPurchased">0</div>
           </div>
         </div>
 
@@ -342,6 +350,12 @@
      *************************************************/
     const AIRTABLE_PAT = "YOUR_AIRTABLE_PAT_HERE";
     const AIRTABLE_BASE_ID = "YOUR_AIRTABLE_BASE_ID_HERE";
+
+    /*
+      IMPORTANT:
+      If you still get NOT_FOUND, double check the exact Airtable tab name.
+      Try WestConAdmin, WestconAdmin, or whatever the tab is named exactly.
+    */
     const AIRTABLE_TABLE_NAME = "WestConAdmin";
 
     // Add your n8n webhook later
@@ -356,7 +370,8 @@
       company: "Company",
       servicesPurchased: "Services Purchased",
       monthlyCost: "Monthly Cost",
-      billingDate: "Billing Date"
+      billingDate: "Billing Date",
+      tokensPurchased: "Tokens Purchased"
     };
 
     const form = document.getElementById("addUserForm");
@@ -365,6 +380,7 @@
     const companyInput = document.getElementById("company");
     const billingDateInput = document.getElementById("billingDate");
     const monthlyCostEl = document.getElementById("monthlyCost");
+    const tokensPurchasedEl = document.getElementById("tokensPurchased");
     const createUserBtn = document.getElementById("createUserBtn");
     const cancelBtn = document.getElementById("cancelBtn");
     const statusMessage = document.getElementById("statusMessage");
@@ -391,15 +407,22 @@
         }));
     }
 
-    function updateMonthlyCost() {
-      const total = getSelectedServices().reduce((sum, service) => sum + service.price, 0);
-      monthlyCostEl.textContent = `$${total}`;
-      return total;
+    function updateComputedValues() {
+      const selectedServices = getSelectedServices();
+      const monthlyCost = selectedServices.reduce((sum, service) => sum + service.price, 0);
+      const tokensPurchased = selectedServices.length * 100000;
+
+      monthlyCostEl.textContent = `$${monthlyCost}`;
+      tokensPurchasedEl.textContent = String(tokensPurchased);
+
+      return {
+        monthlyCost,
+        tokensPurchased
+      };
     }
 
     function normaliseUserId(value) {
       if (value === null || value === undefined || value === "") return 0;
-
       if (typeof value === "number") return value;
 
       const matches = String(value).match(/\d+/g);
@@ -461,7 +484,8 @@
           [FIELD_NAMES.company]: payload.company,
           [FIELD_NAMES.servicesPurchased]: payload.servicesPurchased,
           [FIELD_NAMES.monthlyCost]: payload.monthlyCost,
-          [FIELD_NAMES.billingDate]: payload.billingDate
+          [FIELD_NAMES.billingDate]: payload.billingDate,
+          [FIELD_NAMES.tokensPurchased]: payload.tokensPurchased
         }
       };
 
@@ -496,16 +520,16 @@
         body: JSON.stringify(payload)
       });
 
-      const text = await response.text();
+      const rawText = await response.text();
 
       if (!response.ok) {
-        throw new Error(text);
+        throw new Error(rawText);
       }
 
       try {
-        return JSON.parse(text);
+        return JSON.parse(rawText);
       } catch {
-        return text;
+        return rawText;
       }
     }
 
@@ -519,17 +543,25 @@
         const nextUserId = await fetchNextUserId();
         userIdInput.value = nextUserId;
 
-        updateMonthlyCost();
+        updateComputedValues();
         setStatus("Form ready.", "success");
       } catch (error) {
         console.error("Airtable load error:", error);
         userIdInput.value = "";
-        setStatus(`Could not load next User ID: ${error.message}`, "error");
+        setStatus(
+          `Could not load next User ID: ${error.message}
+
+Check these exactly:
+1. AIRTABLE_BASE_ID starts with app...
+2. AIRTABLE_PAT starts with pat...
+3. AIRTABLE_TABLE_NAME matches the Airtable tab name exactly`,
+          "error"
+        );
       }
     }
 
     serviceCheckboxes.forEach(cb => {
-      cb.addEventListener("change", updateMonthlyCost);
+      cb.addEventListener("change", updateComputedValues);
     });
 
     cancelBtn.addEventListener("click", () => {
@@ -544,7 +576,7 @@
       const company = companyInput.value.trim();
       const billingDate = billingDateInput.value;
       const selectedServices = getSelectedServices();
-      const monthlyCost = updateMonthlyCost();
+      const computed = updateComputedValues();
 
       if (!userId) {
         setStatus("User ID is missing. Please check Airtable settings.", "error");
@@ -576,7 +608,8 @@
         username,
         company,
         servicesPurchased: selectedServices.map(service => service.name),
-        monthlyCost,
+        monthlyCost: computed.monthlyCost,
+        tokensPurchased: computed.tokensPurchased,
         billingDate,
         createdAt: new Date().toISOString()
       };
