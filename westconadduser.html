@@ -350,12 +350,6 @@
      *************************************************/
     const AIRTABLE_PAT = "YOUR_AIRTABLE_PAT_HERE";
     const AIRTABLE_BASE_ID = "YOUR_AIRTABLE_BASE_ID_HERE";
-
-    /*
-      IMPORTANT:
-      If you still get NOT_FOUND, double check the exact Airtable tab name.
-      Try WestConAdmin, WestconAdmin, or whatever the tab is named exactly.
-    */
     const AIRTABLE_TABLE_NAME = "WestConAdmin";
 
     // Add your n8n webhook later
@@ -366,6 +360,7 @@
      *************************************************/
     const FIELD_NAMES = {
       userId: "User ID",
+      rowId: "Row ID",
       username: "Username",
       company: "Company",
       servicesPurchased: "Services Purchased",
@@ -373,6 +368,8 @@
       billingDate: "Billing Date",
       tokensPurchased: "Tokens Purchased"
     };
+
+    const USER_ID_PREFIX = "West01-";
 
     const form = document.getElementById("addUserForm");
     const userIdInput = document.getElementById("userId");
@@ -421,26 +418,30 @@
       };
     }
 
-    function normaliseUserId(value) {
+    function normaliseNumber(value) {
       if (value === null || value === undefined || value === "") return 0;
       if (typeof value === "number") return value;
 
-      const matches = String(value).match(/\d+/g);
+      const cleaned = String(value).trim();
+      if (/^\d+$/.test(cleaned)) return Number(cleaned);
+
+      const matches = cleaned.match(/\d+/g);
       if (!matches || !matches.length) return 0;
 
       return Number(matches.join(""));
     }
 
-    async function fetchNextUserId() {
-      const endpoint = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(AIRTABLE_TABLE_NAME)}?pageSize=100`;
+    function formatUserIdFromRowId(rowIdNumber) {
+      return `${USER_ID_PREFIX}${String(rowIdNumber).padStart(5, "0")}`;
+    }
 
+    async function fetchAllRecords() {
+      const baseUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(AIRTABLE_TABLE_NAME)}?pageSize=100`;
+      let allRecords = [];
       let offset = null;
-      let maxUserId = 0;
 
       do {
-        const url = offset
-          ? `${endpoint}&offset=${encodeURIComponent(offset)}`
-          : endpoint;
+        const url = offset ? `${baseUrl}&offset=${encodeURIComponent(offset)}` : baseUrl;
 
         const response = await fetch(url, {
           method: "GET",
@@ -457,21 +458,36 @@
         }
 
         const data = JSON.parse(rawText);
-
         if (Array.isArray(data.records)) {
-          data.records.forEach(record => {
-            const rawUserId = record.fields?.[FIELD_NAMES.userId];
-            const numericUserId = normaliseUserId(rawUserId);
-            if (numericUserId > maxUserId) {
-              maxUserId = numericUserId;
-            }
-          });
+          allRecords = allRecords.concat(data.records);
         }
 
         offset = data.offset || null;
       } while (offset);
 
-      return maxUserId + 1;
+      return allRecords;
+    }
+
+    async function fetchNextIds() {
+      const records = await fetchAllRecords();
+
+      let maxRowId = 0;
+
+      records.forEach(record => {
+        const rawRowId = record.fields?.[FIELD_NAMES.rowId];
+        const rowId = normaliseNumber(rawRowId);
+        if (rowId > maxRowId) {
+          maxRowId = rowId;
+        }
+      });
+
+      const nextRowId = maxRowId + 1;
+      const nextUserId = formatUserIdFromRowId(nextRowId);
+
+      return {
+        nextRowId,
+        nextUserId
+      };
     }
 
     async function createAirtableRecord(payload) {
@@ -480,6 +496,7 @@
       const body = {
         fields: {
           [FIELD_NAMES.userId]: payload.userId,
+          [FIELD_NAMES.rowId]: payload.rowId,
           [FIELD_NAMES.username]: payload.username,
           [FIELD_NAMES.company]: payload.company,
           [FIELD_NAMES.servicesPurchased]: payload.servicesPurchased,
@@ -540,21 +557,24 @@
         const today = new Date();
         billingDateInput.value = formatDateForInput(today);
 
-        const nextUserId = await fetchNextUserId();
-        userIdInput.value = nextUserId;
+        const ids = await fetchNextIds();
+        userIdInput.value = ids.nextUserId;
+        userIdInput.dataset.nextRowId = String(ids.nextRowId);
 
         updateComputedValues();
         setStatus("Form ready.", "success");
       } catch (error) {
         console.error("Airtable load error:", error);
         userIdInput.value = "";
+        userIdInput.dataset.nextRowId = "";
         setStatus(
           `Could not load next User ID: ${error.message}
 
 Check these exactly:
 1. AIRTABLE_BASE_ID starts with app...
 2. AIRTABLE_PAT starts with pat...
-3. AIRTABLE_TABLE_NAME matches the Airtable tab name exactly`,
+3. AIRTABLE_TABLE_NAME matches the Airtable table name exactly
+4. Column names match exactly, especially "Row ID"`,
           "error"
         );
       }
@@ -571,15 +591,16 @@ Check these exactly:
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
 
-      const userId = userIdInput.value.trim();
+      const generatedUserId = userIdInput.value.trim();
+      const generatedRowId = userIdInput.dataset.nextRowId ? Number(userIdInput.dataset.nextRowId) : 0;
       const username = usernameInput.value.trim();
       const company = companyInput.value.trim();
       const billingDate = billingDateInput.value;
       const selectedServices = getSelectedServices();
       const computed = updateComputedValues();
 
-      if (!userId) {
-        setStatus("User ID is missing. Please check Airtable settings.", "error");
+      if (!generatedUserId || !generatedRowId) {
+        setStatus("User ID or Row ID is missing. Please check Airtable settings.", "error");
         return;
       }
 
@@ -604,7 +625,8 @@ Check these exactly:
       }
 
       const payload = {
-        userId: Number(userId),
+        userId: generatedUserId,
+        rowId: generatedRowId,
         username,
         company,
         servicesPurchased: selectedServices.map(service => service.name),
