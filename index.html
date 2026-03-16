@@ -1,234 +1,275 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Westcon Partner AI Portal</title>
-
-<link rel="stylesheet" href="style.css" />
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Weston AI Partner Enablement Platform</title>
+  <link rel="stylesheet" href="style.css"/>
 </head>
-
 <body>
-
-<div class="portal-wrap">
-
-<!-- LOGIN VIEW -->
-<div id="loginView">
-
-<div class="login-grid">
-
-<div class="glass hero-card">
-
-<div class="pill-row">
-<div class="pill">Westcon Partner AI Portal</div>
-</div>
-
-<h1>Your channel partner knowledge portal with an AI Copilot.</h1>
-
-<p>
-Securely search partner documentation, ask product and program questions,
-and route requests into Westcon AI LLM.
-</p>
-
-<div class="feature-grid">
-
-<div class="feature">
-<strong>Role-based access</strong>
-<span>Secure login for channel partners and internal admins with company-level access control.</span>
-</div>
-
-<div class="feature">
-<strong>RAG-powered answers</strong>
-<span>Grounded responses from approved vendor, training, support, and onboarding documentation.</span>
-</div>
-
-<div class="feature">
-<strong>n8n automation</strong>
-<span>Escalations, workflow actions, notifications, and downstream integrations from one portal.</span>
-</div>
-
-<div class="feature">
-<strong>Knowledge search</strong>
-<span>Find vendor resources, training, promotions, and support knowledge in one place.</span>
-</div>
-
-</div>
-</div>
-
-<div class="glass login-card">
-
-<div class="pill-row" style="margin-bottom:18px;">
-<div class="pill">Partner Login</div>
-</div>
-
-<div class="field">
-<label class="label">Email</label>
-<input id="emailInput" class="input" type="email" placeholder="example@partner.com"/>
-</div>
-
-<div class="field">
-<label class="label">Password</label>
-<input id="passwordInput" class="input" type="password" placeholder="Enter password"/>
-</div>
-
-<div class="btn-row">
-<button class="btn btn-primary" onclick="loginPortal()">Login to Portal</button>
-<button class="btn btn-secondary">SSO / Entra ID</button>
-</div>
-
-<div id="loginError" class="error hidden"></div>
-
-<div class="note">
-Use the demo credentials to access the chatbot portal.
-</div>
-
-</div>
-</div>
-</div>
-
-
-<!-- PORTAL VIEW -->
-<div id="portalView" class="hidden">
-
-<div class="topbar">
-
-<div class="brand">
-<div class="brand-icon">AI</div>
-<div>
-<small>Westcon Demo</small>
-<strong>Partner AI Knowledge Portal</strong>
-</div>
-</div>
-
-<div class="user-badge">
-
-<div class="pill-row">
-<div class="pill">RAG Enabled</div>
-<div class="pill">n8n Production Webhook</div>
-</div>
-
-<div class="avatar" id="userAvatar">DP</div>
-
-<button class="btn btn-secondary" onclick="logoutPortal()">
-Logout
-</button>
-
-</div>
-</div>
-
-
-<div class="portal-grid">
-
-<div class="sidebar">
-
-<div class="side-title">Navigation</div>
-
-<button class="nav-item active">Dashboard</button>
-<button class="nav-item">AI Chat</button>
-<button class="nav-item">Documents</button>
-<button class="nav-item">Knowledge Base</button>
-<button class="nav-item">Users & Roles</button>
-
-<div class="side-title" style="margin-top:22px;">Knowledge Filters</div>
-
-<button class="filter-item active" onclick="setFilter(this,'All Vendors')">All Vendors</button>
-<button class="filter-item" onclick="setFilter(this,'Cisco')">Cisco</button>
-<button class="filter-item" onclick="setFilter(this,'Microsoft')">Microsoft</button>
-<button class="filter-item" onclick="setFilter(this,'Palo Alto')">Palo Alto</button>
-<button class="filter-item" onclick="setFilter(this,'Security')">Security</button>
-<button class="filter-item" onclick="setFilter(this,'Cloud')">Cloud</button>
-
-</div>
-
-
-<div class="main-stack">
-
-<div class="hero-banner">
-
-<h2>Your AI Partner Enablement Assistant</h2>
-
-<p>
-Instantly answer partner questions using approved documentation
-and route workflows into n8n.
-</p>
-
-<div class="stats">
-
-<div class="stat">
-<small>Webhook</small>
-<strong>Production Active</strong>
-</div>
-
-<div class="stat">
-<small>RAG Layer</small>
-<strong>Ready for Pinecone</strong>
-</div>
-
-<div class="stat">
-<small>Partner Access</small>
-<strong>RBAC Ready</strong>
-</div>
-
-</div>
-</div>
-
-
-<div class="content-panel card">
-
-<div class="chat-layout">
-
-<div class="chat-box">
-
-<div class="messages" id="messagesBox">
-<div class="message assistant">
-Welcome to the Partner AI Portal.
-Ask about onboarding, vendor docs, training,
-promotions, support, APIs, or partner processes.
-</div>
-</div>
-
-<div id="chatError" class="error hidden"></div>
-
-<div class="input-row">
-
-<input
-id="chatInput"
-class="chat-input"
-type="text"
-placeholder="Ask about products, docs, onboarding..."
-onkeydown="handleKey(event)"
-/>
-
-<button class="btn btn-primary" onclick="sendQuestion()">Send</button>
-
-</div>
-</div>
-
-
-<div class="side-stack">
-
-<div class="card">
-<h3>Webhook Payload</h3>
-<div class="code-block" id="payloadBlock"></div>
-</div>
-
-<div class="card">
-<h3>Response Debug</h3>
-<div class="code-block" id="responseDebug">Waiting for response...</div>
-</div>
-
-</div>
-
-</div>
-</div>
-</div>
-</div>
-</div>
-
-</div>
-
-<script src="script.js"></script>
-
+  <!-- Top Nav -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="#">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-text">
+          <span class="brand-name">Weston</span>
+          <span class="brand-sub">AI Partner Enablement Platform</span>
+        </span>
+      </a>
+
+      <nav class="nav">
+        <a href="#what" class="nav-link">What it is</a>
+        <a href="#features" class="nav-link">Features</a>
+        <a href="#security" class="nav-link">Security</a>
+        <a href="#faq" class="nav-link">FAQ</a>
+      </nav>
+
+      <div class="nav-actions">
+        <button class="btn btn-ghost" id="openLoginTop">Partner Login</button>
+        <a class="btn btn-primary" href="#request">Request Access</a>
+      </div>
+
+      <button class="hamburger" id="hamburger" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <div class="mobile-nav hidden" id="mobileNav">
+      <a href="#what" class="mobile-link">What it is</a>
+      <a href="#features" class="mobile-link">Features</a>
+      <a href="#security" class="mobile-link">Security</a>
+      <a href="#faq" class="mobile-link">FAQ</a>
+      <div class="mobile-actions">
+        <button class="btn btn-ghost" id="openLoginMobile">Partner Login</button>
+        <a class="btn btn-primary" href="#request">Request Access</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <main class="page">
+    <section class="hero">
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <p class="eyebrow">Partner-first • Secure access • AI-enabled services</p>
+          <h1 class="hero-title">Weston AI Partner Enablement Platform</h1>
+          <p class="hero-lead" id="what">
+            A secure, single gateway where partners log in to access their dashboard, enablement resources,
+            and AI services — from knowledge support to automation-driven tools — all in one clean interface.
+          </p>
+
+          <div class="hero-cta">
+            <button class="btn btn-primary btn-lg" id="openLoginHero">Login to Dashboard</button>
+            <a class="btn btn-ghost btn-lg" href="#request">Request Partner Access</a>
+          </div>
+
+          <div class="hero-trust">
+            <div class="trust-pill">SSO-ready</div>
+            <div class="trust-pill">Role-based access</div>
+            <div class="trust-pill">Audit-friendly</div>
+            <div class="trust-pill">Enterprise-grade UX</div>
+          </div>
+        </div>
+
+        <div class="hero-panel">
+          <div class="panel-card">
+            <div class="panel-head">
+              <h3>Partner Login</h3>
+              <p>Use your approved credentials to access AI services and dashboards.</p>
+            </div>
+
+            <form class="login-form" id="loginForm" autocomplete="on">
+              <label class="field">
+                <span>Email</span>
+                <input type="email" id="email" placeholder="name@company.com" required />
+              </label>
+
+              <label class="field">
+                <span>Password</span>
+                <div class="password-wrap">
+                  <input type="password" id="password" placeholder="••••••••••" required />
+                  <button type="button" class="icon-btn" id="togglePw" aria-label="Show password">👁️</button>
+                </div>
+              </label>
+
+              <div class="form-row">
+                <label class="check">
+                  <input type="checkbox" id="remember" />
+                  <span>Remember me</span>
+                </label>
+                <a class="link" href="#" id="forgotLink">Forgot password?</a>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-block">Sign in</button>
+
+              <div class="form-hint">
+                <span class="dot"></span>
+                <span id="loginHint">Tip: set your allowed logins in <code>script.js</code>.</span>
+              </div>
+
+              <div class="alert hidden" id="alert"></div>
+
+              <div class="success hidden" id="successBox">
+                <div class="success-title">Login successful</div>
+                <div class="success-sub">You can proceed to your partner dashboard.</div>
+                <a class="btn btn-ghost btn-block" href="dashboard.html">Continue to Dashboard</a>
+              </div>
+            </form>
+          </div>
+
+          <div class="panel-mini">
+            <div class="mini-item">
+              <div class="mini-kpi">AI Assist</div>
+              <div class="mini-desc">Knowledge + service guidance</div>
+            </div>
+            <div class="mini-item">
+              <div class="mini-kpi">Automation</div>
+              <div class="mini-desc">Workflow-driven partner tasks</div>
+            </div>
+            <div class="mini-item">
+              <div class="mini-kpi">Insights</div>
+              <div class="mini-desc">Dashboards & usage visibility</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-bg" aria-hidden="true"></div>
+    </section>
+
+    <!-- Feature Cards -->
+    <section class="section" id="features">
+      <div class="section-head">
+        <h2>Everything partners need, in one place</h2>
+        <p>Designed to be fast, legible, and enterprise-clean — with a focus on self-serve enablement.</p>
+      </div>
+
+      <div class="cards">
+        <article class="card">
+          <h3>Partner Dashboard</h3>
+          <p>Access key tools, links, service modules, and usage metrics from a single hub.</p>
+          <div class="card-meta">Centralised • Role-based</div>
+        </article>
+
+        <article class="card">
+          <h3>AI Knowledge Support</h3>
+          <p>Ask questions, get guided answers, and speed up enablement with AI-backed assistance.</p>
+          <div class="card-meta">RAG-ready • Searchable</div>
+        </article>
+
+        <article class="card">
+          <h3>Service Workflows</h3>
+          <p>Automate common partner tasks with structured flows and approvals.</p>
+          <div class="card-meta">n8n-friendly • Auditable</div>
+        </article>
+
+        <article class="card">
+          <h3>Enablement Resources</h3>
+          <p>Surface learning, playbooks, product updates, and announcements for partners.</p>
+          <div class="card-meta">Organised • Discoverable</div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Alternating Blocks -->
+    <section class="section alt" id="security">
+      <div class="alt-row">
+        <div class="alt-copy">
+          <h2>Secure by design</h2>
+          <p>
+            Built for partner access control: login-gated content, clear user states, and room for SSO / IAM expansion.
+            You can start simple now and upgrade to enterprise identity later.
+          </p>
+          <ul class="ticks">
+            <li>Role-based sections (Partner, Admin, Vendor)</li>
+            <li>Session handling + optional “remember me”</li>
+            <li>Ready for SSO integration patterns</li>
+          </ul>
+        </div>
+        <div class="alt-box">
+          <div class="codebox">
+            <div class="codebox-title">Login flow overview</div>
+            <pre><code>1) Validate credentials
+2) Create session token
+3) Redirect to dashboard
+4) Gate AI services behind auth</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="alt-row reverse">
+        <div class="alt-copy">
+          <h2>Clean UX that scales</h2>
+          <p>
+            Keep the page professional and legible: strong hierarchy, simple spacing, and card-based sections that can
+            grow into a full portal experience.
+          </p>
+          <div class="cta-inline" id="request">
+            <a class="btn btn-primary" href="#">Request Access</a>
+            <a class="btn btn-ghost" href="#">Contact Partner Ops</a>
+          </div>
+        </div>
+        <div class="alt-box">
+          <div class="grid-badges">
+            <div class="badge">Fast load</div>
+            <div class="badge">Clear CTAs</div>
+            <div class="badge">Card layout</div>
+            <div class="badge">Mobile ready</div>
+            <div class="badge">Dark enterprise</div>
+            <div class="badge">Accessible</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section" id="faq">
+      <div class="section-head">
+        <h2>FAQ</h2>
+        <p>Quick answers for partners accessing the platform.</p>
+      </div>
+
+      <div class="faq">
+        <details class="faq-item">
+          <summary>Who can log in?</summary>
+          <p>Approved partners with credentials provisioned by Partner Ops (or SSO when enabled).</p>
+        </details>
+
+        <details class="faq-item">
+          <summary>What happens after login?</summary>
+          <p>You’ll be redirected to your partner dashboard where AI services and tools are available.</p>
+        </details>
+
+        <details class="faq-item">
+          <summary>Can we connect this to SSO later?</summary>
+          <p>Yes — this front-end is designed to easily swap local login logic for SSO/IAM validation.</p>
+        </details>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-inner">
+        <div class="footer-left">
+          <div class="footer-brand">Weston AI Partner Enablement Platform</div>
+          <div class="footer-sub">Secure partner access to dashboards and AI-enabled services.</div>
+        </div>
+        <div class="footer-right">
+          <a href="#what">Overview</a>
+          <a href="#features">Features</a>
+          <a href="#security">Security</a>
+          <a href="#faq">FAQ</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© <span id="year"></span> Weston. All rights reserved.</span>
+        <span class="sep">•</span>
+        <span class="muted">Built for partner enablement</span>
+      </div>
+    </footer>
+  </main>
+
+  <script src="script.js"></script>
 </body>
 </html>
