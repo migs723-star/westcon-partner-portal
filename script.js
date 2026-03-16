@@ -1,18 +1,27 @@
 /* ===========================
    Weston Partner Landing Page
    - Simple local login for now (swap for API/SSO later)
-   - Set your partner credentials below
+   - Multi-user + role routing
 =========================== */
 
-/**
- * OPTION A (recommended): multiple partner users.
- * Add as many as you want.
- * Example:
- *  { email: "partner@company.com", password: "Pass1234!", name: "ACME Partner" }
- */
 const LOGIN_USERS = [
-  // TODO: replace these with the SAME login details from your previous portal build
-  { email: "partner@company.com", password: "Weston@123", name: "Partner User" },
+  // Demo Partner
+  {
+    login: "demo.partner@westcon.ai",
+    password: "WestconDemo2026",
+    name: "Demo Partner",
+    role: "partner",
+    redirect: "dashboard.html"
+  },
+
+  // Admin
+  {
+    login: "WestconAdmin",
+    password: "NewGenIT.ai2026",
+    name: "Westcon Admin",
+    role: "admin",
+    redirect: "WestconAdmin.html"
+  },
 ];
 
 /**
@@ -61,10 +70,28 @@ function clearSuccess(){
   hide($("successBox"));
 }
 
-function findUser(email, password){
-  const e = String(email || "").trim().toLowerCase();
+function normalizeLogin(val){
+  return String(val || "").trim().toLowerCase();
+}
+
+function findUser(login, password){
+  const l = normalizeLogin(login);
   const p = String(password || "");
-  return LOGIN_USERS.find(u => u.email.toLowerCase() === e && u.password === p);
+  return LOGIN_USERS.find(u => normalizeLogin(u.login) === l && u.password === p);
+}
+
+function updateSuccessCTA(user){
+  const btn = document.querySelector("#successBox a.btn");
+  if (!btn) return;
+
+  // Keep styling identical; only adjust destination + label
+  btn.href = user.redirect;
+
+  if (user.role === "admin") {
+    btn.textContent = "Continue to Admin Portal";
+  } else {
+    btn.textContent = "Continue to Dashboard";
+  }
 }
 
 /* ===== UI init ===== */
@@ -107,10 +134,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // If already logged in, show success UI
   const existing = session.get();
-  if (existing?.email){
+  if (existing?.login){
     clearAlert();
     setSuccess();
-    $("loginHint").innerHTML = `Signed in as <b>${existing.email}</b>.`;
+    $("loginHint").innerHTML = `Signed in as <b>${existing.login}</b>.`;
+    updateSuccessCTA(existing);
   }
 
   // Login submit
@@ -119,29 +147,38 @@ document.addEventListener("DOMContentLoaded", () => {
     clearAlert();
     clearSuccess();
 
-    const email = $("email")?.value;
+    const login = $("email")?.value;
     const password = $("password")?.value;
     const remember = $("remember")?.checked;
 
-    if (!email || !password){
-      setAlert("Please enter both email and password.");
+    if (!login || !password){
+      setAlert("Please enter both email/username and password.");
       return;
     }
 
-    const user = findUser(email, password);
+    const user = findUser(login, password);
     if (!user){
-      setAlert("Invalid credentials. Check your email/password or request access.");
+      setAlert("Invalid credentials. Check your login/password or request access.");
       return;
     }
 
     // Set session
-    session.set({ email: user.email, name: user.name }, !!remember);
+    const sessionData = {
+      login: user.login,
+      name: user.name,
+      role: user.role,
+      redirect: user.redirect
+    };
+    session.set(sessionData, !!remember);
 
-    // Show success state (you can also redirect immediately)
-    $("loginHint").innerHTML = `Signed in as <b>${user.email}</b>.`;
+    // Show success state
+    $("loginHint").innerHTML = `Signed in as <b>${user.login}</b>.`;
+    updateSuccessCTA(user);
     setSuccess();
 
-    // Optional: auto-redirect after a short delay (enable if you want)
-    // setTimeout(() => window.location.href = "dashboard.html", 600);
+    // Auto-route admin immediately (as requested)
+    if (user.role === "admin") {
+      window.location.href = user.redirect; // WestconAdmin.html
+    }
   });
 });
