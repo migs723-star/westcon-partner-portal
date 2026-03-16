@@ -4,11 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Weston AI Partner Enablement Platform • Admin Portal</title>
-
-  <!-- Reuse your existing styling EXACTLY -->
   <link rel="stylesheet" href="style.css"/>
 
-  <!-- Admin-only extra styles (scoped + minimal, does NOT change the main look/feel) -->
   <style>
     .admin-wrap{
       max-width: var(--max);
@@ -308,7 +305,6 @@
 </head>
 
 <body>
-  <!-- Top Nav (same as your portal) -->
   <header class="topbar">
     <div class="topbar-inner">
       <a class="brand" href="index.html">
@@ -365,7 +361,6 @@
       </div>
     </div>
 
-    <!-- KPI Strip -->
     <section class="kpis">
       <div class="kpi surface">
         <p class="kpi-label">Total users (loaded)</p>
@@ -390,7 +385,6 @@
     </section>
 
     <section class="surface table-wrap">
-      <!-- Toolbar -->
       <div class="toolbar">
         <div class="toolbar-left">
           <div class="search" title="Search by user id, username, company, or service">
@@ -414,7 +408,6 @@
         </div>
       </div>
 
-      <!-- Table -->
       <div style="overflow:auto; max-height: 520px;">
         <table>
           <thead>
@@ -429,13 +422,10 @@
               <th style="min-width:160px;">Next Payment Date</th>
             </tr>
           </thead>
-          <tbody id="userTbody">
-            <!-- rows injected -->
-          </tbody>
+          <tbody id="userTbody"></tbody>
         </table>
       </div>
 
-      <!-- Pagination / actions -->
       <div class="pager">
         <button class="btn btn-ghost" id="prevBtn" disabled>Previous</button>
         <div class="muted" id="pageInfo">Page 1</div>
@@ -448,7 +438,6 @@
       </div>
     </section>
 
-    <!-- Right Details Panel -->
     <section class="grid">
       <div></div>
       <aside class="surface panel" id="detailsPanel">
@@ -477,13 +466,6 @@
   </main>
 
   <script>
-    /*************************************************************
-     * WESTCON ADMIN PORTAL (Airtable Search + Admin Gate)
-     * - Uses the same session key from your login page:
-     *   "weston_partner_session"
-     *************************************************************/
-
-    /* ====== SESSION / AUTH GATE ====== */
     const SESSION_KEY = "weston_partner_session";
 
     function getSession(){
@@ -500,11 +482,9 @@
 
     const session = getSession();
     if (!session || session.role !== "admin") {
-      // Not admin → send back to landing
       window.location.href = "index.html";
     }
 
-    /* ====== UI HELPERS ====== */
     const $ = (id) => document.getElementById(id);
 
     function fmtNum(n){
@@ -556,17 +536,12 @@
       `;
     }
 
-    /* ====== AIRTABLE CONFIG (FILL THESE IN) ======
-       - Create a Personal Access Token in Airtable
-       - Set baseId + tableName for your users table
-       - Field names must match your Airtable columns
-    */
     const AIRTABLE = {
-      token: "PASTE_YOUR_AIRTABLE_PAT_HERE",  // e.g. "patxxxxxxxxxxxx"
-      baseId: "PASTE_BASE_ID_HERE",           // e.g. "appxxxxxxxxxxxx"
-      tableName: "Users",                     // e.g. "WestconUsers"
+      token: "patnlxQXzaQNdoH1F.cf0e60ef56258f0e0ceb5baefd31b295e83473aec2c3a9dd011bc483885c4b11",
+      baseId: "appSD8RW451qfUbo2",
+      tableName: "WestConAdmin",
+      baseUrl: "https://airtable.com/appSD8RW451qfUbo2/tblSrTZTkOrQJcIy5/viwVzBLTdwHScADoE",
 
-      // Airtable column names (must match your table)
       fields: {
         userId: "User ID",
         username: "Username",
@@ -597,9 +572,8 @@
       return data;
     }
 
-    /* ====== QUERY STATE ====== */
     let currentPage = 1;
-    let pageOffsets = [null]; // pageOffsets[0] = null (first page)
+    let pageOffsets = [null];
     let lastRecords = [];
     let selectedRecord = null;
 
@@ -607,15 +581,12 @@
       const f = AIRTABLE.fields;
       const t = (searchText || "").trim();
 
-      // service filter (exact contains)
       const serviceFormula = serviceFilter
-        ? `FIND("${serviceFilter}", ARRAYJOIN({${f.services}}, ","))`
+        ? `FIND("${serviceFilter.replaceAll('"', '\\"')}", ARRAYJOIN({${f.services}}, ","))`
         : "TRUE()";
 
       if (!t) return `AND(${serviceFormula})`;
 
-      // search across multiple fields
-      // Use LOWER() and FIND() for case-insensitive-ish matching
       const safe = t.replaceAll('"', '\\"');
       const clauses = [
         `FIND(LOWER("${safe}"), LOWER({${f.userId}}&""))`,
@@ -634,7 +605,9 @@
 
     function normalizeServices(val){
       if (Array.isArray(val)) return val;
-      if (typeof val === "string" && val.trim()) return [val.trim()];
+      if (typeof val === "string" && val.trim()) {
+        return val.split(",").map(s => s.trim()).filter(Boolean);
+      }
       return [];
     }
 
@@ -725,30 +698,16 @@
     async function loadPage(page){
       clearAdminAlert();
 
-      // Basic config guard
-      if (!AIRTABLE.token || AIRTABLE.token.includes("PASTE_") ||
-          !AIRTABLE.baseId || AIRTABLE.baseId.includes("PASTE_")){
-        setAdminAlert("Airtable is not configured yet. Set AIRTABLE.token and AIRTABLE.baseId inside WestconAdmin.html.");
-        $("syncPill").classList.add("danger");
-        $("syncPill").innerHTML = '<span class="dot-live"></span>Airtable not configured';
-        return;
-      }
-
-      $("syncPill").classList.remove("danger");
-      $("syncPill").innerHTML = '<span class="dot-live"></span>Airtable sync ready';
+      setStatus("Loading users from Airtable…");
 
       const searchText = $("searchInput").value || "";
       const serviceFilter = $("serviceFilter").value || "";
-
-      setStatus("Loading users from Airtable…");
 
       const offset = pageOffsets[page - 1] || null;
       const filterByFormula = buildFilterFormula(searchText, serviceFilter);
 
       const params = {
         pageSize: "25",
-        sort[0][field]: AIRTABLE.fields.userId,
-        sort[0][direction]: "asc",
         filterByFormula
       };
 
@@ -758,7 +717,6 @@
         const data = await airtableFetch(params);
         lastRecords = data.records || [];
 
-        // next offset determines if next page exists
         const nextOffset = data.offset || null;
 
         renderTable(lastRecords);
@@ -767,20 +725,15 @@
         currentPage = page;
         $("pageInfo").textContent = `Page ${currentPage}`;
 
-        // prev enabled if page > 1
         $("prevBtn").disabled = currentPage <= 1;
-
-        // next enabled if Airtable returned an offset
         $("nextBtn").disabled = !nextOffset;
 
-        // store the offset for next page position
         pageOffsets[currentPage] = nextOffset;
 
         const now = new Date();
         $("lastSync").textContent = `Last sync: ${now.toLocaleString()}`;
 
         setStatus(`Loaded ${lastRecords.length} user(s).`);
-
       }catch(err){
         setAdminAlert(`Airtable error: ${err.message}`);
         setStatus("Failed to load users.");
@@ -795,17 +748,13 @@
       };
     }
 
-    /* ====== EVENTS ====== */
     document.addEventListener("DOMContentLoaded", () => {
-      // Mobile nav
       $("hamburger")?.addEventListener("click", () => {
         $("mobileNav").classList.toggle("hidden");
       });
 
-      // Identity pill
       $("adminIdentity").innerHTML = `<span class="dot-live"></span>${escapeHtml(session.login || "WestconAdmin")} • Admin`;
 
-      // Logout
       const doLogout = () => {
         clearSession();
         window.location.href = "index.html";
@@ -813,19 +762,15 @@
       $("logoutBtn").addEventListener("click", doLogout);
       $("logoutBtnMobile")?.addEventListener("click", doLogout);
 
-      // Pagination
       $("prevBtn").addEventListener("click", () => {
         if (currentPage > 1) loadPage(currentPage - 1);
       });
 
       $("nextBtn").addEventListener("click", () => {
-        // next offset already cached in pageOffsets[currentPage]
         if (pageOffsets[currentPage]) loadPage(currentPage + 1);
       });
 
-      // Search + filter
       const debouncedReload = debounce(() => {
-        // reset paging when query changes
         currentPage = 1;
         pageOffsets = [null];
         loadPage(1);
@@ -834,7 +779,6 @@
       $("searchInput").addEventListener("input", debouncedReload);
       $("serviceFilter").addEventListener("change", debouncedReload);
 
-      // Row click -> details
       $("userTbody").addEventListener("click", (e) => {
         const tr = e.target.closest("tr");
         const rid = tr?.getAttribute("data-record-id");
@@ -846,12 +790,10 @@
         setDetails(record);
       });
 
-      // Refresh button
       $("refreshBtn").addEventListener("click", () => {
         loadPage(currentPage);
       });
 
-      // Test connection
       $("testConnBtn").addEventListener("click", async () => {
         clearAdminAlert();
         try{
@@ -868,18 +810,11 @@
         }
       });
 
-      // Open in Airtable (record URL)
       $("openInAirtableBtn").addEventListener("click", () => {
         if (!selectedRecord) return;
-
-        // Airtable record link format differs depending on UI;
-        // This opens the base and user can locate the record quickly.
-        // If you want a direct record URL later, we can add it once your base/table view URL is known.
-        const baseUrl = `https://airtable.com/${AIRTABLE.baseId}`;
-        window.open(baseUrl, "_blank", "noopener,noreferrer");
+        window.open(AIRTABLE.baseUrl, "_blank", "noopener,noreferrer");
       });
 
-      // Copy summary
       $("copyUserBtn").addEventListener("click", async () => {
         if (!selectedRecord) return;
 
@@ -911,7 +846,6 @@ Next Payment Date: ${nextPay}`;
         }
       });
 
-      // First load
       loadPage(1);
     });
   </script>
