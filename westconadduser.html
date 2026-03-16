@@ -1,262 +1,592 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Add New Partner User</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    body {
+      margin: 0;
+      font-family: Inter, Arial, sans-serif;
+      background: linear-gradient(135deg, #08132b 0%, #050b16 48%, #03243a 100%);
+      color: #ffffff;
+      min-height: 100vh;
+    }
 
-<title>Westcon • Add Partner User</title>
+    .page-wrap {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 28px 28px 60px;
+    }
 
-<link rel="stylesheet" href="style.css">
+    .page-title {
+      font-size: 48px;
+      font-weight: 800;
+      margin: 0 0 34px;
+      letter-spacing: -0.02em;
+    }
 
-<style>
+    .form-shell {
+      background: linear-gradient(90deg, rgba(25, 41, 84, 0.95) 0%, rgba(14, 18, 27, 0.96) 50%, rgba(9, 35, 47, 0.96) 100%);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 22px;
+      padding: 42px 44px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.28);
+    }
 
-.container{
-max-width:900px;
-margin:auto;
-padding:40px;
-}
+    .form-grid {
+      display: grid;
+      grid-template-columns: 190px 1fr;
+      gap: 28px 28px;
+      align-items: center;
+    }
 
-.form-card{
-background:rgba(255,255,255,0.05);
-border:1px solid rgba(255,255,255,0.08);
-border-radius:14px;
-padding:30px;
-}
+    .label {
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.35;
+      color: #ffffff;
+    }
 
-.form-row{
-margin-bottom:20px;
-}
+    .input,
+    .select,
+    .textarea {
+      width: 100%;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(3, 8, 20, 0.95);
+      color: #ffffff;
+      font-size: 18px;
+      padding: 18px 20px;
+      outline: none;
+      transition: 0.2s ease;
+    }
 
-label{
-display:block;
-font-weight:600;
-margin-bottom:6px;
-}
+    .input[readonly] {
+      background: rgba(4, 10, 24, 0.9);
+      color: #d8e4ff;
+      font-weight: 700;
+    }
 
-input,select{
-width:100%;
-padding:12px;
-border-radius:10px;
-border:1px solid rgba(255,255,255,0.12);
-background:rgba(0,0,0,0.25);
-color:white;
-}
+    .input:not([readonly]),
+    .select,
+    .textarea {
+      background: #dfe6f1;
+      color: #0a0f19;
+    }
 
-select[multiple]{
-height:140px;
-}
+    .input:focus,
+    .select:focus,
+    .textarea:focus {
+      border-color: rgba(74, 144, 255, 0.65);
+      box-shadow: 0 0 0 3px rgba(74, 144, 255, 0.18);
+    }
 
-.total{
-font-size:20px;
-font-weight:700;
-margin-top:10px;
-}
+    .multi-select-wrap {
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(3, 8, 20, 0.95);
+      padding: 18px;
+      min-height: 210px;
+    }
 
-button{
-margin-top:20px;
-padding:14px 20px;
-border-radius:10px;
-border:none;
-background:#2b8cff;
-color:white;
-font-size:15px;
-cursor:pointer;
-}
+    .service-list {
+      display: grid;
+      gap: 12px;
+    }
 
-</style>
+    .service-option {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 14px;
+      padding: 14px 16px;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
 
+    .service-option:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.12);
+    }
+
+    .service-option input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      accent-color: #2f80ed;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .service-text {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      width: 100%;
+      font-size: 17px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    .cost-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 60px;
+    }
+
+    .cost-value {
+      font-size: 28px;
+      font-weight: 800;
+      color: #ffffff;
+      text-align: right;
+    }
+
+    .button-row {
+      margin-top: 34px;
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 18px;
+      padding: 18px 28px;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #2f80ed 0%, #3f8cff 100%);
+      color: #ffffff;
+      min-width: 182px;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px rgba(47, 128, 237, 0.28);
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.08);
+      color: #ffffff;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .status {
+      margin-top: 18px;
+      font-size: 15px;
+      font-weight: 600;
+      min-height: 22px;
+    }
+
+    .status.success {
+      color: #7df0a6;
+    }
+
+    .status.error {
+      color: #ff8a8a;
+    }
+
+    .status.info {
+      color: #9fc2ff;
+    }
+
+    @media (max-width: 900px) {
+      .page-title {
+        font-size: 36px;
+      }
+
+      .form-shell {
+        padding: 28px 22px;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+        gap: 12px 0;
+      }
+
+      .label {
+        font-size: 18px;
+      }
+
+      .cost-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+
+      .cost-value {
+        text-align: left;
+      }
+
+      .button-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
 </head>
-
 <body>
-
-<div class="container">
-
-<h1>Add New Partner User</h1>
-
-<div class="form-card">
-
-<div class="form-row">
-<label>User ID</label>
-<input id="userid" disabled>
-</div>
-
-<div class="form-row">
-<label>Username (Login Email)</label>
-<input id="username">
-</div>
-
-<div class="form-row">
-<label>Company</label>
-<input id="company">
-</div>
-
-<div class="form-row">
-<label>Services Purchased</label>
-
-<select id="services" multiple>
-
-<option value="Westcon Knowledge Base" data-price="49">
-Westcon Knowledge Base ($49)
-</option>
-
-<option value="AI Sales Copilot For Resellers" data-price="178">
-AI Sales Copilot For Resellers ($178)
-</option>
-
-<option value="AI Network Architecture Recommendations" data-price="289">
-AI Network Architecture Recommendations ($289)
-</option>
-
-</select>
-
-</div>
-
-<div class="form-row">
-<label>Monthly Cost</label>
-<div class="total" id="total">$0</div>
-</div>
-
-<button onclick="submitUser()">
-Create User
-</button>
-
-</div>
-
-</div>
-
-<script>
-
-const AIRTABLE_TOKEN = "YOUR_PAT";
-const BASE_ID = "appSD8RW451qfUbo2";
-const TABLE = "WestConAdmin";
-
-const WEBHOOK_EMAIL = "https://YOUR-N8N-WEBHOOK";
-
-const servicesEl = document.getElementById("services");
-const totalEl = document.getElementById("total");
-
-servicesEl.addEventListener("change", calculateTotal);
-
-function calculateTotal(){
-
-let total = 0;
-
-Array.from(servicesEl.selectedOptions).forEach(o=>{
-total += Number(o.dataset.price);
-});
-
-totalEl.innerHTML = "$" + total;
-
-}
-
-function generatePassword(){
-
-const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-let pass = "";
-
-for(let i=0;i<9;i++){
-pass += chars.charAt(Math.floor(Math.random()*chars.length));
-}
-
-return pass;
-
-}
-
-async function generateNextUserId(){
-
-const url = `https://api.airtable.com/v0/${BASE_ID}/${TABLE}?maxRecords=1&sort[0][field]=User ID&sort[0][direction]=desc`;
-
-const res = await fetch(url,{
-headers:{Authorization:`Bearer ${AIRTABLE_TOKEN}`}
-});
-
-const data = await res.json();
-
-const last = data.records[0].fields["User ID"];
-
-const num = Number(last.split("-")[1]);
-
-const next = String(num + 1).padStart(5,"0");
-
-document.getElementById("userid").value = "West01-" + next;
-
-}
-
-generateNextUserId();
-
-async function submitUser(){
-
-const userId = document.getElementById("userid").value;
-const username = document.getElementById("username").value;
-const company = document.getElementById("company").value;
-
-const services = Array.from(servicesEl.selectedOptions).map(o=>o.value);
-
-const password = generatePassword();
-
-let total = 0;
-
-Array.from(servicesEl.selectedOptions).forEach(o=>{
-total += Number(o.dataset.price);
-});
-
-const body = {
-
-fields:{
-
-"User ID": userId,
-"Username": username,
-"Company": company,
-"Services Purchased": services,
-"Tokens Purchased": 0,
-"Token Usage": 0,
-"Tokens Left": 0
-
-}
-
-};
-
-await fetch(`https://api.airtable.com/v0/${BASE_ID}/${TABLE}`,{
-
-method:"POST",
-
-headers:{
-Authorization:`Bearer ${AIRTABLE_TOKEN}`,
-"Content-Type":"application/json"
-},
-
-body:JSON.stringify({records:[body]})
-
-});
-
-await fetch(WEBHOOK_EMAIL,{
-
-method:"POST",
-
-headers:{
-"Content-Type":"application/json"
-},
-
-body:JSON.stringify({
-
-email:username,
-password:password,
-services:services,
-total:total
-
-})
-
-});
-
-alert("User Created Successfully");
-
-window.location.href="WestconAdmin.html";
-
-}
-
-</script>
-
+  <div class="page-wrap">
+    <h1 class="page-title">Add New Partner User</h1>
+
+    <div class="form-shell">
+      <form id="addUserForm">
+        <div class="form-grid">
+          <div class="label">User<br>ID</div>
+          <div>
+            <input type="text" id="userId" class="input" readonly placeholder="Loading next user ID..." />
+          </div>
+
+          <div class="label">Username (Login Email)</div>
+          <div>
+            <input type="email" id="username" class="input" placeholder="Enter login email" required />
+          </div>
+
+          <div class="label">Company</div>
+          <div>
+            <input type="text" id="company" class="input" placeholder="Enter company name" required />
+          </div>
+
+          <div class="label">Services<br>Purchased</div>
+          <div>
+            <div class="multi-select-wrap">
+              <div class="service-list" id="serviceList">
+                <label class="service-option">
+                  <input type="checkbox" value="Westcon Knowledge Base" data-price="49" />
+                  <span class="service-text">
+                    <span>Westcon Knowledge Base</span>
+                    <span>$49</span>
+                  </span>
+                </label>
+
+                <label class="service-option">
+                  <input type="checkbox" value="AI Sales Copilot for Resellers" data-price="178" />
+                  <span class="service-text">
+                    <span>AI Sales Copilot for Resellers</span>
+                    <span>$178</span>
+                  </span>
+                </label>
+
+                <label class="service-option">
+                  <input type="checkbox" value="AI Network Architecture Recommendations" data-price="289" />
+                  <span class="service-text">
+                    <span>AI Network Architecture Recommendations</span>
+                    <span>$289</span>
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="label">Billing Date</div>
+          <div>
+            <input type="date" id="billingDate" class="input" required />
+          </div>
+
+          <div class="label">Monthly Cost</div>
+          <div class="cost-row">
+            <div></div>
+            <div class="cost-value" id="monthlyCost">$0</div>
+          </div>
+        </div>
+
+        <div class="button-row">
+          <button type="submit" class="btn btn-primary" id="createUserBtn">Create User</button>
+          <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+        </div>
+
+        <div id="statusMessage" class="status info"></div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    /*************************************************
+     * CONFIG - REPLACE THESE VALUES
+     *************************************************/
+    const AIRTABLE_PAT = "PASTE_YOUR_AIRTABLE_PERSONAL_ACCESS_TOKEN_HERE";
+    const AIRTABLE_BASE_ID = "PASTE_YOUR_BASE_ID_HERE";
+    const AIRTABLE_TABLE_NAME = "Users"; // Change if your Airtable table name is different
+
+    // Leave blank for now if you haven't created the n8n webhook yet
+    const N8N_WEBHOOK_URL = "";
+
+    /*************************************************
+     * FIELD NAMES - CHANGE THESE TO MATCH AIRTABLE
+     *************************************************/
+    const FIELD_NAMES = {
+      userId: "User ID",
+      username: "Username",
+      company: "Company",
+      servicesPurchased: "Services Purchased",
+      monthlyCost: "Monthly Cost",
+      billingDate: "Billing Date"
+    };
+
+    const elements = {
+      form: document.getElementById("addUserForm"),
+      userId: document.getElementById("userId"),
+      username: document.getElementById("username"),
+      company: document.getElementById("company"),
+      billingDate: document.getElementById("billingDate"),
+      monthlyCost: document.getElementById("monthlyCost"),
+      serviceCheckboxes: document.querySelectorAll('#serviceList input[type="checkbox"]'),
+      createUserBtn: document.getElementById("createUserBtn"),
+      cancelBtn: document.getElementById("cancelBtn"),
+      statusMessage: document.getElementById("statusMessage")
+    };
+
+    function setStatus(message, type = "info") {
+      elements.statusMessage.textContent = message;
+      elements.statusMessage.className = `status ${type}`;
+    }
+
+    function formatDateForInput(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function getSelectedServices() {
+      return Array.from(elements.serviceCheckboxes)
+        .filter(cb => cb.checked)
+        .map(cb => ({
+          name: cb.value,
+          price: Number(cb.dataset.price || 0)
+        }));
+    }
+
+    function updateMonthlyCost() {
+      const total = getSelectedServices().reduce((sum, service) => sum + service.price, 0);
+      elements.monthlyCost.textContent = `$${total}`;
+      return total;
+    }
+
+    function normaliseUserId(value) {
+      if (value === null || value === undefined) return 0;
+      const match = String(value).match(/\d+/);
+      return match ? Number(match[0]) : 0;
+    }
+
+    async function fetchNextUserId() {
+      const endpoint = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(AIRTABLE_TABLE_NAME)}?pageSize=100`;
+
+      let offset = null;
+      let maxUserId = 0;
+
+      do {
+        const url = offset ? `${endpoint}&offset=${encodeURIComponent(offset)}` : endpoint;
+
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${AIRTABLE_PAT}`
+          }
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Failed to fetch Airtable records: ${errorText}`);
+        }
+
+        const data = await response.json();
+
+        if (Array.isArray(data.records)) {
+          data.records.forEach(record => {
+            const rawUserId = record.fields?.[FIELD_NAMES.userId];
+            const numericUserId = normaliseUserId(rawUserId);
+            if (numericUserId > maxUserId) {
+              maxUserId = numericUserId;
+            }
+          });
+        }
+
+        offset = data.offset || null;
+      } while (offset);
+
+      return maxUserId + 1;
+    }
+
+    async function createAirtableRecord(payload) {
+      const endpoint = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(AIRTABLE_TABLE_NAME)}`;
+
+      const airtableBody = {
+        fields: {
+          [FIELD_NAMES.userId]: payload.userId,
+          [FIELD_NAMES.username]: payload.username,
+          [FIELD_NAMES.company]: payload.company,
+          [FIELD_NAMES.servicesPurchased]: payload.servicesPurchased,
+          [FIELD_NAMES.monthlyCost]: payload.monthlyCost,
+          [FIELD_NAMES.billingDate]: payload.billingDate
+        }
+      };
+
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${AIRTABLE_PAT}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(airtableBody)
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to create Airtable record: ${errorText}`);
+      }
+
+      return response.json();
+    }
+
+    async function sendToN8NWebhook(payload) {
+      if (!N8N_WEBHOOK_URL || !N8N_WEBHOOK_URL.trim()) {
+        return null;
+      }
+
+      const response = await fetch(N8N_WEBHOOK_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`n8n webhook call failed: ${errorText}`);
+      }
+
+      try {
+        return await response.json();
+      } catch {
+        return await response.text();
+      }
+    }
+
+    async function initialiseForm() {
+      try {
+        setStatus("Loading next user ID...", "info");
+
+        const today = new Date();
+        elements.billingDate.value = formatDateForInput(today);
+
+        const nextUserId = await fetchNextUserId();
+        elements.userId.value = nextUserId;
+
+        updateMonthlyCost();
+        setStatus("Form ready.", "success");
+      } catch (error) {
+        console.error(error);
+        elements.userId.value = "";
+        setStatus("Could not load the next User ID. Check your Airtable config.", "error");
+      }
+    }
+
+    elements.serviceCheckboxes.forEach(cb => {
+      cb.addEventListener("change", updateMonthlyCost);
+    });
+
+    elements.cancelBtn.addEventListener("click", () => {
+      window.location.href = "westconAdmin.html";
+    });
+
+    elements.form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const userId = elements.userId.value.trim();
+      const username = elements.username.value.trim();
+      const company = elements.company.value.trim();
+      const billingDate = elements.billingDate.value;
+      const selectedServices = getSelectedServices();
+      const monthlyCost = updateMonthlyCost();
+
+      if (!userId) {
+        setStatus("User ID is missing. Please reload the page.", "error");
+        return;
+      }
+
+      if (!username) {
+        setStatus("Please enter the login email.", "error");
+        return;
+      }
+
+      if (!company) {
+        setStatus("Please enter the company name.", "error");
+        return;
+      }
+
+      if (!billingDate) {
+        setStatus("Please choose a billing date.", "error");
+        return;
+      }
+
+      if (!selectedServices.length) {
+        setStatus("Please select at least one service.", "error");
+        return;
+      }
+
+      const payload = {
+        userId: Number(userId),
+        username,
+        company,
+        servicesPurchased: selectedServices.map(service => service.name),
+        monthlyCost,
+        billingDate,
+        createdAt: new Date().toISOString()
+      };
+
+      try {
+        elements.createUserBtn.disabled = true;
+        elements.createUserBtn.textContent = "Creating...";
+        setStatus("Creating user and saving to Airtable...", "info");
+
+        const airtableResult = await createAirtableRecord(payload);
+
+        // Optional n8n webhook call
+        try {
+          await sendToN8NWebhook({
+            source: "westconadduser.html",
+            action: "create_user",
+            airtableRecordId: airtableResult.id,
+            ...payload
+          });
+        } catch (webhookError) {
+          console.warn("n8n webhook warning:", webhookError);
+          // Airtable record is already created, so we continue
+        }
+
+        setStatus("User created successfully. Redirecting...", "success");
+
+        setTimeout(() => {
+          window.location.href = "westconAdmin.html";
+        }, 900);
+      } catch (error) {
+        console.error(error);
+        setStatus(error.message || "Failed to create user.", "error");
+      } finally {
+        elements.createUserBtn.disabled = false;
+        elements.createUserBtn.textContent = "Create User";
+      }
+    });
+
+    initialiseForm();
+  </script>
 </body>
 </html>
