@@ -116,12 +116,14 @@
       font-size: 12px;
       margin: 0 0 6px;
     }
+
     .kpi-value{
       font-size: 22px;
       font-weight: 900;
       margin: 0 0 6px;
       letter-spacing: -.3px;
     }
+
     .kpi-foot{
       color: var(--muted);
       font-size: 12px;
@@ -169,6 +171,7 @@
       cursor:pointer;
       transition: background .12s ease;
     }
+
     tbody tr:hover{
       background: rgba(255,255,255,.05);
     }
@@ -216,6 +219,7 @@
       font-size: 16px;
       letter-spacing: -.2px;
     }
+
     .panel p{
       margin:0;
       color: var(--muted);
@@ -235,6 +239,7 @@
       font-size: 12px;
       font-weight: 800;
     }
+
     .v{
       color: rgba(234,242,255,.88);
       font-size: 12.5px;
@@ -282,7 +287,9 @@
     }
 
     .dot-live{
-      width: 8px; height: 8px; border-radius: 999px;
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
       background: rgba(0,194,255,.9);
       box-shadow: 0 0 0 4px rgba(0,194,255,.14);
       display:inline-block;
@@ -295,11 +302,17 @@
       color: rgba(255,236,204,.95) !important;
     }
 
+    .btn-add-user{
+      text-decoration:none;
+    }
+
     @media (max-width: 980px){
       .kpis{ grid-template-columns: repeat(2, 1fr); }
       .grid{ grid-template-columns: 1fr; }
       .panel{ position: relative; top:auto; }
       .search{ min-width: 220px; }
+      .admin-head{ flex-direction: column; }
+      .admin-actions{ justify-content:flex-start; }
     }
   </style>
 </head>
@@ -355,22 +368,13 @@
           token packs, usage, and upcoming billing dates — with a clean, audit-friendly overview.
         </p>
       </div>
-     <div class="admin-actions">
 
-  <button class="btn btn-primary"
-    onclick="window.location.href='westconadduser.html'">
-    Add User
-  </button>
-
-  <button class="btn btn-ghost" id="refreshBtn">
-    Refresh
-  </button>
-
-  <button class="btn btn-primary" id="testConnBtn">
-    Test Airtable
-  </button>
-
-</div>
+      <div class="admin-actions">
+        <a class="btn btn-primary btn-add-user" href="westconadduser.html">Add User</a>
+        <button class="btn btn-ghost" id="refreshBtn">Refresh</button>
+        <button class="btn btn-primary" id="testConnBtn">Test Airtable</button>
+      </div>
+    </div>
 
     <section class="kpis">
       <div class="kpi surface">
@@ -451,6 +455,7 @@
 
     <section class="grid">
       <div></div>
+
       <aside class="surface panel" id="detailsPanel">
         <h3>User Details</h3>
         <p>Select a user row to view details.</p>
@@ -482,8 +487,11 @@
     function getSession(){
       const a = localStorage.getItem(SESSION_KEY);
       const b = sessionStorage.getItem(SESSION_KEY);
-      try { return a ? JSON.parse(a) : (b ? JSON.parse(b) : null); }
-      catch { return null; }
+      try {
+        return a ? JSON.parse(a) : (b ? JSON.parse(b) : null);
+      } catch {
+        return null;
+      }
     }
 
     function clearSession(){
@@ -552,7 +560,6 @@
       baseId: "appSD8RW451qfUbo2",
       tableName: "WestConAdmin",
       baseUrl: "https://airtable.com/appSD8RW451qfUbo2/tblSrTZTkOrQJcIy5/viwVzBLTdwHScADoE",
-
       fields: {
         userId: "User ID",
         username: "Username",
@@ -573,13 +580,18 @@
     async function airtableFetch(params){
       const url = airtableUrl(params);
       const res = await fetch(url, {
-        headers: { Authorization: `Bearer ${AIRTABLE.token}` }
+        headers: {
+          Authorization: `Bearer ${AIRTABLE.token}`
+        }
       });
+
       const data = await res.json();
+
       if (!res.ok) {
         const msg = data?.error?.message || "Airtable request failed.";
         throw new Error(msg);
       }
+
       return data;
     }
 
@@ -592,8 +604,9 @@
       const f = AIRTABLE.fields;
       const t = (searchText || "").trim();
 
+      const safeService = String(serviceFilter || "").replaceAll('"', '\\"');
       const serviceFormula = serviceFilter
-        ? `FIND("${serviceFilter.replaceAll('"', '\\"')}", ARRAYJOIN({${f.services}}, ","))`
+        ? `FIND("${safeService}", ARRAYJOIN({${f.services}}, ","))`
         : "TRUE()";
 
       if (!t) return `AND(${serviceFormula})`;
@@ -635,6 +648,7 @@
 
     function renderTable(records){
       const tbody = $("userTbody");
+
       if (!records.length){
         tbody.innerHTML = `
           <tr>
@@ -709,11 +723,21 @@
     async function loadPage(page){
       clearAdminAlert();
 
+      if (!AIRTABLE.token || AIRTABLE.token.includes("PASTE_")) {
+        setAdminAlert("Airtable token is not configured yet. Paste your PAT into AIRTABLE.token.");
+        $("syncPill").classList.add("danger");
+        $("syncPill").innerHTML = '<span class="dot-live"></span>Airtable not configured';
+        setStatus("Airtable token missing.");
+        return;
+      }
+
+      $("syncPill").classList.remove("danger");
+      $("syncPill").innerHTML = '<span class="dot-live"></span>Airtable sync ready';
+
       setStatus("Loading users from Airtable…");
 
       const searchText = $("searchInput").value || "";
       const serviceFilter = $("serviceFilter").value || "";
-
       const offset = pageOffsets[page - 1] || null;
       const filterByFormula = buildFilterFormula(searchText, serviceFilter);
 
@@ -735,27 +759,25 @@
 
         currentPage = page;
         $("pageInfo").textContent = `Page ${currentPage}`;
-
         $("prevBtn").disabled = currentPage <= 1;
         $("nextBtn").disabled = !nextOffset;
-
         pageOffsets[currentPage] = nextOffset;
 
         const now = new Date();
         $("lastSync").textContent = `Last sync: ${now.toLocaleString()}`;
 
         setStatus(`Loaded ${lastRecords.length} user(s).`);
-      }catch(err){
+      } catch(err){
         setAdminAlert(`Airtable error: ${err.message}`);
         setStatus("Failed to load users.");
       }
     }
 
-    function debounce(fn, ms=350){
+    function debounce(fn, ms = 350){
       let t;
       return (...args) => {
         clearTimeout(t);
-        t = setTimeout(()=> fn(...args), ms);
+        t = setTimeout(() => fn(...args), ms);
       };
     }
 
@@ -770,6 +792,7 @@
         clearSession();
         window.location.href = "index.html";
       };
+
       $("logoutBtn").addEventListener("click", doLogout);
       $("logoutBtnMobile")?.addEventListener("click", doLogout);
 
@@ -813,7 +836,7 @@
           setStatus("Airtable connection OK.");
           $("syncPill").classList.remove("danger");
           $("syncPill").innerHTML = '<span class="dot-live"></span>Airtable connected';
-        }catch(err){
+        } catch(err){
           setAdminAlert(`Airtable test failed: ${err.message}`);
           $("syncPill").classList.add("danger");
           $("syncPill").innerHTML = '<span class="dot-live"></span>Airtable error';
@@ -852,7 +875,7 @@ Next Payment Date: ${nextPay}`;
         try{
           await navigator.clipboard.writeText(text);
           setStatus("Copied summary to clipboard.");
-        }catch{
+        } catch{
           setAdminAlert("Could not copy to clipboard (browser permission).");
         }
       });
@@ -862,3 +885,4 @@ Next Payment Date: ${nextPay}`;
   </script>
 </body>
 </html>
+
