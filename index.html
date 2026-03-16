@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Westcon Partner AI Portal</title>
+
+<link rel="stylesheet" href="style.css" />
+
+</head>
+
+<body>
+
+<div class="portal-wrap">
+
+<!-- LOGIN VIEW -->
+<div id="loginView">
+
+<div class="login-grid">
+
+<div class="glass hero-card">
+
+<div class="pill-row">
+<div class="pill">Westcon Partner AI Portal</div>
+</div>
+
+<h1>Your channel partner knowledge portal with an AI Copilot.</h1>
+
+<p>
+Securely search partner documentation, ask product and program questions,
+and route requests into Westcon AI LLM.
+</p>
+
+<div class="feature-grid">
+
+<div class="feature">
+<strong>Role-based access</strong>
+<span>Secure login for channel partners and internal admins with company-level access control.</span>
+</div>
+
+<div class="feature">
+<strong>RAG-powered answers</strong>
+<span>Grounded responses from approved vendor, training, support, and onboarding documentation.</span>
+</div>
+
+<div class="feature">
+<strong>n8n automation</strong>
+<span>Escalations, workflow actions, notifications, and downstream integrations from one portal.</span>
+</div>
+
+<div class="feature">
+<strong>Knowledge search</strong>
+<span>Find vendor resources, training, promotions, and support knowledge in one place.</span>
+</div>
+
+</div>
+</div>
+
+<div class="glass login-card">
+
+<div class="pill-row" style="margin-bottom:18px;">
+<div class="pill">Partner Login</div>
+</div>
+
+<div class="field">
+<label class="label">Email</label>
+<input id="emailInput" class="input" type="email" placeholder="example@partner.com"/>
+</div>
+
+<div class="field">
+<label class="label">Password</label>
+<input id="passwordInput" class="input" type="password" placeholder="Enter password"/>
+</div>
+
+<div class="btn-row">
+<button class="btn btn-primary" onclick="loginPortal()">Login to Portal</button>
+<button class="btn btn-secondary">SSO / Entra ID</button>
+</div>
+
+<div id="loginError" class="error hidden"></div>
+
+<div class="note">
+Use the demo credentials to access the chatbot portal.
+</div>
+
+</div>
+</div>
+</div>
+
+
+<!-- PORTAL VIEW -->
+<div id="portalView" class="hidden">
+
+<div class="topbar">
+
+<div class="brand">
+<div class="brand-icon">AI</div>
+<div>
+<small>Westcon Demo</small>
+<strong>Partner AI Knowledge Portal</strong>
+</div>
+</div>
+
+<div class="user-badge">
+
+<div class="pill-row">
+<div class="pill">RAG Enabled</div>
+<div class="pill">n8n Production Webhook</div>
+</div>
+
+<div class="avatar" id="userAvatar">DP</div>
+
+<button class="btn btn-secondary" onclick="logoutPortal()">
+Logout
+</button>
+
+</div>
+</div>
+
+
+<div class="portal-grid">
+
+<div class="sidebar">
+
+<div class="side-title">Navigation</div>
+
+<button class="nav-item active">Dashboard</button>
+<button class="nav-item">AI Chat</button>
+<button class="nav-item">Documents</button>
+<button class="nav-item">Knowledge Base</button>
+<button class="nav-item">Users & Roles</button>
+
+<div class="side-title" style="margin-top:22px;">Knowledge Filters</div>
+
+<button class="filter-item active" onclick="setFilter(this,'All Vendors')">All Vendors</button>
+<button class="filter-item" onclick="setFilter(this,'Cisco')">Cisco</button>
+<button class="filter-item" onclick="setFilter(this,'Microsoft')">Microsoft</button>
+<button class="filter-item" onclick="setFilter(this,'Palo Alto')">Palo Alto</button>
+<button class="filter-item" onclick="setFilter(this,'Security')">Security</button>
+<button class="filter-item" onclick="setFilter(this,'Cloud')">Cloud</button>
+
+</div>
+
+
+<div class="main-stack">
+
+<div class="hero-banner">
+
+<h2>Your AI Partner Enablement Assistant</h2>
+
+<p>
+Instantly answer partner questions using approved documentation
+and route workflows into n8n.
+</p>
+
+<div class="stats">
+
+<div class="stat">
+<small>Webhook</small>
+<strong>Production Active</strong>
+</div>
+
+<div class="stat">
+<small>RAG Layer</small>
+<strong>Ready for Pinecone</strong>
+</div>
+
+<div class="stat">
+<small>Partner Access</small>
+<strong>RBAC Ready</strong>
+</div>
+
+</div>
+</div>
+
+
+<div class="content-panel card">
+
+<div class="chat-layout">
+
+<div class="chat-box">
+
+<div class="messages" id="messagesBox">
+<div class="message assistant">
+Welcome to the Partner AI Portal.
+Ask about onboarding, vendor docs, training,
+promotions, support, APIs, or partner processes.
+</div>
+</div>
+
+<div id="chatError" class="error hidden"></div>
+
+<div class="input-row">
+
+<input
+id="chatInput"
+class="chat-input"
+type="text"
+placeholder="Ask about products, docs, onboarding..."
+onkeydown="handleKey(event)"
+/>
+
+<button class="btn btn-primary" onclick="sendQuestion()">Send</button>
+
+</div>
+</div>
+
+
+<div class="side-stack">
+
+<div class="card">
+<h3>Webhook Payload</h3>
+<div class="code-block" id="payloadBlock"></div>
+</div>
+
+<div class="card">
+<h3>Response Debug</h3>
+<div class="code-block" id="responseDebug">Waiting for response...</div>
+</div>
+
+</div>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
