@@ -250,46 +250,22 @@
         <div class="form-grid">
           <div class="label">User ID</div>
           <div>
-            <input
-              type="text"
-              id="userId"
-              class="input"
-              placeholder="Enter User ID e.g. West01-00012"
-              required
-            />
+            <input type="text" id="userId" class="input" placeholder="Enter User ID e.g. West01-00012" required />
           </div>
 
           <div class="label">Row ID</div>
           <div>
-            <input
-              type="number"
-              id="rowId"
-              class="input"
-              placeholder="Enter Row ID e.g. 12"
-              required
-            />
+            <input type="number" id="rowId" class="input" placeholder="Enter Row ID e.g. 12" required />
           </div>
 
           <div class="label">Username (Login Email)</div>
           <div>
-            <input
-              type="email"
-              id="username"
-              class="input"
-              placeholder="Enter login email"
-              required
-            />
+            <input type="email" id="username" class="input" placeholder="Enter login email" required />
           </div>
 
           <div class="label">Company</div>
           <div>
-            <input
-              type="text"
-              id="company"
-              class="input"
-              placeholder="Enter company name"
-              required
-            />
+            <input type="text" id="company" class="input" placeholder="Enter company name" required />
           </div>
 
           <div class="label">Services<br>Purchased</div>
@@ -350,20 +326,11 @@
   </div>
 
   <script>
-    /*************************************************
-     * CONFIG
-     * Paste your PAT below, then rotate it afterwards.
-     *************************************************/
-    const AIRTABLE_PAT = "PASTE_YOUR_PAT_HERE";
+    const AIRTABLE_PAT = "PASTE_YOUR_REAL_PAT_HERE";
     const AIRTABLE_BASE_ID = "appSD8RW451qfUbo2";
     const AIRTABLE_TABLE_NAME = "WestConAdmin";
-
-    // Optional n8n webhook
     const N8N_WEBHOOK_URL = "";
 
-    /*************************************************
-     * FIELD NAMES
-     *************************************************/
     const FIELD_NAMES = {
       userId: "User ID",
       rowId: "Row ID",
@@ -373,10 +340,6 @@
       tokensPurchased: "Tokens Purchased",
       tokenUsage: "Token Usage",
       tokensLeft: "Tokens Left",
-
-      // IMPORTANT:
-      // Replace this with the exact Airtable field name if needed.
-      // Your screenshot shows "Next Payment..." but the full label is cut off.
       nextPayment: "Next Payment"
     };
 
@@ -457,7 +420,6 @@
       });
 
       const rawText = await response.text();
-      console.log("Airtable raw response:", rawText);
 
       if (!response.ok) {
         throw new Error(rawText);
@@ -467,9 +429,7 @@
     }
 
     async function sendToN8NWebhook(payload) {
-      if (!N8N_WEBHOOK_URL.trim()) {
-        return null;
-      }
+      if (!N8N_WEBHOOK_URL.trim()) return null;
 
       const response = await fetch(N8N_WEBHOOK_URL, {
         method: "POST",
