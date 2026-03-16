@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Westcon • Add Partner User</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+
+.container{
+max-width:900px;
+margin:auto;
+padding:40px;
+}
+
+.form-card{
+background:rgba(255,255,255,0.05);
+border:1px solid rgba(255,255,255,0.08);
+border-radius:14px;
+padding:30px;
+}
+
+.form-row{
+margin-bottom:20px;
+}
+
+label{
+display:block;
+font-weight:600;
+margin-bottom:6px;
+}
+
+input,select{
+width:100%;
+padding:12px;
+border-radius:10px;
+border:1px solid rgba(255,255,255,0.12);
+background:rgba(0,0,0,0.25);
+color:white;
+}
+
+select[multiple]{
+height:140px;
+}
+
+.total{
+font-size:20px;
+font-weight:700;
+margin-top:10px;
+}
+
+button{
+margin-top:20px;
+padding:14px 20px;
+border-radius:10px;
+border:none;
+background:#2b8cff;
+color:white;
+font-size:15px;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Add New Partner User</h1>
+
+<div class="form-card">
+
+<div class="form-row">
+<label>User ID</label>
+<input id="userid" disabled>
+</div>
+
+<div class="form-row">
+<label>Username (Login Email)</label>
+<input id="username">
+</div>
+
+<div class="form-row">
+<label>Company</label>
+<input id="company">
+</div>
+
+<div class="form-row">
+<label>Services Purchased</label>
+
+<select id="services" multiple>
+
+<option value="Westcon Knowledge Base" data-price="49">
+Westcon Knowledge Base ($49)
+</option>
+
+<option value="AI Sales Copilot For Resellers" data-price="178">
+AI Sales Copilot For Resellers ($178)
+</option>
+
+<option value="AI Network Architecture Recommendations" data-price="289">
+AI Network Architecture Recommendations ($289)
+</option>
+
+</select>
+
+</div>
+
+<div class="form-row">
+<label>Monthly Cost</label>
+<div class="total" id="total">$0</div>
+</div>
+
+<button onclick="submitUser()">
+Create User
+</button>
+
+</div>
+
+</div>
+
+<script>
+
+const AIRTABLE_TOKEN = "YOUR_PAT";
+const BASE_ID = "appSD8RW451qfUbo2";
+const TABLE = "WestConAdmin";
+
+const WEBHOOK_EMAIL = "https://YOUR-N8N-WEBHOOK";
+
+const servicesEl = document.getElementById("services");
+const totalEl = document.getElementById("total");
+
+servicesEl.addEventListener("change", calculateTotal);
+
+function calculateTotal(){
+
+let total = 0;
+
+Array.from(servicesEl.selectedOptions).forEach(o=>{
+total += Number(o.dataset.price);
+});
+
+totalEl.innerHTML = "$" + total;
+
+}
+
+function generatePassword(){
+
+const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+let pass = "";
+
+for(let i=0;i<9;i++){
+pass += chars.charAt(Math.floor(Math.random()*chars.length));
+}
+
+return pass;
+
+}
+
+async function generateNextUserId(){
+
+const url = `https://api.airtable.com/v0/${BASE_ID}/${TABLE}?maxRecords=1&sort[0][field]=User ID&sort[0][direction]=desc`;
+
+const res = await fetch(url,{
+headers:{Authorization:`Bearer ${AIRTABLE_TOKEN}`}
+});
+
+const data = await res.json();
+
+const last = data.records[0].fields["User ID"];
+
+const num = Number(last.split("-")[1]);
+
+const next = String(num + 1).padStart(5,"0");
+
+document.getElementById("userid").value = "West01-" + next;
+
+}
+
+generateNextUserId();
+
+async function submitUser(){
+
+const userId = document.getElementById("userid").value;
+const username = document.getElementById("username").value;
+const company = document.getElementById("company").value;
+
+const services = Array.from(servicesEl.selectedOptions).map(o=>o.value);
+
+const password = generatePassword();
+
+let total = 0;
+
+Array.from(servicesEl.selectedOptions).forEach(o=>{
+total += Number(o.dataset.price);
+});
+
+const body = {
+
+fields:{
+
+"User ID": userId,
+"Username": username,
+"Company": company,
+"Services Purchased": services,
+"Tokens Purchased": 0,
+"Token Usage": 0,
+"Tokens Left": 0
+
+}
+
+};
+
+await fetch(`https://api.airtable.com/v0/${BASE_ID}/${TABLE}`,{
+
+method:"POST",
+
+headers:{
+Authorization:`Bearer ${AIRTABLE_TOKEN}`,
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({records:[body]})
+
+});
+
+await fetch(WEBHOOK_EMAIL,{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+
+email:username,
+password:password,
+services:services,
+total:total
+
+})
+
+});
+
+alert("User Created Successfully");
+
+window.location.href="WestconAdmin.html";
+
+}
+
+</script>
+
+</body>
+</html>
