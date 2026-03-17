@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Sales Copilot | Westcon AI Portal</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root{
+      --bg-1:#0f172a;
+      --bg-2:#111827;
+      --bg-3:#083344;
+      --card:rgba(255,255,255,0.06);
+      --card-strong:rgba(255,255,255,0.09);
+      --border:rgba(255,255,255,0.10);
+      --text:#e5eef7;
+      --muted:#a9bbcf;
+      --cyan:#22d3ee;
+      --cyan-strong:#06b6d4;
+      --green:#34d399;
+      --amber:#fbbf24;
+      --danger:#f87171;
+      --shadow:0 20px 50px rgba(0,0,0,0.28);
+    }
+
+    body{
+      font-family: Inter, Arial, sans-serif;
+      background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 45%, var(--bg-3) 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .portal-wrap{
+      width: 100%;
+      max-width: 1450px;
+      margin: 0 auto;
+      padding: 28px;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      padding:18px 22px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,0.05);
+      backdrop-filter: blur(14px);
+      border-radius:20px;
+      margin-bottom:24px;
+      box-shadow: var(--shadow);
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+
+    .brand-badge{
+      width:46px;
+      height:46px;
+      border-radius:14px;
+      background:linear-gradient(135deg, rgba(34,211,238,0.30), rgba(6,182,212,0.10));
+      border:1px solid rgba(34,211,238,0.35);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:20px;
+      box-shadow: inset 0 0 18px rgba(34,211,238,0.15);
+    }
+
+    .brand h1{
+      font-size:22px;
+      font-weight:700;
+      letter-spacing:.2px;
+    }
+
+    .brand p{
+      color:var(--muted);
+      font-size:13px;
+      margin-top:4px;
+    }
+
+    .topbar-actions{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .btn{
+      border:none;
+      border-radius:12px;
+      padding:12px 18px;
+      font-size:14px;
+      font-weight:600;
+      cursor:pointer;
+      transition:all .2s ease;
+    }
+
+    .btn-primary{
+      background:linear-gradient(135deg, var(--cyan), var(--cyan-strong));
+      color:#06202a;
+      box-shadow:0 10px 24px rgba(34,211,238,0.22);
+    }
+
+    .btn-primary:hover{
+      transform:translateY(-1px);
+      filter:brightness(1.04);
+    }
+
+    .btn-secondary{
+      background:rgba(255,255,255,0.06);
+      color:var(--text);
+      border:1px solid var(--border);
+    }
+
+    .btn-secondary:hover{
+      background:rgba(255,255,255,0.1);
+    }
+
+    .hero{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:20px;
+      margin-bottom:22px;
+    }
+
+    .hero-card,
+    .stats-card{
+      border:1px solid var(--border);
+      background:rgba(255,255,255,0.05);
+      border-radius:24px;
+      padding:24px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-card h2{
+      font-size:30px;
+      line-height:1.15;
+      margin-bottom:12px;
+    }
+
+    .hero-card p{
+      color:var(--muted);
+      line-height:1.7;
+      max-width:900px;
+    }
+
+    .hero-tags{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:18px;
+    }
+
+    .tag{
+      padding:9px 14px;
+      border-radius:999px;
+      background:rgba(34,211,238,0.10);
+      border:1px solid rgba(34,211,238,0.24);
+      color:#bff7ff;
+      font-size:12px;
+      font-weight:600;
+    }
+
+    .stats-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+      margin-top:8px;
+    }
+
+    .stat-box{
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:16px;
+      background:rgba(255,255,255,0.04);
+    }
+
+    .stat-box span{
+      display:block;
+      color:var(--muted);
+      font-size:12px;
+      margin-bottom:7px;
+    }
+
+    .stat-box strong{
+      font-size:20px;
+      font-weight:700;
+    }
+
+    .workspace{
+      display:grid;
+      grid-template-columns: 420px 1fr;
+      gap:22px;
+      align-items:start;
+    }
+
+    .panel{
+      border:1px solid var(--border);
+      background:rgba(255,255,255,0.05);
+      backdrop-filter: blur(12px);
+      border-radius:24px;
+      box-shadow: var(--shadow);
+    }
+
+    .panel-header{
+      padding:20px 22px;
+      border-bottom:1px solid rgba(255,255,255,0.08);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .panel-header h3{
+      font-size:18px;
+    }
+
+    .panel-header p{
+      color:var(--muted);
+      font-size:13px;
+      margin-top:3px;
+    }
+
+    .panel-body{
+      padding:20px 22px 24px;
+    }
+
+    .form-grid{
+      display:grid;
+      gap:16px;
+    }
+
+    .field{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+
+    .field label{
+      font-size:13px;
+      color:#d6e5f3;
+      font-weight:600;
+    }
+
+    .field input,
+    .field select,
+    .field textarea{
+      width:100%;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,0.10);
+      background:rgba(255,255,255,0.05);
+      color:var(--text);
+      padding:13px 14px;
+      font-size:14px;
+      outline:none;
+      transition:border .2s ease, background .2s ease, box-shadow .2s ease;
+    }
+
+    .field textarea{
+      min-height:110px;
+      resize:vertical;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus{
+      border-color:rgba(34,211,238,0.55);
+      box-shadow:0 0 0 3px rgba(34,211,238,0.12);
+      background:rgba(255,255,255,0.07);
+    }
+
+    .field small{
+      color:var(--muted);
+      line-height:1.45;
+      font-size:12px;
+    }
+
+    .checkbox-group,
+    .pill-group{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+
+    .check-pill{
+      position:relative;
+    }
+
+    .check-pill input{
+      position:absolute;
+      opacity:0;
+      pointer-events:none;
+    }
+
+    .check-pill label{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 14px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,0.10);
+      background:rgba(255,255,255,0.05);
+      color:var(--text);
+      cursor:pointer;
+      font-size:13px;
+      font-weight:600;
+      transition:all .2s ease;
+    }
+
+    .check-pill input:checked + label{
+      background:rgba(34,211,238,0.14);
+      border-color:rgba(34,211,238,0.38);
+      color:#c8fbff;
+      box-shadow: inset 0 0 12px rgba(34,211,238,0.10);
+    }
+
+    .form-actions{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      padding-top:8px;
+    }
+
+    .chat-wrap{
+      display:flex;
+      flex-direction:column;
+      min-height:740px;
+    }
+
+    .chat-body{
+      padding:22px;
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+      min-height:520px;
+      max-height:520px;
+      overflow-y:auto;
+    }
+
+    .message{
+      max-width:84%;
+      padding:16px 18px;
+      border-radius:18px;
+      line-height:1.6;
+      font-size:14px;
+      white-space:pre-wrap;
+      word-wrap:break-word;
+      border:1px solid rgba(255,255,255,0.08);
+    }
+
+    .message.user{
+      align-self:flex-end;
+      background:linear-gradient(135deg, rgba(34,211,238,0.20), rgba(6,182,212,0.12));
+      border-color:rgba(34,211,238,0.28);
+    }
+
+    .message.ai{
+      align-self:flex-start;
+      background:rgba(255,255,255,0.05);
+    }
+
+    .message.ai.loading{
+      color:#cfe6f4;
+      font-style:italic;
+    }
+
+    .chat-toolbar{
+      padding:16px 22px 0;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .mini-chip{
+      background:rgba(255,255,255,0.05);
+      border:1px solid rgba(255,255,255,0.08);
+      color:var(--muted);
+      padding:8px 12px;
+      border-radius:999px;
+      font-size:12px;
+    }
+
+    .chat-composer{
+      margin-top:auto;
+      padding:18px 22px 22px;
+      border-top:1px solid rgba(255,255,255,0.08);
+      display:grid;
+      grid-template-columns: 1fr auto;
+      gap:12px;
+    }
+
+    .chat-composer textarea{
+      width:100%;
+      min-height:60px;
+      max-height:140px;
+      resize:vertical;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,0.10);
+      background:rgba(255,255,255,0.05);
+      color:var(--text);
+      padding:14px 15px;
+      font-size:14px;
+      outline:none;
+    }
+
+    .chat-composer textarea:focus{
+      border-color:rgba(34,211,238,0.55);
+      box-shadow:0 0 0 3px rgba(34,211,238,0.12);
+    }
+
+    .output-cards{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:14px;
+      padding:0 22px 22px;
+    }
+
+    .output-card{
+      border:1px solid rgba(255,255,255,0.08);
+      background:rgba(255,255,255,0.04);
+      border-radius:18px;
+      padding:16px;
+    }
+
+    .output-card h4{
+      font-size:14px;
+      margin-bottom:8px;
+      color:#dff8fb;
+    }
+
+    .output-card p{
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.6;
+    }
+
+    .status-dot{
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      background:var(--green);
+      box-shadow:0 0 0 6px rgba(52,211,153,0.14);
+      flex-shrink:0;
+    }
+
+    @media (max-width: 1180px){
+      .workspace{
+        grid-template-columns:1fr;
+      }
+
+      .hero{
+        grid-template-columns:1fr;
+      }
+
+      .chat-wrap{
+        min-height:auto;
+      }
+    }
+
+    @media (max-width: 720px){
+      .portal-wrap{
+        padding:16px;
+      }
+
+      .topbar{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+
+      .chat-composer{
+        grid-template-columns:1fr;
+      }
+
+      .output-cards{
+        grid-template-columns:1fr;
+      }
+
+      .message{
+        max-width:100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="portal-wrap">
+
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-badge">🤖</div>
+        <div>
+          <h1>AI Sales Copilot for Resellers</h1>
+          <p>Smart opportunity guidance, solution recommendations, pricing support, and proposal assistance</p>
+        </div>
+      </div>
+
+      <div class="topbar-actions">
+        <button class="btn btn-secondary" type="button" onclick="resetCopilot()">Reset</button>
+        <button class="btn btn-primary" type="button" onclick="submitOpportunity()">Generate Recommendation</button>
+      </div>
+    </div>
+
+    <div class="hero">
+      <div class="hero-card">
+        <h2>Turn every reseller opportunity into a guided, AI-assisted sales motion.</h2>
+        <p>
+          Capture the opportunity, understand the customer, and let the copilot help your team recommend the right
+          vendor stack, positioning, upsell paths, pricing direction, and next-step sales actions.
+        </p>
+        <div class="hero-tags">
+          <div class="tag">Deal Qualification</div>
+          <div class="tag">Vendor Mapping</div>
+          <div class="tag">Proposal Guidance</div>
+          <div class="tag">Upsell Suggestions</div>
+          <div class="tag">Sales Coaching</div>
+        </div>
+      </div>
+
+      <div class="stats-card">
+        <div class="panel-header" style="padding:0 0 14px;border:none;">
+          <div>
+            <h3>Copilot Snapshot</h3>
+            <p>What this interface is designed to deliver</p>
+          </div>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-box">
+            <span>Primary Goal</span>
+            <strong>Faster Deal Cycles</strong>
+          </div>
+          <div class="stat-box">
+            <span>Output Type</span>
+            <strong>Guided Sales Advice</strong>
+          </div>
+          <div class="stat-box">
+            <span>Best For</span>
+            <strong>Reseller Account Teams</strong>
+          </div>
+          <div class="stat-box">
+            <span>Mode</span>
+            <strong>Form + Chat</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="workspace">
+
+      <!-- LEFT PANEL -->
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h3>Opportunity Input</h3>
+            <p>Capture the customer and deal context</p>
+          </div>
+          <div class="status-dot"></div>
+        </div>
+
+        <div class="panel-body">
+          <form id="copilotForm" class="form-grid">
+            <div class="field">
+              <label for="resellerName">Reseller Name</label>
+              <input type="text" id="resellerName" placeholder="e.g. ABC Technology Solutions" />
+            </div>
+
+            <div class="field">
+              <label for="salesRep">Sales Representative</label>
+              <input type="text" id="salesRep" placeholder="e.g. John Smith" />
+            </div>
+
+            <div class="field">
+              <label for="customerName">End Customer Name</label>
+              <input type="text" id="customerName" placeholder="e.g. First National Retail Group" />
+            </div>
+
+            <div class="field">
+              <label for="industry">Industry</label>
+              <select id="industry">
+                <option value="">Select industry</option>
+                <option>Banking</option>
+                <option>Retail</option>
+                <option>Healthcare</option>
+                <option>Education</option>
+                <option>Government</option>
+                <option>Manufacturing</option>
+                <option>Logistics</option>
+                <option>Telecommunications</option>
+                <option>Hospitality</option>
+                <option>Other</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="companySize">Customer Size</label>
+              <select id="companySize">
+                <option value="">Select size</option>
+                <option>Small Business</option>
+                <option>Mid-Market</option>
+                <option>Enterprise</option>
+                <option>Large Distributed Enterprise</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="users">Number of Users</label>
+              <input type="number" id="users" placeholder="e.g. 2500" />
+            </div>
+
+            <div class="field">
+              <label for="sites">Number of Sites / Branches</label>
+              <input type="number" id="sites" placeholder="e.g. 120" />
+            </div>
+
+            <div class="field">
+              <label for="budget">Budget Range</label>
+              <select id="budget">
+                <option value="">Select budget</option>
+                <option>Low</option>
+                <option>Medium</option>
+                <option>High</option>
+                <option>Strategic / Flexible</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="timeline">Required Timeline</label>
+              <select id="timeline">
+                <option value="">Select timeline</option>
+                <option>Immediate</option>
+                <option>0 - 3 Months</option>
+                <option>3 - 6 Months</option>
+                <option>6 - 12 Months</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Solutions of Interest</label>
+              <div class="checkbox-group">
+                <div class="check-pill">
+                  <input type="checkbox" id="solNetworking" value="Networking" />
+                  <label for="solNetworking">Networking</label>
+                </div>
+                <div class="check-pill">
+                  <input type="checkbox" id="solSecurity" value="Security" />
+                  <label for="solSecurity">Security</label>
+                </div>
+                <div class="check-pill">
+                  <input type="checkbox" id="solCloud" value="Cloud" />
+                  <label for="solCloud">Cloud</label>
+                </div>
+                <div class="check-pill">
+                  <input type="checkbox" id="solCollab" value="Collaboration" />
+                  <label for="solCollab">Collaboration</label>
+                </div>
+                <div class="check-pill">
+                  <input type="checkbox" id="solDC" value="Data Center" />
+                  <label for="solDC">Data Center</label>
+                </div>
+                <div class="check-pill">
+                  <input type="checkbox" id="solManaged" value="Managed Services" />
+                  <label for="solManaged">Managed Services</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="field">
+              <label>Preferred Vendors</label>
+              <div class="checkbox-group">
+                <div class="check-pill">
+                  <input type="checkbox" id="venCisco" value="Cisco" />
+                  <label for="venCisco">Cisco</label>
+                </div>
+                <div class="check-pill">
+                  <input type="checkbox" id="venPaloAlto" value="Palo Alto" />
+                  <label for="venPaloAlto">Palo Alto</label>
+                </div>
+                <div class="check-pill">
+                  <input type="checkbox" id="venFortinet" value="Fortinet" />
+                  <label for="venFortinet">Fortinet</label>
+                </div>
+                <div class="check-pill">
+                  <input type="checkbox" id="venMicrosoft" value="Microsoft" />
+                  <label for="venMicrosoft">Microsoft</label>
+                </div>
+                <div class="check-pill">
+                  <input type="checkbox" id="venAWS" value="AWS" />
+                  <label for="venAWS">AWS</label>
+                </div>
+                <div class="check-pill">
+                  <input type="checkbox" id="venOther" value="Other" />
+                  <label for="venOther">Other</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="currentEnvironment">Current Environment</label>
+              <textarea id="currentEnvironment" placeholder="Describe the current customer setup, pain points, incumbent vendors, infrastructure, or known constraints"></textarea>
+            </div>
+
+            <div class="field">
+              <label for="requirements">Business / Technical Requirements</label>
+              <textarea id="requirements" placeholder="e.g. Secure hybrid cloud, branch connectivity, compliance, zero trust, SD-WAN, migration support"></textarea>
+            </div>
+
+            <div class="field">
+              <label for="competition">Competitive Context</label>
+              <textarea id="competition" placeholder="e.g. Competing against Dell, Fortinet partner, internal IT doing DIY, price pressure, renewal risk"></textarea>
+            </div>
+
+            <div class="field">
+              <label for="notes">Additional Notes</label>
+              <textarea id="notes" placeholder="Any other notes the AI should consider"></textarea>
+              <small>The copilot can use this to tailor recommendations, sales messaging, and upsell opportunities.</small>
+            </div>
+
+            <div class="form-actions">
+              <button class="btn btn-primary" type="button" onclick="submitOpportunity()">Generate Recommendation</button>
+              <button class="btn btn-secondary" type="button" onclick="resetCopilot()">Clear Form</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- RIGHT PANEL -->
+      <div class="panel chat-wrap">
+        <div class="panel-header">
+          <div>
+            <h3>Sales Copilot Conversation</h3>
+            <p>AI-generated opportunity guidance and ongoing deal assistance</p>
+          </div>
+          <div class="status-dot"></div>
+        </div>
+
+        <div class="chat-toolbar">
+          <div class="mini-chip">Recommended Stack</div>
+          <div class="mini-chip">Deal Positioning</div>
+          <div class="mini-chip">Pricing Direction</div>
+          <div class="mini-chip">Upsell Ideas</div>
+          <div class="mini-chip">Proposal Drafting</div>
+        </div>
+
+        <div class="chat-body" id="chatBody">
+          <div class="message ai">
+Welcome to the AI Sales Copilot.
+
+Complete the form on the left, then click <strong>Generate Recommendation</strong> to create:
+• recommended solutions
+• vendor guidance
+• positioning advice
+• upsell opportunities
+• pricing direction
+• next sales actions
+          </div>
+        </div>
+
+        <div class="output-cards">
+          <div class="output-card">
+            <h4>Recommended Outcome</h4>
+            <p id="recommendedOutcome">No recommendation generated yet.</p>
+          </div>
+          <div class="output-card">
+            <h4>Upsell Opportunity</h4>
+            <p id="upsellOpportunity">No upsell guidance generated yet.</p>
+          </div>
+          <div class="output-card">
+            <h4>Sales Positioning</h4>
+            <p id="salesPositioning">No positioning guidance generated yet.</p>
+          </div>
+          <div class="output-card">
+            <h4>Next Action</h4>
+            <p id="nextAction">No next-step action generated yet.</p>
+          </div>
+        </div>
+
+        <div class="chat-composer">
+          <textarea id="chatInput" placeholder="Ask follow-up questions like: Why Cisco here? What should I say to the customer? What upsell should I push?"></textarea>
+          <button class="btn btn-primary" type="button" onclick="sendFollowUp()">Send</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    const chatBody = document.getElementById("chatBody");
+
+    function getCheckedValues(selectorIds){
+      return selectorIds
+        .map(id => document.getElementById(id))
+        .filter(el => el && el.checked)
+        .map(el => el.value);
+    }
+
+    function getFormData(){
+      return {
+        resellerName: document.getElementById("resellerName").value.trim(),
+        salesRep: document.getElementById("salesRep").value.trim(),
+        customerName: document.getElementById("customerName").value.trim(),
+        industry: document.getElementById("industry").value,
+        companySize: document.getElementById("companySize").value,
+        users: document.getElementById("users").value,
+        sites: document.getElementById("sites").value,
+        budget: document.getElementById("budget").value,
+        timeline: document.getElementById("timeline").value,
+        solutions: getCheckedValues([
+          "solNetworking","solSecurity","solCloud","solCollab","solDC","solManaged"
+        ]),
+        vendors: getCheckedValues([
+          "venCisco","venPaloAlto","venFortinet","venMicrosoft","venAWS","venOther"
+        ]),
+        currentEnvironment: document.getElementById("currentEnvironment").value.trim(),
+        requirements: document.getElementById("requirements").value.trim(),
+        competition: document.getElementById("competition").value.trim(),
+        notes: document.getElementById("notes").value.trim()
+      };
+    }
+
+    function appendMessage(type, text){
+      const msg = document.createElement("div");
+      msg.className = `message ${type}`;
+      msg.innerHTML = text.replace(/\n/g, "<br>");
+      chatBody.appendChild(msg);
+      chatBody.scrollTop = chatBody.scrollHeight;
+      return msg;
+    }
+
+    function buildSummaryPrompt(data){
+      return `
+Reseller: ${data.resellerName || "Not provided"}
+Sales Rep: ${data.salesRep || "Not provided"}
+End Customer: ${data.customerName || "Not provided"}
+Industry: ${data.industry || "Not provided"}
+Customer Size: ${data.companySize || "Not provided"}
+Users: ${data.users || "Not provided"}
+Sites: ${data.sites || "Not provided"}
+Budget: ${data.budget || "Not provided"}
+Timeline: ${data.timeline || "Not provided"}
+Solutions of Interest: ${data.solutions.length ? data.solutions.join(", ") : "Not provided"}
+Preferred Vendors: ${data.vendors.length ? data.vendors.join(", ") : "Not provided"}
+Current Environment: ${data.currentEnvironment || "Not provided"}
+Requirements: ${data.requirements || "Not provided"}
+Competition: ${data.competition || "Not provided"}
+Additional Notes: ${data.notes || "Not provided"}
+      `.trim();
+    }
+
+    function generateMockCopilotResponse(data){
+      const primaryIndustry = data.industry || "the customer";
+      const solutionsText = data.solutions.length ? data.solutions.join(", ") : "networking and security";
+      const vendorsText = data.vendors.length ? data.vendors.join(", ") : "Cisco, Palo Alto, Microsoft";
+      const customerName = data.customerName || "this opportunity";
+
+      const recommendation =
+`Based on the opportunity, I would position a solution around ${solutionsText.toLowerCase()} for ${primaryIndustry.toLowerCase()} requirements.
+Preferred vendor alignment suggests focusing on ${vendorsText}.
+For ${customerName}, the proposal should balance technical fit, speed to value, and a roadmap for future expansion.`;
+
+      const positioning =
+`Lead with business outcomes first: resilience, visibility, security posture, simplified operations, and scalability.
+Then connect each recommended vendor to a practical customer pain point rather than leading with product features alone.`;
+
+      const upsell =
+`Potential upsell areas include managed services, lifecycle support, advanced security layers, cloud optimisation, user adoption services, and recurring support contracts.`;
+
+      const nextAction =
+`Recommended next step: validate discovery details with the customer, confirm budget authority and timeline, then produce a tailored solution summary and proposal draft.`;
+
+      const fullReply =
+`Here is the initial AI Sales Copilot recommendation for this deal:
+
+1. Recommended Sales Direction
+Position a solution built around ${solutionsText || "the identified requirements"} aligned to the customer's business drivers, deployment urgency, and budget posture.
+
+2. Vendor Guidance
+Use ${vendorsText} as the initial vendor lens, but keep flexibility in case the customer prioritises cost, integration simplicity, or incumbent preference.
+
+3. Positioning Strategy
+Sell business value first:
+• improved security posture
+• faster deployment
+• simplified operations
+• reduced risk
+• future-ready architecture
+
+4. Upsell Potential
+Attach managed services, support contracts, monitoring, advanced security, cloud optimisation, or professional services where relevant.
+
+5. Suggested Next Step
+Move this opportunity into a solution proposal phase with a recommended stack, budgetary estimate, and clear value articulation.`;
+
+      return {
+        recommendation,
+        positioning,
+        upsell,
+        nextAction,
+        fullReply
+      };
+    }
+
+    function submitOpportunity(){
+      const data = getFormData();
+
+      const summary = buildSummaryPrompt(data);
+
+      appendMessage("user", summary);
+
+      const loading = appendMessage("ai loading", "Generating AI sales guidance...");
+
+      setTimeout(() => {
+        const result = generateMockCopilotResponse(data);
+        loading.remove();
+
+        appendMessage("ai", result.fullReply);
+
+        document.getElementById("recommendedOutcome").textContent = result.recommendation;
+        document.getElementById("upsellOpportunity").textContent = result.upsell;
+        document.getElementById("salesPositioning").textContent = result.positioning;
+        document.getElementById("nextAction").textContent = result.nextAction;
+      }, 900);
+    }
+
+    function sendFollowUp(){
+      const input = document.getElementById("chatInput");
+      const text = input.value.trim();
+      if(!text) return;
+
+      appendMessage("user", text);
+
+      const loading = appendMessage("ai loading", "Thinking through the follow-up...");
+
+      setTimeout(() => {
+        loading.remove();
+
+        let answer = "I would use that follow-up to deepen the deal strategy, sharpen the business value message, and tailor the proposal for the customer.";
+
+        const q = text.toLowerCase();
+
+        if(q.includes("cisco")){
+          answer = "Cisco should be positioned where the customer values ecosystem strength, enterprise-grade networking, visibility, and integration across networking and security layers.";
+        } else if(q.includes("price") || q.includes("pricing") || q.includes("budget")){
+          answer = "For pricing conversations, frame the solution in terms of operational efficiency, risk reduction, lifecycle value, and optional phased deployment to fit budget constraints.";
+        } else if(q.includes("upsell")){
+          answer = "A strong upsell path would include managed services, support, monitoring, cloud optimisation, user security layers, and ongoing advisory services that create recurring revenue.";
+        } else if(q.includes("proposal")){
+          answer = "The proposal should include the customer challenge, recommended solution stack, business outcomes, implementation approach, commercial guidance, and next-step call to action.";
+        } else if(q.includes("objection") || q.includes("customer say")){
+          answer = "Handle objections by acknowledging the concern, tying the response to business outcomes, and showing why the recommended solution reduces future complexity or risk.";
+        }
+
+        appendMessage("ai", answer);
+      }, 650);
+
+      input.value = "";
+    }
+
+    function resetCopilot(){
+      document.getElementById("copilotForm").reset();
+      document.getElementById("chatInput").value = "";
+      document.getElementById("recommendedOutcome").textContent = "No recommendation generated yet.";
+      document.getElementById("upsellOpportunity").textContent = "No upsell guidance generated yet.";
+      document.getElementById("salesPositioning").textContent = "No positioning guidance generated yet.";
+      document.getElementById("nextAction").textContent = "No next-step action generated yet.";
+
+      chatBody.innerHTML = `
+        <div class="message ai">
+Welcome to the AI Sales Copilot.
+
+Complete the form on the left, then click <strong>Generate Recommendation</strong> to create:
+• recommended solutions
+• vendor guidance
+• positioning advice
+• upsell opportunities
+• pricing direction
+• next sales actions
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>
