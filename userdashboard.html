@@ -40,9 +40,9 @@ gap:12px;
 }
 
 .logo{
-width:48px;
-height:48px;
-border-radius:12px;
+width:58px;
+height:58px;
+border-radius:16px;
 background:linear-gradient(135deg,#2d6df6,#17b7ff);
 }
 
@@ -52,7 +52,7 @@ font-weight:700;
 }
 
 .user{
-font-size:0.9rem;
+font-size:0.95rem;
 color:#9fb0c9;
 }
 
@@ -67,19 +67,20 @@ margin-bottom:25px;
 .card{
 background:rgba(255,255,255,0.05);
 border:1px solid rgba(255,255,255,0.08);
-padding:20px;
-border-radius:16px;
+padding:22px;
+border-radius:18px;
 }
 
 .card h4{
-font-size:0.9rem;
+font-size:0.95rem;
 color:#9fb0c9;
-margin-bottom:10px;
+margin-bottom:14px;
 }
 
 .card h2{
-font-size:1.8rem;
-margin-bottom:5px;
+font-size:2rem;
+font-weight:800;
+line-height:1.1;
 }
 
 .blue{color:#60a5fa}
@@ -91,21 +92,36 @@ margin-bottom:5px;
 .graph{
 background:rgba(255,255,255,0.05);
 border:1px solid rgba(255,255,255,0.08);
-padding:20px;
-border-radius:16px;
+padding:24px;
+border-radius:18px;
 margin-bottom:30px;
 }
 
 .graph h3{
-margin-bottom:15px;
+font-size:1.15rem;
+font-weight:700;
+margin-bottom:6px;
 }
 
-svg{
+.graph p{
+font-size:0.92rem;
+color:#9fb0c9;
+margin-bottom:18px;
+}
+
+.chart-area{
 width:100%;
-height:250px;
+overflow-x:auto;
 }
 
-/* BUTTONS */
+.chart-svg{
+width:100%;
+height:auto;
+display:block;
+min-width:1100px;
+}
+
+/* SERVICES */
 .services{
 display:grid;
 grid-template-columns:repeat(3,1fr);
@@ -113,34 +129,46 @@ gap:20px;
 }
 
 .service{
-padding:25px;
-border-radius:16px;
+padding:28px;
+border-radius:18px;
 background:rgba(255,255,255,0.05);
 border:1px solid rgba(255,255,255,0.08);
 text-decoration:none;
 color:white;
 transition:0.3s;
+display:block;
+min-height:160px;
 }
 
 .service:hover{
-box-shadow:0 0 20px rgba(23,183,255,0.4);
+box-shadow:0 0 20px rgba(23,183,255,0.35);
 transform:translateY(-5px);
 border-color:#17b7ff;
 }
 
 .service h3{
-margin-bottom:10px;
+font-size:1rem;
+margin-bottom:12px;
+line-height:1.2;
 }
 
 .service p{
 color:#9fb0c9;
-font-size:0.9rem;
+font-size:0.95rem;
+line-height:1.5;
 }
 
 /* RESPONSIVE */
-@media(max-width:900px){
+@media(max-width:1000px){
 .stats{grid-template-columns:1fr 1fr}
 .services{grid-template-columns:1fr}
+}
+
+@media(max-width:640px){
+.container{padding:18px}
+.topbar{flex-direction:column;align-items:flex-start;gap:12px}
+.stats{grid-template-columns:1fr}
+.card h2{font-size:1.7rem}
 }
 </style>
 </head>
@@ -184,32 +212,142 @@ font-size:0.9rem;
 <!-- GRAPH -->
 <div class="graph">
 <h3>Monthly Usage</h3>
+<p>Daily token consumption across the current month.</p>
 
-<svg viewBox="0 0 500 200">
+<div class="chart-area">
+<svg class="chart-svg" viewBox="0 0 1200 380" xmlns="http://www.w3.org/2000/svg">
+
+<!-- grid lines -->
+<line x1="70" y1="50" x2="1150" y2="50" stroke="rgba(255,255,255,0.10)" />
+<line x1="70" y1="110" x2="1150" y2="110" stroke="rgba(255,255,255,0.08)" />
+<line x1="70" y1="170" x2="1150" y2="170" stroke="rgba(255,255,255,0.08)" />
+<line x1="70" y1="230" x2="1150" y2="230" stroke="rgba(255,255,255,0.08)" />
+<line x1="70" y1="290" x2="1150" y2="290" stroke="rgba(255,255,255,0.08)" />
+<line x1="70" y1="330" x2="1150" y2="330" stroke="rgba(255,255,255,0.12)" />
+
+<!-- y-axis labels -->
+<text x="18" y="55" fill="#9fb0c9" font-size="13">50k</text>
+<text x="18" y="115" fill="#9fb0c9" font-size="13">40k</text>
+<text x="18" y="175" fill="#9fb0c9" font-size="13">30k</text>
+<text x="18" y="235" fill="#9fb0c9" font-size="13">20k</text>
+<text x="18" y="295" fill="#9fb0c9" font-size="13">10k</text>
+<text x="30" y="335" fill="#9fb0c9" font-size="13">0</text>
+
+<!-- area fill -->
+<path d="
+M70 318
+L105 314
+L140 310
+L175 304
+L210 298
+L245 292
+L280 285
+L315 279
+L350 270
+L385 262
+L420 256
+L455 248
+L490 240
+L525 233
+L560 226
+L595 218
+L630 210
+L665 202
+L700 195
+L735 188
+L770 176
+L805 170
+L840 162
+L875 150
+L910 142
+L945 132
+L980 122
+L1015 114
+L1050 104
+L1085 98
+L1120 92
+L1120 330
+L70 330
+Z"
+fill="rgba(34,211,238,0.10)" />
+
+<!-- usage line -->
 <polyline
 fill="none"
-stroke="#17b7ff"
-stroke-width="3"
+stroke="#22d3ee"
+stroke-width="4"
+stroke-linecap="round"
+stroke-linejoin="round"
 points="
-0,180
-50,160
-100,140
-150,130
-200,120
-250,100
-300,90
-350,70
-400,50
-450,40
-"/>
-</svg>
+70,318
+105,314
+140,310
+175,304
+210,298
+245,292
+280,285
+315,279
+350,270
+385,262
+420,256
+455,248
+490,240
+525,233
+560,226
+595,218
+630,210
+665,202
+700,195
+735,188
+770,176
+805,170
+840,162
+875,150
+910,142
+945,132
+980,122
+1015,114
+1050,104
+1085,98
+1120,92
+" />
 
+<!-- points -->
+<circle cx="70" cy="318" r="4" fill="#22d3ee" />
+<circle cx="210" cy="298" r="4" fill="#22d3ee" />
+<circle cx="350" cy="270" r="4" fill="#22d3ee" />
+<circle cx="490" cy="240" r="4" fill="#22d3ee" />
+<circle cx="630" cy="210" r="4" fill="#22d3ee" />
+<circle cx="770" cy="176" r="4" fill="#22d3ee" />
+<circle cx="910" cy="142" r="4" fill="#22d3ee" />
+<circle cx="1050" cy="104" r="4" fill="#22d3ee" />
+<circle cx="1120" cy="92" r="5" fill="#22d3ee" />
+
+<!-- x-axis day labels -->
+<text x="66" y="355" fill="#9fb0c9" font-size="12">1</text>
+<text x="138" y="355" fill="#9fb0c9" font-size="12">3</text>
+<text x="208" y="355" fill="#9fb0c9" font-size="12">5</text>
+<text x="278" y="355" fill="#9fb0c9" font-size="12">7</text>
+<text x="348" y="355" fill="#9fb0c9" font-size="12">9</text>
+<text x="414" y="355" fill="#9fb0c9" font-size="12">11</text>
+<text x="484" y="355" fill="#9fb0c9" font-size="12">13</text>
+<text x="554" y="355" fill="#9fb0c9" font-size="12">15</text>
+<text x="624" y="355" fill="#9fb0c9" font-size="12">17</text>
+<text x="694" y="355" fill="#9fb0c9" font-size="12">19</text>
+<text x="764" y="355" fill="#9fb0c9" font-size="12">21</text>
+<text x="834" y="355" fill="#9fb0c9" font-size="12">23</text>
+<text x="904" y="355" fill="#9fb0c9" font-size="12">25</text>
+<text x="974" y="355" fill="#9fb0c9" font-size="12">27</text>
+<text x="1044" y="355" fill="#9fb0c9" font-size="12">29</text>
+<text x="1112" y="355" fill="#9fb0c9" font-size="12">31</text>
+
+</svg>
+</div>
 </div>
 
 <!-- SERVICES -->
 <div class="services">
 
-<!-- ✅ THIS IS THE IMPORTANT CHANGE -->
 <a href="westconKB.html" class="service">
 <h3>Westcon Knowledge Base</h3>
 <p>Search product information, documentation and get AI-powered answers instantly.</p>
