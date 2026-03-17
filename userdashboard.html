@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Dashboard | Westcon AI Partner Enablement</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-main: #050b16;
+      --bg-secondary: #0b1323;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text-main: #e9f1ff;
+      --text-soft: #9fb0c9;
+      --blue: #2d6df6;
+      --cyan: #17b7ff;
+      --green: #20c997;
+      --warning: #ffc857;
+      --danger: #ff6b6b;
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+    }
+
+    body {
+      font-family: Inter, Arial, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(38, 100, 255, 0.22), transparent 32%),
+        radial-gradient(circle at top right, rgba(0, 196, 255, 0.16), transparent 28%),
+        linear-gradient(135deg, #07101d 0%, #050b16 45%, #03101e 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 28px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 18px 24px;
+      border: 1px solid var(--card-border);
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(14px);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      margin-bottom: 28px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #2d6df6, #1fd4ff);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.25), 0 10px 24px rgba(31, 212, 255, 0.2);
+    }
+
+    .brand h1 {
+      font-size: 1.3rem;
+      line-height: 1.1;
+      font-weight: 800;
+    }
+
+    .brand p {
+      color: var(--text-soft);
+      font-size: 0.95rem;
+      margin-top: 4px;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .user-chip {
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--card-border);
+      color: var(--text-soft);
+      font-size: 0.95rem;
+    }
+
+    .logout-btn {
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: linear-gradient(135deg, #162133, #0f1728);
+      color: #fff;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.25s ease;
+    }
+
+    .logout-btn:hover {
+      border-color: rgba(23, 183, 255, 0.5);
+      box-shadow: 0 0 18px rgba(23, 183, 255, 0.16);
+      transform: translateY(-1px);
+    }
+
+    .hero {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      width: fit-content;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #b6c5db;
+      font-size: 0.88rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .hero h2 {
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      line-height: 1.05;
+      max-width: 860px;
+      font-weight: 800;
+    }
+
+    .hero p {
+      max-width: 820px;
+      color: var(--text-soft);
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 22px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+      min-height: 130px;
+    }
+
+    .stat-card .label {
+      color: var(--text-soft);
+      font-size: 0.92rem;
+      margin-bottom: 14px;
+    }
+
+    .stat-card .value {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+      letter-spacing: -0.02em;
+    }
+
+    .stat-card .sub {
+      color: #b8c6db;
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
+    .value.blue { color: #7db3ff; }
+    .value.cyan { color: #64e4ff; }
+    .value.green { color: #5fe0b5; }
+    .value.yellow { color: #ffd36b; }
+
+    .chart-section {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 22px;
+      margin-bottom: 30px;
+    }
+
+    .chart-card,
+    .summary-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    .section-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .section-subtitle {
+      color: var(--text-soft);
+      font-size: 0.95rem;
+      margin-bottom: 20px;
+    }
+
+    .chart-wrap {
+      width: 100%;
+      overflow: hidden;
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border: 1px solid rgba(255,255,255,0.05);
+      padding: 18px;
+    }
+
+    .chart-wrap svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .summary-list {
+      display: grid;
+      gap: 16px;
+    }
+
+    .summary-item {
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .summary-item strong {
+      display: block;
+      font-size: 1rem;
+      margin-bottom: 6px;
+    }
+
+    .summary-item span {
+      color: var(--text-soft);
+      font-size: 0.94rem;
+      line-height: 1.6;
+    }
+
+    .services-section {
+      margin-top: 8px;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+      margin-top: 18px;
+    }
+
+    .service-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+      gap: 12px;
+      min-height: 220px;
+      padding: 28px 24px;
+      border-radius: 24px;
+      text-decoration: none;
+      color: var(--text-main);
+      background: linear-gradient(180deg, rgba(20, 28, 45, 0.95), rgba(10, 16, 28, 0.95));
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: var(--shadow);
+      transition: all 0.28s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .service-btn::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(45, 109, 246, 0.15), rgba(23, 183, 255, 0.06));
+      opacity: 0;
+      transition: opacity 0.28s ease;
+    }
+
+    .service-btn:hover {
+      transform: translateY(-6px);
+      border-color: rgba(76, 177, 255, 0.45);
+      box-shadow:
+        0 0 0 1px rgba(76, 177, 255, 0.14),
+        0 0 28px rgba(23, 183, 255, 0.18),
+        0 20px 60px rgba(0, 0, 0, 0.4);
+    }
+
+    .service-btn:hover::before {
+      opacity: 1;
+    }
+
+    .service-btn > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .service-icon {
+      width: 58px;
+      height: 58px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      font-size: 1.5rem;
+      background: linear-gradient(135deg, rgba(45, 109, 246, 0.22), rgba(23, 183, 255, 0.16));
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .service-btn h3 {
+      font-size: 1.35rem;
+      line-height: 1.2;
+      font-weight: 800;
+    }
+
+    .service-btn p {
+      color: var(--text-soft);
+      font-size: 0.97rem;
+      line-height: 1.65;
+    }
+
+    .tag {
+      margin-top: auto;
+      display: inline-flex;
+      align-items: center;
+      padding: 9px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      font-size: 0.86rem;
+      color: #c8d6eb;
+    }
+
+    @media (max-width: 1100px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .chart-section {
+        grid-template-columns: 1fr;
+      }
+
+      .services-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .container {
+        padding: 18px;
+      }
+
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero h2 {
+        font-size: 2.1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-icon"></div>
+        <div>
+          <h1>Westcon</h1>
+          <p>AI Partner Enablement Platform</p>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <div class="user-chip">Signed in as <strong>demo.partner@westcon.ai</strong></div>
+        <button class="logout-btn">Logout</button>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="eyebrow">Partner Dashboard • Usage Overview • AI Services</div>
+      <h2>Welcome to your AI services dashboard</h2>
+      <p>
+        Track token usage, monitor your current billing cycle, and launch the AI tools
+        available in your partner account. Below is a live-style overview using dummy data
+        for demonstration purposes.
+      </p>
+    </section>
+
+    <section class="stats-grid">
+      <div class="stat-card">
+        <div class="label">Total Tokens Purchased</div>
+        <div class="value blue">120,000</div>
+        <div class="sub">Allocated for the current monthly cycle across all active services.</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="label">Tokens Used</div>
+        <div class="value cyan">46,350</div>
+        <div class="sub">Usage to date this billing cycle based on requests across enabled tools.</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="label">Tokens Remaining</div>
+        <div class="value green">73,650</div>
+        <div class="sub">Available balance before the next billing reset.</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="label">Next Billing Cycle</div>
+        <div class="value yellow">01 Apr 2026</div>
+        <div class="sub">Your token balance refreshes automatically on this date.</div>
+      </div>
+    </section>
+
+    <section class="chart-section">
+      <div class="chart-card">
+        <div class="section-title">Monthly Token Usage</div>
+        <div class="section-subtitle">Illustrative token consumption trend over the current month</div>
+
+        <div class="chart-wrap">
+          <svg viewBox="0 0 760 320" xmlns="http://www.w3.org/2000/svg" aria-label="Monthly token usage graph">
+            <defs>
+              <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#2d6df6" />
+                <stop offset="100%" stop-color="#17b7ff" />
+              </linearGradient>
+              <linearGradient id="areaGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="rgba(45,109,246,0.55)" />
+                <stop offset="100%" stop-color="rgba(23,183,255,0.02)" />
+              </linearGradient>
+            </defs>
+
+            <!-- grid -->
+            <line x1="60" y1="40" x2="720" y2="40" stroke="rgba(255,255,255,0.08)" />
+            <line x1="60" y1="100" x2="720" y2="100" stroke="rgba(255,255,255,0.08)" />
+            <line x1="60" y1="160" x2="720" y2="160" stroke="rgba(255,255,255,0.08)" />
+            <line x1="60" y1="220" x2="720" y2="220" stroke="rgba(255,255,255,0.08)" />
+            <line x1="60" y1="280" x2="720" y2="280" stroke="rgba(255,255,255,0.08)" />
+
+            <!-- y-axis -->
+            <text x="18" y="44" fill="#8fa6c7" font-size="13">60k</text>
+            <text x="18" y="104" fill="#8fa6c7" font-size="13">45k</text>
+            <text x="18" y="164" fill="#8fa6c7" font-size="13">30k</text>
+            <text x="18" y="224" fill="#8fa6c7" font-size="13">15k</text>
+            <text x="24" y="284" fill="#8fa6c7" font-size="13">0</text>
+
+            <!-- area -->
+            <path
+              d="M60 260
+                 C100 248, 120 238, 150 230
+                 S220 205, 250 190
+                 S320 160, 350 170
+                 S420 150, 450 135
+                 S520 118, 550 120
+                 S620 108, 650 92
+                 S700 76, 720 70
+                 L720 280 L60 280 Z"
+              fill="url(#areaGrad)"
+            />
+
+            <!-- line -->
+            <path
+              d="M60 260
+                 C100 248, 120 238, 150 230
+                 S220 205, 250 190
+                 S320 160, 350 170
+                 S420 150, 450 135
+                 S520 118, 550 120
+                 S620 108, 650 92
+                 S700 76, 720 70"
+              fill="none"
+              stroke="url(#lineGrad)"
+              stroke-width="5"
+              stroke-linecap="round"
+            />
+
+            <!-- data points -->
+            <circle cx="60" cy="260" r="5" fill="#2d6df6"/>
+            <circle cx="150" cy="230" r="5" fill="#3a8ef9"/>
+            <circle cx="250" cy="190" r="5" fill="#42a6fb"/>
+            <circle cx="350" cy="170" r="5" fill="#4cb5fd"/>
+            <circle cx="450" cy="135" r="5" fill="#57c4ff"/>
+            <circle cx="550" cy="120" r="5" fill="#61d0ff"/>
+            <circle cx="650" cy="92" r="5" fill="#6addff"/>
+            <circle cx="720" cy="70" r="6" fill="#17b7ff"/>
+
+            <!-- x labels -->
+            <text x="58" y="305" fill="#8fa6c7" font-size="13">Week 1</text>
+            <text x="208" y="305" fill="#8fa6c7" font-size="13">Week 2</text>
+            <text x="358" y="305" fill="#8fa6c7" font-size="13">Week 3</text>
+            <text x="508" y="305" fill="#8fa6c7" font-size="13">Week 4</text>
+            <text x="660" y="305" fill="#8fa6c7" font-size="13">Month End</text>
+          </svg>
+        </div>
+      </div>
+
+      <div class="summary-card">
+        <div class="section-title">Account Summary</div>
+        <div class="section-subtitle">Quick overview of your current partner access</div>
+
+        <div class="summary-list">
+          <div class="summary-item">
+            <strong>Active Services</strong>
+            <span>3 enabled services are currently available in your dashboard for this demo account.</span>
+          </div>
+
+          <div class="summary-item">
+            <strong>Usage Pattern</strong>
+            <span>Token usage has increased steadily through the month, indicating strong adoption across AI workflows.</span>
+          </div>
+
+          <div class="summary-item">
+            <strong>Recommended Action</strong>
+            <span>Monitor remaining balance and consider increasing token allocation next cycle if current growth continues.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="services-section">
+      <div class="section-title">Available AI Services</div>
+      <div class="section-subtitle">
+        Select a service below to enter the relevant AI workspace.
+      </div>
+
+      <div class="services-grid">
+        <a href="#" class="service-btn">
+          <div class="service-icon">📘</div>
+          <h3>Westcon Knowledge Base</h3>
+          <p>
+            Search product, service, and enablement information in one place to quickly
+            find answers, documentation, and partner guidance.
+          </p>
+          <span class="tag">Knowledge & Support</span>
+        </a>
+
+        <a href="#" class="service-btn">
+          <div class="service-icon">💼</div>
+          <h3>AI Sales Copilot for Resellers</h3>
+          <p>
+            Get help with partner sales messaging, solution positioning, quote support,
+            and smarter customer engagement recommendations.
+          </p>
+          <span class="tag">Sales Enablement</span>
+        </a>
+
+        <a href="#" class="service-btn">
+          <div class="service-icon">🌐</div>
+          <h3>AI Network Architecture Recommendations</h3>
+          <p>
+            Generate guided architecture ideas and technical recommendations for network
+            environments based on partner and customer needs.
+          </p>
+          <span class="tag">Technical Advisory</span>
+        </a>
+      </div>
+    </section>
+
+  </div>
+</body>
+</html>
