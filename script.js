@@ -11,7 +11,7 @@ const LOGIN_USERS = [
     password: "WestconDemo2026",
     name: "Demo Partner",
     role: "partner",
-    redirect: "dashboard.html"
+    redirect: "userdashboard.html"
   },
 
   // Admin
