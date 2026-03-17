@@ -95,8 +95,8 @@
     .top-btn {
       padding: 10px 16px;
       border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.1);
-      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.05);
       color: var(--text);
       cursor: pointer;
       font-weight: 600;
@@ -113,7 +113,7 @@
       display: grid;
       grid-template-columns: 420px 1fr;
       gap: 24px;
-      min-height: calc(100vh - 160px);
+      align-items: start;
     }
 
     .panel {
@@ -161,8 +161,8 @@
     .info-card {
       padding: 18px;
       border-radius: 18px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .info-card h3 {
@@ -188,8 +188,8 @@
       gap: 12px;
       padding: 14px 14px;
       border-radius: 16px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .capability-dot {
@@ -218,7 +218,9 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      min-height: 760px;
+      height: 430px;
+      min-height: 430px;
+      max-height: 430px;
     }
 
     .chat-header {
@@ -227,8 +229,8 @@
       justify-content: space-between;
       gap: 14px;
       padding: 20px 22px;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.04);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.04);
     }
 
     .chat-title-wrap {
@@ -318,8 +320,8 @@
     }
 
     .bubble.bot {
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       color: var(--text);
       border-bottom-left-radius: 6px;
     }
@@ -361,8 +363,8 @@
 
     .chat-input-wrap {
       padding: 18px 20px 20px;
-      border-top: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.04);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.04);
     }
 
     .input-shell {
@@ -371,8 +373,8 @@
       gap: 12px;
       padding: 12px;
       border-radius: 20px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.09);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.09);
     }
 
     .chat-input {
@@ -432,13 +434,10 @@
         grid-template-columns: 1fr;
       }
 
-      .info-panel {
-        order: 1;
-      }
-
       .chat-panel {
-        order: 2;
-        min-height: 680px;
+        height: 430px;
+        min-height: 430px;
+        max-height: 430px;
       }
     }
 
@@ -464,6 +463,12 @@
       .info-panel h2 {
         font-size: 24px;
       }
+
+      .chat-panel {
+        height: 400px;
+        min-height: 400px;
+        max-height: 400px;
+      }
     }
   </style>
 </head>
@@ -487,7 +492,9 @@
     <div class="main-grid">
       <div class="panel info-panel">
         <div class="section-tag">AI Knowledge Assistant</div>
+
         <h2>Get fast answers from the Westcon knowledge base</h2>
+
         <p class="lead">
           This assistant is designed to help partners, sales teams, and internal users quickly find trusted information,
           understand solutions, and get guidance based on the knowledge loaded into the AI system.
@@ -505,7 +512,7 @@
           <div class="capability-item">
             <div class="capability-dot"></div>
             <div>
-              <strong>Solution & Product Information</strong>
+              <strong>Solution &amp; Product Information</strong>
               <span>Find information about vendors, technologies, offers, services, and solution areas available in the knowledge base.</span>
             </div>
           </div>
@@ -537,7 +544,7 @@
           <div class="capability-item">
             <div class="capability-dot"></div>
             <div>
-              <strong>Sales & Presales Guidance</strong>
+              <strong>Sales &amp; Presales Guidance</strong>
               <span>Surface relevant information that can support positioning, discovery conversations, and customer discussions.</span>
             </div>
           </div>
@@ -563,6 +570,7 @@
               <p>Connected to n8n AI Agent + Pinecone Knowledge Base</p>
             </div>
           </div>
+
           <div class="status-pill">Online</div>
         </div>
 
