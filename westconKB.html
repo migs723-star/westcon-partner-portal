@@ -4,776 +4,221 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Westcon Knowledge Base</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
 
-    :root {
-      --bg-1: #0f172a;
-      --bg-2: #111827;
-      --bg-3: #083344;
-      --panel: rgba(255, 255, 255, 0.06);
-      --panel-strong: rgba(255, 255, 255, 0.08);
-      --border: rgba(255, 255, 255, 0.1);
-      --text: #e5eef7;
-      --muted: #a9bbcf;
-      --accent: #22d3ee;
-      --accent-2: #38bdf8;
-      --success: #34d399;
-      --shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
-    }
+  <style>
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
       font-family: Inter, Arial, sans-serif;
-      background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 45%, var(--bg-3) 100%);
-      color: var(--text);
-      min-height: 100vh;
+      background: linear-gradient(135deg,#0f172a 0%,#111827 45%,#083344 100%);
+      color: #e5eef7;
     }
 
     .page-wrap {
-      width: 100%;
-      max-width: 1450px;
-      margin: 0 auto;
+      max-width: 1400px;
+      margin: auto;
       padding: 28px;
     }
 
     .topbar {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      gap: 16px;
+      align-items: center;
       padding: 18px 22px;
-      border: 1px solid var(--border);
-      background: var(--panel);
-      backdrop-filter: blur(14px);
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
       border-radius: 20px;
-      box-shadow: var(--shadow);
       margin-bottom: 24px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .brand-badge {
-      width: 42px;
-      height: 42px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, rgba(34, 211, 238, 0.28), rgba(56, 189, 248, 0.12));
-      border: 1px solid rgba(34, 211, 238, 0.35);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #a5f3fc;
-      font-weight: 700;
-      box-shadow: 0 0 20px rgba(34, 211, 238, 0.15);
-    }
-
-    .brand-text h1 {
-      margin: 0;
-      font-size: 20px;
-      font-weight: 700;
-      letter-spacing: 0.2px;
-    }
-
-    .brand-text p {
-      margin: 4px 0 0;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .top-actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
     }
 
     .top-btn {
       padding: 10px 16px;
       border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--text);
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: white;
       cursor: pointer;
-      font-weight: 600;
-      transition: 0.2s ease;
-    }
-
-    .top-btn:hover {
-      border-color: rgba(34, 211, 238, 0.45);
-      box-shadow: 0 0 18px rgba(34, 211, 238, 0.18);
-      transform: translateY(-1px);
     }
 
     .main-grid {
       display: grid;
-      grid-template-columns: 420px 1fr;
+      grid-template-columns: 400px 1fr;
       gap: 24px;
-      align-items: start;
     }
 
     .panel {
-      border: 1px solid var(--border);
-      background: var(--panel);
-      backdrop-filter: blur(16px);
-      border-radius: 24px;
-      box-shadow: var(--shadow);
+      background: rgba(255,255,255,0.06);
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.1);
     }
 
     .info-panel {
-      padding: 26px;
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-    }
-
-    .section-tag {
-      display: inline-flex;
-      width: fit-content;
-      padding: 7px 12px;
-      border-radius: 999px;
-      background: rgba(34, 211, 238, 0.12);
-      border: 1px solid rgba(34, 211, 238, 0.25);
-      color: #a5f3fc;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-    }
-
-    .info-panel h2 {
-      margin: 0;
-      font-size: 30px;
-      line-height: 1.15;
-    }
-
-    .info-panel .lead {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.7;
-      font-size: 15px;
-    }
-
-    .info-card {
-      padding: 18px;
-      border-radius: 18px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    .info-card h3 {
-      margin: 0 0 10px;
-      font-size: 16px;
-    }
-
-    .info-card p {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.65;
-      font-size: 14px;
-    }
-
-    .capability-list {
-      display: grid;
-      gap: 12px;
-    }
-
-    .capability-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      padding: 14px 14px;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    .capability-dot {
-      min-width: 10px;
-      width: 10px;
-      height: 10px;
-      margin-top: 6px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      box-shadow: 0 0 12px rgba(34, 211, 238, 0.4);
-    }
-
-    .capability-item strong {
-      display: block;
-      margin-bottom: 4px;
-      font-size: 14px;
-    }
-
-    .capability-item span {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.55;
+      padding: 24px;
     }
 
     .chat-panel {
       display: flex;
       flex-direction: column;
-      overflow: hidden;
-      height: 430px;
-      min-height: 430px;
-      max-height: 430px;
+      height: 420px;
     }
 
     .chat-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 14px;
-      padding: 20px 22px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      background: rgba(255, 255, 255, 0.04);
-    }
-
-    .chat-title-wrap {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .chat-avatar {
-      width: 46px;
-      height: 46px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, rgba(34, 211, 238, 0.3), rgba(14, 165, 233, 0.12));
-      border: 1px solid rgba(34, 211, 238, 0.35);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #cffafe;
-      font-weight: 800;
-      box-shadow: 0 0 20px rgba(34, 211, 238, 0.16);
-    }
-
-    .chat-title h3 {
-      margin: 0;
-      font-size: 18px;
-    }
-
-    .chat-title p {
-      margin: 4px 0 0;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .status-pill {
-      padding: 8px 12px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 700;
-      color: #d1fae5;
-      background: rgba(52, 211, 153, 0.12);
-      border: 1px solid rgba(52, 211, 153, 0.25);
-      white-space: nowrap;
+      padding: 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
     }
 
     .chat-messages {
       flex: 1;
-      padding: 22px;
       overflow-y: auto;
+      padding: 18px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
-      scroll-behavior: smooth;
-      background:
-        radial-gradient(circle at top right, rgba(34, 211, 238, 0.06), transparent 28%),
-        radial-gradient(circle at bottom left, rgba(56, 189, 248, 0.05), transparent 28%);
-    }
-
-    .message-row {
-      display: flex;
-      width: 100%;
-    }
-
-    .message-row.user {
-      justify-content: flex-end;
-    }
-
-    .message-row.bot {
-      justify-content: flex-start;
+      gap: 14px;
     }
 
     .bubble {
-      max-width: 78%;
-      padding: 14px 16px;
-      border-radius: 18px;
-      line-height: 1.6;
-      font-size: 14px;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+      padding: 12px 16px;
+      border-radius: 16px;
+      max-width: 75%;
     }
 
-    .bubble.user {
-      background: linear-gradient(135deg, rgba(34, 211, 238, 0.22), rgba(14, 165, 233, 0.16));
-      border: 1px solid rgba(34, 211, 238, 0.28);
-      color: #f0f9ff;
-      border-bottom-right-radius: 6px;
+    .user {
+      align-self: flex-end;
+      background: #155e75;
     }
 
-    .bubble.bot {
-      background: rgba(255, 255, 255, 0.07);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      color: var(--text);
-      border-bottom-left-radius: 6px;
-    }
-
-    .bubble.typing {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      min-width: 78px;
-    }
-
-    .typing-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #b6d3ea;
-      opacity: 0.55;
-      animation: blink 1.2s infinite ease-in-out;
-    }
-
-    .typing-dot:nth-child(2) {
-      animation-delay: 0.15s;
-    }
-
-    .typing-dot:nth-child(3) {
-      animation-delay: 0.3s;
-    }
-
-    @keyframes blink {
-      0%, 80%, 100% {
-        transform: scale(0.8);
-        opacity: 0.35;
-      }
-      40% {
-        transform: scale(1);
-        opacity: 1;
-      }
+    .bot {
+      align-self: flex-start;
+      background: rgba(255,255,255,0.08);
     }
 
     .chat-input-wrap {
-      padding: 18px 20px 20px;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      background: rgba(255, 255, 255, 0.04);
+      padding: 16px;
+      border-top: 1px solid rgba(255,255,255,0.1);
     }
 
     .input-shell {
       display: flex;
-      align-items: flex-end;
-      gap: 12px;
-      padding: 12px;
-      border-radius: 20px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.09);
+      gap: 10px;
     }
 
-    .chat-input {
+    textarea {
       flex: 1;
-      min-height: 48px;
-      max-height: 160px;
-      resize: none;
+      padding: 10px;
+      border-radius: 10px;
       border: none;
+      resize: none;
       outline: none;
-      background: transparent;
-      color: var(--text);
-      font-size: 14px;
-      line-height: 1.5;
-      padding: 10px 8px;
-      font-family: inherit;
-    }
-
-    .chat-input::placeholder {
-      color: #8ca6bf;
     }
 
     .send-btn {
-      min-width: 54px;
-      height: 54px;
-      border-radius: 16px;
-      border: 1px solid rgba(34, 211, 238, 0.3);
-      background: linear-gradient(135deg, rgba(34, 211, 238, 0.2), rgba(14, 165, 233, 0.16));
-      color: #e0f7ff;
-      font-size: 18px;
+      width: 50px;
+      border-radius: 10px;
+      background: #0891b2;
+      border: none;
+      color: white;
       cursor: pointer;
-      transition: 0.2s ease;
-      box-shadow: 0 0 0 rgba(34, 211, 238, 0);
     }
 
-    .send-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 0 22px rgba(34, 211, 238, 0.22);
-      border-color: rgba(34, 211, 238, 0.45);
-    }
-
-    .send-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
-
-    .helper-text {
-      margin-top: 10px;
-      color: var(--muted);
-      font-size: 12px;
-      padding-left: 6px;
-    }
-
-    @media (max-width: 1100px) {
-      .main-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .chat-panel {
-        height: 430px;
-        min-height: 430px;
-        max-height: 430px;
-      }
-    }
-
-    @media (max-width: 700px) {
-      .page-wrap {
-        padding: 16px;
-      }
-
-      .topbar {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .chat-header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .bubble {
-        max-width: 90%;
-      }
-
-      .info-panel h2 {
-        font-size: 24px;
-      }
-
-      .chat-panel {
-        height: 400px;
-        min-height: 400px;
-        max-height: 400px;
-      }
-    }
   </style>
 </head>
+
 <body>
-  <div class="page-wrap">
-    <div class="topbar">
-      <div class="brand">
-        <div class="brand-badge">WK</div>
-        <div class="brand-text">
-          <h1>Westcon Knowledge Base</h1>
-          <p>AI-powered partner support and intelligent information access</p>
-        </div>
-      </div>
 
-      <div class="top-actions">
-        <button class="top-btn" onclick="window.location.href='userdashboard.html'">← Back to Dashboard</button>
-        <button class="top-btn" onclick="clearChat()">Clear Chat</button>
-      </div>
-    </div>
+<div class="page-wrap">
 
-    <div class="main-grid">
-      <div class="panel info-panel">
-        <div class="section-tag">AI Knowledge Assistant</div>
-
-        <h2>Get fast answers from the Westcon knowledge base</h2>
-
-        <p class="lead">
-          This assistant is designed to help partners, sales teams, and internal users quickly find trusted information,
-          understand solutions, and get guidance based on the knowledge loaded into the AI system.
-        </p>
-
-        <div class="info-card">
-          <h3>What this bot can help with</h3>
-          <p>
-            Ask questions in natural language and receive answers based on the connected Pinecone knowledge base and AI agent workflow.
-            It is ideal for quick lookups, partner enablement, solution understanding, and product guidance.
-          </p>
-        </div>
-
-        <div class="capability-list">
-          <div class="capability-item">
-            <div class="capability-dot"></div>
-            <div>
-              <strong>Solution &amp; Product Information</strong>
-              <span>Find information about vendors, technologies, offers, services, and solution areas available in the knowledge base.</span>
-            </div>
-          </div>
-
-          <div class="capability-item">
-            <div class="capability-dot"></div>
-            <div>
-              <strong>Partner Enablement Support</strong>
-              <span>Get answers that help resellers and partners better understand what Westcon offers and how to position it.</span>
-            </div>
-          </div>
-
-          <div class="capability-item">
-            <div class="capability-dot"></div>
-            <div>
-              <strong>Quick Research Assistance</strong>
-              <span>Use it as a fast research assistant instead of manually searching multiple pages or documents.</span>
-            </div>
-          </div>
-
-          <div class="capability-item">
-            <div class="capability-dot"></div>
-            <div>
-              <strong>Knowledge Base Q&amp;A</strong>
-              <span>Ask direct questions and get concise, conversational answers returned straight into the portal chat.</span>
-            </div>
-          </div>
-
-          <div class="capability-item">
-            <div class="capability-dot"></div>
-            <div>
-              <strong>Sales &amp; Presales Guidance</strong>
-              <span>Surface relevant information that can support positioning, discovery conversations, and customer discussions.</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="info-card">
-          <h3>Example questions</h3>
-          <p>
-            “What cybersecurity solutions does Westcon provide?”<br><br>
-            “Summarise Westcon’s main solution areas.”<br><br>
-            “Which vendors are relevant for network architecture?”<br><br>
-            “What can I tell a reseller about this offering?”
-          </p>
-        </div>
-      </div>
-
-      <div class="panel chat-panel">
-        <div class="chat-header">
-          <div class="chat-title-wrap">
-            <div class="chat-avatar">AI</div>
-            <div class="chat-title">
-              <h3>Westcon KB Chatbot</h3>
-              <p>Connected to n8n AI Agent + Pinecone Knowledge Base</p>
-            </div>
-          </div>
-
-          <div class="status-pill">Online</div>
-        </div>
-
-        <div class="chat-messages" id="chatMessages">
-          <div class="message-row bot">
-            <div class="bubble bot">
-              Hi, I’m your Westcon Knowledge Base assistant. Ask me anything about the information loaded into the knowledge base and I’ll help you find the answer.
-            </div>
-          </div>
-        </div>
-
-        <div class="chat-input-wrap">
-          <div class="input-shell">
-            <textarea
-              id="chatInput"
-              class="chat-input"
-              placeholder="Type your question here..."
-              rows="1"
-            ></textarea>
-            <button id="sendBtn" class="send-btn" title="Send">➜</button>
-          </div>
-          <div class="helper-text">Press Enter to send • Shift + Enter for a new line</div>
-        </div>
-      </div>
+  <div class="topbar">
+    <h2>Westcon Knowledge Base</h2>
+    <div>
+      <button class="top-btn" onclick="location.href='userdashboard.html'">Back</button>
+      <button class="top-btn" onclick="clearChat()">Clear</button>
     </div>
   </div>
 
-  <script>
-    const WEBHOOK_URL = "https://newgenit.app.n8n.cloud/webhook/563811b6-590b-487f-8d65-9e6f8e56cebb";
+  <div class="main-grid">
 
-    const chatMessages = document.getElementById("chatMessages");
-    const chatInput = document.getElementById("chatInput");
-    const sendBtn = document.getElementById("sendBtn");
+    <!-- LEFT INFO -->
+    <div class="panel info-panel">
+      <h2>Get fast answers</h2>
+      <p>This AI assistant helps you query the Westcon knowledge base instantly.</p>
+    </div>
 
-    let isSending = false;
-    let sessionId = localStorage.getItem("westcon_kb_session_id") || generateSessionId();
+    <!-- CHAT -->
+    <div class="panel chat-panel">
 
-    localStorage.setItem("westcon_kb_session_id", sessionId);
+      <div class="chat-header">
+        <strong>Westcon KB Chatbot</strong>
+      </div>
 
-    function generateSessionId() {
-      return "wkb_" + Date.now() + "_" + Math.random().toString(36).substring(2, 10);
-    }
+      <div id="chatMessages" class="chat-messages">
+        <div class="bubble bot">Ask me anything about Westcon services.</div>
+      </div>
 
-    function autoResizeTextarea() {
-      chatInput.style.height = "auto";
-      chatInput.style.height = Math.min(chatInput.scrollHeight, 160) + "px";
-    }
+      <div class="chat-input-wrap">
+        <div class="input-shell">
+          <textarea id="chatInput" placeholder="Type your question..."></textarea>
+          <button class="send-btn" onclick="sendMessage()">→</button>
+        </div>
+      </div>
 
-    chatInput.addEventListener("input", autoResizeTextarea);
+    </div>
 
-    chatInput.addEventListener("keydown", function (e) {
-      if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        sendMessage();
-      }
+  </div>
+
+</div>
+
+<script>
+
+const WEBHOOK_URL = "https://newgenit.app.n8n.cloud/webhook/563811b6-590b-487f-8d65-9e6f8e56cebb";
+
+const chatMessages = document.getElementById("chatMessages");
+const chatInput = document.getElementById("chatInput");
+
+function addMessage(text, sender) {
+  const div = document.createElement("div");
+  div.className = "bubble " + sender;
+  div.textContent = text;
+  chatMessages.appendChild(div);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function clearChat() {
+  chatMessages.innerHTML = `<div class="bubble bot">Ask me anything about Westcon services.</div>`;
+}
+
+async function sendMessage() {
+  const message = chatInput.value.trim();
+  if (!message) return;
+
+  addMessage(message, "user");
+  chatInput.value = "";
+
+  try {
+    const response = await fetch(WEBHOOK_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: message
+      })
     });
 
-    sendBtn.addEventListener("click", sendMessage);
+    const data = await response.json();
 
-    function addMessage(text, sender = "bot") {
-      const row = document.createElement("div");
-      row.className = `message-row ${sender}`;
+    // IMPORTANT: your n8n returns { response: "text" }
+    const reply = data.response || "No response from AI";
 
-      const bubble = document.createElement("div");
-      bubble.className = `bubble ${sender}`;
-      bubble.textContent = text;
+    addMessage(reply, "bot");
 
-      row.appendChild(bubble);
-      chatMessages.appendChild(row);
-      scrollToBottom();
-    }
+  } catch (err) {
+    addMessage("Error connecting to AI service.", "bot");
+    console.error(err);
+  }
+}
 
-    function addTypingIndicator() {
-      const row = document.createElement("div");
-      row.className = "message-row bot";
-      row.id = "typingIndicator";
+</script>
 
-      const bubble = document.createElement("div");
-      bubble.className = "bubble bot typing";
-
-      bubble.innerHTML = `
-        <span class="typing-dot"></span>
-        <span class="typing-dot"></span>
-        <span class="typing-dot"></span>
-      `;
-
-      row.appendChild(bubble);
-      chatMessages.appendChild(row);
-      scrollToBottom();
-    }
-
-    function removeTypingIndicator() {
-      const typing = document.getElementById("typingIndicator");
-      if (typing) typing.remove();
-    }
-
-    function scrollToBottom() {
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-
-    function clearChat() {
-      chatMessages.innerHTML = `
-        <div class="message-row bot">
-          <div class="bubble bot">
-            Hi, I’m your Westcon Knowledge Base assistant. Ask me anything about the information loaded into the knowledge base and I’ll help you find the answer.
-          </div>
-        </div>
-      `;
-      sessionId = generateSessionId();
-      localStorage.setItem("westcon_kb_session_id", sessionId);
-    }
-
-    function extractResponse(data) {
-      if (!data) return "I received a response, but it looks empty.";
-
-      if (typeof data === "string") return data;
-
-      if (Array.isArray(data)) {
-        if (data.length === 0) return "I received an empty response.";
-        const first = data[0];
-        if (typeof first === "string") return first;
-        return extractResponse(first);
-      }
-
-      if (typeof data === "object") {
-        return (
-          data.output ||
-          data.answer ||
-          data.response ||
-          data.reply ||
-          data.message ||
-          data.text ||
-          data.data?.output ||
-          data.data?.answer ||
-          data.data?.response ||
-          data.result ||
-          JSON.stringify(data, null, 2)
-        );
-      }
-
-      return String(data);
-    }
-
-    async function sendMessage() {
-      const message = chatInput.value.trim();
-      if (!message || isSending) return;
-
-      isSending = true;
-      sendBtn.disabled = true;
-
-      addMessage(message, "user");
-      chatInput.value = "";
-      autoResizeTextarea();
-      addTypingIndicator();
-
-      try {
-        const payload = {
-          message: message,
-          chatInput: message,
-          question: message,
-          sessionId: sessionId,
-          source: "westconKB",
-          timestamp: new Date().toISOString()
-        };
-
-        const response = await fetch(WEBHOOK_URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(payload)
-        });
-
-        let data = null;
-        const rawText = await response.text();
-
-        try {
-          data = rawText ? JSON.parse(rawText) : null;
-        } catch {
-          data = rawText;
-        }
-
-        removeTypingIndicator();
-
-        if (!response.ok) {
-          addMessage("There was an error connecting to the knowledge base. Please try again.", "bot");
-          console.error("Webhook error:", response.status, data);
-        } else {
-          const botReply = extractResponse(data);
-          addMessage(botReply || "I could not find a valid reply from the workflow.", "bot");
-        }
-      } catch (error) {
-        removeTypingIndicator();
-        addMessage("I couldn’t reach the Westcon knowledge base service right now. Please try again in a moment.", "bot");
-        console.error("Fetch error:", error);
-      } finally {
-        isSending = false;
-        sendBtn.disabled = false;
-        chatInput.focus();
-      }
-    }
-
-    autoResizeTextarea();
-  </script>
 </body>
 </html>
