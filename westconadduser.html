@@ -3,165 +3,327 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Add New Partner User</title>
+  <title>Westcon - Add New Partner User</title>
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-1: #020817;
+      --bg-2: #06142d;
+      --bg-3: #032b3f;
+      --panel: rgba(10, 16, 30, 0.82);
+      --panel-2: rgba(15, 24, 43, 0.86);
+      --border: rgba(255,255,255,0.08);
+      --text: #eef4ff;
+      --muted: #9fb0c8;
+      --input-bg: rgba(3, 10, 24, 0.9);
+      --input-border: rgba(255,255,255,0.08);
+      --primary-1: #2f6df6;
+      --primary-2: #20b4f2;
+      --chip: rgba(255,255,255,0.05);
+      --danger: #ff8f8f;
+      --success: #83f0a8;
+    }
 
     body {
       margin: 0;
       font-family: Inter, Arial, sans-serif;
-      background: linear-gradient(135deg, #08132b 0%, #050b16 48%, #03243a 100%);
-      color: #ffffff;
+      color: var(--text);
       min-height: 100vh;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(52, 87, 183, 0.35), transparent 28%),
+        radial-gradient(circle at 85% 18%, rgba(0, 176, 255, 0.18), transparent 24%),
+        linear-gradient(90deg, #182a5b 0%, #020817 46%, #022434 100%);
     }
 
-    .page-wrap {
-      width: 100%;
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 24px 28px 50px;
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 14px 28px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      background: rgba(5, 9, 18, 0.72);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
 
-    .page-title {
-      font-size: 58px;
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #58a5ff 0%, #0ea5e9 100%);
+      box-shadow: inset 0 10px 18px rgba(255,255,255,0.18);
+      flex-shrink: 0;
+    }
+
+    .brand-text {
+      line-height: 1.1;
+    }
+
+    .brand-text .title {
+      font-size: 22px;
       font-weight: 800;
-      margin: 0 0 34px;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-text .subtitle {
+      font-size: 14px;
+      color: rgba(255,255,255,0.72);
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .top-btn {
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03);
+      color: #fff;
+      border-radius: 18px;
+      padding: 14px 20px;
+      font-size: 16px;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .top-btn.primary {
+      background: linear-gradient(135deg, var(--primary-1) 0%, var(--primary-2) 100%);
+      border: none;
+    }
+
+    .page {
+      max-width: 1680px;
+      margin: 0 auto;
+      padding: 34px 28px 48px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.2fr 0.95fr;
+      gap: 34px;
+      align-items: start;
+    }
+
+    .hero {
+      padding-top: 26px;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      color: #bfd0ef;
+      border-radius: 999px;
+      padding: 14px 18px;
+      font-size: 14px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 22px;
+    }
+
+    .hero h1 {
+      font-size: 72px;
+      line-height: 0.97;
+      letter-spacing: -0.05em;
+      margin: 0 0 22px;
+      max-width: 760px;
+    }
+
+    .hero p {
+      font-size: 22px;
+      line-height: 1.55;
+      color: #c3d0e6;
+      max-width: 760px;
+      margin: 0 0 28px;
+    }
+
+    .hero-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .chip {
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03);
+      color: #dbe7ff;
+      border-radius: 999px;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+
+    .panel {
+      background: linear-gradient(90deg, rgba(18, 24, 38, 0.94) 0%, rgba(19, 31, 45, 0.9) 58%, rgba(13, 50, 61, 0.9) 100%);
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.24);
+      overflow: hidden;
+    }
+
+    .panel-inner {
+      padding: 30px 28px 26px;
+    }
+
+    .panel h2 {
+      margin: 0 0 8px;
+      font-size: 28px;
       letter-spacing: -0.03em;
     }
 
-    .form-shell {
-      background: linear-gradient(90deg, rgba(27, 42, 88, 0.95) 0%, rgba(12, 16, 24, 0.97) 50%, rgba(5, 42, 56, 0.96) 100%);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 28px;
-      padding: 46px 48px 42px;
-      box-shadow: 0 18px 40px rgba(0,0,0,0.25);
+    .panel-subtitle {
+      margin: 0 0 24px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.5;
     }
 
     .form-grid {
       display: grid;
-      grid-template-columns: 230px 1fr;
-      gap: 30px 28px;
-      align-items: center;
+      gap: 18px;
     }
 
-    .label {
-      font-size: 25px;
-      font-weight: 700;
-      line-height: 1.25;
-      color: #ffffff;
+    .field {
+      display: grid;
+      gap: 10px;
     }
 
-    .input {
+    .field label {
+      font-size: 15px;
+      color: #dfe9fb;
+      font-weight: 600;
+    }
+
+    .input,
+    .textarea {
       width: 100%;
-      border-radius: 22px;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: #dfe5ef;
-      color: #101826;
-      font-size: 20px;
-      padding: 20px 22px;
+      border-radius: 18px;
+      border: 1px solid var(--input-border);
+      background: var(--input-bg);
+      color: #f3f7ff;
+      padding: 16px 18px;
+      font-size: 17px;
       outline: none;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      transition: 0.18s ease;
     }
 
-    .input::placeholder {
-      color: #7a8394;
+    .input::placeholder,
+    .textarea::placeholder {
+      color: #6f839f;
     }
 
-    .input:focus {
-      border-color: rgba(70, 140, 255, 0.7);
-      box-shadow: 0 0 0 3px rgba(70, 140, 255, 0.18);
+    .input:focus,
+    .textarea:focus {
+      border-color: rgba(59,130,246,0.65);
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.16);
     }
 
     .services-box {
-      background: rgba(0, 4, 14, 0.78);
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 26px;
-      padding: 22px 20px;
+      display: grid;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(1, 8, 22, 0.7);
     }
 
     .service-option {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 20px;
-      background: linear-gradient(90deg, rgba(7, 15, 35, 0.95) 0%, rgba(4, 10, 24, 0.95) 100%);
-      border: 1px solid rgba(255,255,255,0.04);
+      gap: 12px;
+      padding: 18px 18px;
       border-radius: 18px;
-      padding: 18px 22px;
-      margin-bottom: 16px;
+      background: linear-gradient(90deg, rgba(6, 14, 35, 0.95) 0%, rgba(5, 13, 28, 0.96) 100%);
+      border: 1px solid rgba(255,255,255,0.04);
       cursor: pointer;
-      transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
-    }
-
-    .service-option:last-child {
-      margin-bottom: 0;
-    }
-
-    .service-option:hover {
-      transform: translateY(-1px);
-      background: linear-gradient(90deg, rgba(10, 20, 45, 0.98) 0%, rgba(6, 12, 28, 0.98) 100%);
-      border-color: rgba(255,255,255,0.08);
     }
 
     .service-left {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 14px;
       min-width: 0;
     }
 
     .service-option input[type="checkbox"] {
-      width: 26px;
-      height: 26px;
-      accent-color: #3d8bfd;
+      width: 23px;
+      height: 23px;
+      accent-color: #3b82f6;
       flex-shrink: 0;
       cursor: pointer;
     }
 
     .service-name {
-      font-size: 20px;
+      font-size: 17px;
       font-weight: 700;
-      color: #ffffff;
-      line-height: 1.3;
+      color: #f2f7ff;
     }
 
     .service-price {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 800;
-      color: #ffffff;
       white-space: nowrap;
-      flex-shrink: 0;
     }
 
-    .value-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      min-height: 60px;
-    }
-
-    .value-big {
-      font-size: 38px;
-      font-weight: 800;
-      color: #ffffff;
-      text-align: right;
-    }
-
-    .button-row {
-      margin-top: 28px;
-      display: flex;
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 18px;
-      align-items: center;
+    }
+
+    .stat-box {
+      display: grid;
+      gap: 8px;
+      padding: 18px 20px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .stat-label {
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .stat-value {
+      font-size: 32px;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+
+    .actions {
+      display: flex;
+      gap: 16px;
+      margin-top: 10px;
     }
 
     .btn {
       border: none;
-      border-radius: 20px;
-      padding: 18px 30px;
-      font-size: 18px;
-      font-weight: 700;
+      border-radius: 18px;
+      padding: 16px 24px;
+      font-size: 17px;
+      font-weight: 800;
       cursor: pointer;
-      transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+      transition: 0.18s ease;
     }
 
     .btn:hover {
@@ -175,173 +337,251 @@
     }
 
     .btn-primary {
-      min-width: 200px;
-      color: #ffffff;
-      background: linear-gradient(135deg, #3e8cff 0%, #2f7df0 100%);
-      box-shadow: 0 12px 26px rgba(47, 125, 240, 0.24);
+      flex: 1;
+      color: #fff;
+      background: linear-gradient(135deg, var(--primary-1) 0%, var(--primary-2) 100%);
+      box-shadow: 0 14px 28px rgba(47,109,246,0.22);
     }
 
     .btn-secondary {
-      color: #ffffff;
-      background: rgba(255,255,255,0.08);
+      min-width: 150px;
+      color: #fff;
+      background: rgba(255,255,255,0.06);
       border: 1px solid rgba(255,255,255,0.06);
-      min-width: 140px;
     }
 
     .status {
-      margin-top: 18px;
-      min-height: 28px;
-      font-size: 15px;
+      margin-top: 14px;
+      min-height: 24px;
+      font-size: 14px;
       font-weight: 700;
       white-space: pre-wrap;
       word-break: break-word;
     }
 
     .status.info { color: #9fc2ff; }
-    .status.success { color: #7df0a6; }
-    .status.error { color: #ff8f8f; }
+    .status.success { color: var(--success); }
+    .status.error { color: var(--danger); }
 
-    @media (max-width: 980px) {
-      .page-title {
-        font-size: 40px;
-      }
+    .helper-card-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 18px;
+    }
 
-      .form-shell {
-        padding: 28px 22px;
-      }
+    .helper-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 22px;
+      padding: 18px 16px;
+    }
 
-      .form-grid {
+    .helper-card h3 {
+      margin: 0 0 8px;
+      font-size: 17px;
+    }
+
+    .helper-card p {
+      margin: 0;
+      color: #9eb0cb;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    @media (max-width: 1180px) {
+      .layout {
         grid-template-columns: 1fr;
-        gap: 12px;
       }
 
-      .label {
-        font-size: 20px;
+      .hero h1 {
+        font-size: 56px;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .topbar {
+        padding: 12px 16px;
       }
 
-      .service-name,
-      .service-price,
-      .input {
-        font-size: 17px;
+      .page {
+        padding: 20px 16px 34px;
       }
 
-      .value-big {
-        font-size: 30px;
-        text-align: left;
+      .hero h1 {
+        font-size: 42px;
       }
 
-      .button-row {
+      .hero p {
+        font-size: 18px;
+      }
+
+      .panel-inner {
+        padding: 22px 18px;
+      }
+
+      .two-col,
+      .helper-card-row {
+        grid-template-columns: 1fr;
+      }
+
+      .actions {
         flex-direction: column;
-        align-items: stretch;
       }
 
-      .btn {
-        width: 100%;
+      .btn-secondary {
+        min-width: 0;
+      }
+
+      .brand-text .subtitle {
+        display: none;
       }
     }
   </style>
 </head>
 <body>
-  <div class="page-wrap">
-    <h1 class="page-title">Add New Partner User</h1>
-
-    <div class="form-shell">
-      <form id="addUserForm">
-        <div class="form-grid">
-          <div class="label">User ID</div>
-          <div>
-            <input type="text" id="userId" class="input" placeholder="Enter User ID e.g. West01-00012" required />
-          </div>
-
-          <div class="label">Row ID</div>
-          <div>
-            <input type="number" id="rowId" class="input" placeholder="Enter Row ID e.g. 12" required />
-          </div>
-
-          <div class="label">Username (Login Email)</div>
-          <div>
-            <input type="email" id="username" class="input" placeholder="Enter login email" required />
-          </div>
-
-          <div class="label">Company</div>
-          <div>
-            <input type="text" id="company" class="input" placeholder="Enter company name" required />
-          </div>
-
-          <div class="label">Services<br>Purchased</div>
-          <div>
-            <div class="services-box">
-              <label class="service-option">
-                <div class="service-left">
-                  <input type="checkbox" value="Westcon Knowledge Base" data-price="49" />
-                  <div class="service-name">Westcon Knowledge Base</div>
-                </div>
-                <div class="service-price">$49</div>
-              </label>
-
-              <label class="service-option">
-                <div class="service-left">
-                  <input type="checkbox" value="AI Sales Copilot for Resellers" data-price="178" />
-                  <div class="service-name">AI Sales Copilot for Resellers</div>
-                </div>
-                <div class="service-price">$178</div>
-              </label>
-
-              <label class="service-option">
-                <div class="service-left">
-                  <input type="checkbox" value="AI Network Architecture Recommendations" data-price="289" />
-                  <div class="service-name">AI Network Architecture Recommendations</div>
-                </div>
-                <div class="service-price">$289</div>
-              </label>
-            </div>
-          </div>
-
-          <div class="label">Billing Date</div>
-          <div>
-            <input type="date" id="billingDate" class="input" required />
-          </div>
-
-          <div class="label">Monthly Cost</div>
-          <div class="value-row">
-            <div></div>
-            <div class="value-big" id="monthlyCost">$0</div>
-          </div>
-
-          <div class="label">Tokens Purchased</div>
-          <div class="value-row">
-            <div></div>
-            <div class="value-big" id="tokensPurchased">0</div>
-          </div>
-        </div>
-
-        <div class="button-row">
-          <button type="submit" class="btn btn-primary" id="createUserBtn">Create User</button>
-          <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
-        </div>
-
-        <div id="statusMessage" class="status info"></div>
-      </form>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark"></div>
+      <div class="brand-text">
+        <div class="title">Westcon</div>
+        <div class="subtitle">AI Partner Enablement Platform</div>
+      </div>
     </div>
-  </div>
+
+    <div class="top-actions">
+      <a class="top-btn" href="WestconAdmin.html">Partner Admin</a>
+      <a class="top-btn primary" href="WestconAdmin.html">Back to Admin</a>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="layout">
+      <div class="hero">
+        <div class="eyebrow">Partner-first • secure access • ai-enabled services</div>
+        <h1>Add New Partner User</h1>
+        <p>
+          Create a new partner record, assign services, and send the full onboarding payload
+          directly to your n8n workflow for automation and downstream actions.
+        </p>
+
+        <div class="hero-chips">
+          <div class="chip">Webhook-ready</div>
+          <div class="chip">Role-based onboarding</div>
+          <div class="chip">Automation-friendly</div>
+          <div class="chip">Enterprise-grade UX</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="panel">
+          <div class="panel-inner">
+            <h2>Create Partner User</h2>
+            <p class="panel-subtitle">
+              Complete the user details below. On submit, all values are posted to your n8n webhook
+              and only then redirected back to the admin page.
+            </p>
+
+            <form id="addUserForm" class="form-grid">
+              <div class="two-col">
+                <div class="field">
+                  <label for="userId">User ID</label>
+                  <input type="text" id="userId" class="input" placeholder="Enter User ID e.g. West01-00012" required />
+                </div>
+
+                <div class="field">
+                  <label for="rowId">Row ID</label>
+                  <input type="number" id="rowId" class="input" placeholder="Enter Row ID e.g. 12" required />
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="username">Username (Login Email)</label>
+                <input type="email" id="username" class="input" placeholder="Enter login email" required />
+              </div>
+
+              <div class="field">
+                <label for="company">Company</label>
+                <input type="text" id="company" class="input" placeholder="Enter company name" required />
+              </div>
+
+              <div class="field">
+                <label>Services Purchased</label>
+                <div class="services-box">
+                  <label class="service-option">
+                    <div class="service-left">
+                      <input type="checkbox" value="Westcon Knowledge Base" data-price="49" />
+                      <div class="service-name">Westcon Knowledge Base</div>
+                    </div>
+                    <div class="service-price">$49</div>
+                  </label>
+
+                  <label class="service-option">
+                    <div class="service-left">
+                      <input type="checkbox" value="AI Sales Copilot for Resellers" data-price="178" />
+                      <div class="service-name">AI Sales Copilot for Resellers</div>
+                    </div>
+                    <div class="service-price">$178</div>
+                  </label>
+
+                  <label class="service-option">
+                    <div class="service-left">
+                      <input type="checkbox" value="AI Network Architecture Recommendations" data-price="289" />
+                      <div class="service-name">AI Network Architecture Recommendations</div>
+                    </div>
+                    <div class="service-price">$289</div>
+                  </label>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="billingDate">Billing Date</label>
+                <input type="date" id="billingDate" class="input" required />
+              </div>
+
+              <div class="two-col">
+                <div class="stat-box">
+                  <div class="stat-label">Monthly Cost</div>
+                  <div class="stat-value" id="monthlyCost">$0</div>
+                </div>
+
+                <div class="stat-box">
+                  <div class="stat-label">Tokens Purchased</div>
+                  <div class="stat-value" id="tokensPurchased">0</div>
+                </div>
+              </div>
+
+              <div class="actions">
+                <button type="submit" class="btn btn-primary" id="createUserBtn">Create User</button>
+                <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+              </div>
+
+              <div id="statusMessage" class="status info"></div>
+            </form>
+          </div>
+        </div>
+
+        <div class="helper-card-row">
+          <div class="helper-card">
+            <h3>Webhook Delivery</h3>
+            <p>All submitted values are sent to n8n in a single JSON payload.</p>
+          </div>
+          <div class="helper-card">
+            <h3>Token Logic</h3>
+            <p>Each selected service adds 100000 tokens to the new user allocation.</p>
+          </div>
+          <div class="helper-card">
+            <h3>Admin Redirect</h3>
+            <p>Users are returned to WestconAdmin.html only after successful submission.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
 
   <script>
-    const AIRTABLE_PAT = "PASTE_YOUR_REAL_PAT_HERE";
-    const AIRTABLE_BASE_ID = "appSD8RW451qfUbo2";
-    const AIRTABLE_TABLE_NAME = "WestConAdmin";
-    const N8N_WEBHOOK_URL = "";
-
-    const FIELD_NAMES = {
-      userId: "User ID",
-      rowId: "Row ID",
-      username: "Username",
-      company: "Company",
-      servicesPurchased: "Services Purchased",
-      tokensPurchased: "Tokens Purchased",
-      tokenUsage: "Token Usage",
-      tokensLeft: "Tokens Left",
-      nextPayment: "Next Payment"
-    };
+    const WEBHOOK_URL = "https://newgenit.app.n8n.cloud/webhook/026f5eec-6fda-4a02-a80d-7256f7e4c3a2";
+    const REDIRECT_URL = "WestconAdmin.html";
 
     const form = document.getElementById("addUserForm");
     const userIdInput = document.getElementById("userId");
@@ -388,50 +628,13 @@
       return {
         monthlyCost,
         tokensPurchased,
+        selectedServices,
         servicesAsText: selectedServices.map(service => service.name).join(", ")
       };
     }
 
-    async function createAirtableRecord(payload) {
-      const endpoint = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(AIRTABLE_TABLE_NAME)}`;
-
-      const fields = {
-        [FIELD_NAMES.userId]: payload.userId,
-        [FIELD_NAMES.rowId]: payload.rowId,
-        [FIELD_NAMES.username]: payload.username,
-        [FIELD_NAMES.company]: payload.company,
-        [FIELD_NAMES.servicesPurchased]: payload.servicesPurchased,
-        [FIELD_NAMES.tokensPurchased]: payload.tokensPurchased,
-        [FIELD_NAMES.tokenUsage]: 0,
-        [FIELD_NAMES.tokensLeft]: payload.tokensPurchased
-      };
-
-      if (FIELD_NAMES.nextPayment && payload.billingDate) {
-        fields[FIELD_NAMES.nextPayment] = payload.billingDate;
-      }
-
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${AIRTABLE_PAT}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ fields })
-      });
-
-      const rawText = await response.text();
-
-      if (!response.ok) {
-        throw new Error(rawText);
-      }
-
-      return JSON.parse(rawText);
-    }
-
-    async function sendToN8NWebhook(payload) {
-      if (!N8N_WEBHOOK_URL.trim()) return null;
-
-      const response = await fetch(N8N_WEBHOOK_URL, {
+    async function sendToWebhook(payload) {
+      const response = await fetch(WEBHOOK_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -442,7 +645,7 @@
       const rawText = await response.text();
 
       if (!response.ok) {
-        throw new Error(rawText);
+        throw new Error(rawText || "Webhook request failed.");
       }
 
       try {
@@ -457,7 +660,7 @@
     });
 
     cancelBtn.addEventListener("click", () => {
-      window.location.href = "westconAdmin.html";
+      window.location.href = REDIRECT_URL;
     });
 
     billingDateInput.value = formatDateForInput(new Date());
@@ -474,10 +677,12 @@
         username: usernameInput.value.trim(),
         company: companyInput.value.trim(),
         servicesPurchased: computed.servicesAsText,
+        servicesPurchasedList: computed.selectedServices.map(service => service.name),
         monthlyCost: computed.monthlyCost,
         tokensPurchased: computed.tokensPurchased,
         billingDate: billingDateInput.value,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        sourcePage: "westconadduser.html"
       };
 
       if (!payload.userId) {
@@ -500,7 +705,7 @@
         return;
       }
 
-      if (!payload.servicesPurchased) {
+      if (!payload.servicesPurchasedList.length) {
         setStatus("Please select at least one service.", "error");
         return;
       }
@@ -512,30 +717,19 @@
 
       try {
         createUserBtn.disabled = true;
-        createUserBtn.textContent = "Creating...";
-        setStatus("Creating user in Airtable...", "info");
+        createUserBtn.textContent = "Sending...";
+        setStatus("Sending user data to webhook...", "info");
 
-        const airtableResult = await createAirtableRecord(payload);
+        await sendToWebhook(payload);
 
-        try {
-          await sendToN8NWebhook({
-            source: "westconadduser.html",
-            action: "create_user",
-            airtableRecordId: airtableResult.id,
-            ...payload
-          });
-        } catch (webhookError) {
-          console.warn("n8n webhook error:", webhookError);
-        }
-
-        setStatus("User created successfully. Redirecting...", "success");
+        setStatus("User data sent successfully. Redirecting...", "success");
 
         setTimeout(() => {
-          window.location.href = "westconAdmin.html";
-        }, 1000);
+          window.location.href = REDIRECT_URL;
+        }, 900);
       } catch (error) {
-        console.error("Create user error:", error);
-        setStatus(`Failed to create user: ${error.message}`, "error");
+        console.error("Webhook error:", error);
+        setStatus(`Failed to send data: ${error.message}`, "error");
       } finally {
         createUserBtn.disabled = false;
         createUserBtn.textContent = "Create User";
