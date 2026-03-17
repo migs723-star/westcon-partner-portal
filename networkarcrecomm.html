@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Network Architecture Recommendations | Westcon AI</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Inter, Arial, sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #111827 45%, #083344 100%);
+      color: #e5eef7;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: auto;
+      padding: 28px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 18px 24px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(14px);
+      margin-bottom: 24px;
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .brand h1 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .brand p {
+      font-size: 13px;
+      color: #9fb3c8;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: none;
+      outline: none;
+      cursor: pointer;
+      border-radius: 12px;
+      padding: 12px 18px;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.25s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #06b6d4, #0891b2);
+      color: #fff;
+      box-shadow: 0 10px 24px rgba(6, 182, 212, 0.25);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 28px rgba(6, 182, 212, 0.35);
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.08);
+      color: #d9e8f6;
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255,255,255,0.12);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 290px 1fr;
+      gap: 24px;
+    }
+
+    .sidebar,
+    .main-card,
+    .response-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+    }
+
+    .sidebar {
+      padding: 22px;
+      height: fit-content;
+      position: sticky;
+      top: 20px;
+    }
+
+    .sidebar h2 {
+      font-size: 18px;
+      margin-bottom: 14px;
+      color: #ffffff;
+    }
+
+    .sidebar p {
+      font-size: 13px;
+      line-height: 1.6;
+      color: #9fb3c8;
+      margin-bottom: 18px;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .sidebar li {
+      font-size: 13px;
+      color: #d9e8f6;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+      padding: 12px 14px;
+    }
+
+    .content {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .main-card {
+      padding: 28px;
+    }
+
+    .main-card h2 {
+      font-size: 24px;
+      margin-bottom: 8px;
+      color: #ffffff;
+    }
+
+    .main-card .subtitle {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #9fb3c8;
+      margin-bottom: 26px;
+    }
+
+    .section-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #7dd3fc;
+      margin: 28px 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(260px, 1fr));
+      gap: 18px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #dbeafe;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 13px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(15, 23, 42, 0.72);
+      color: #e5eef7;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: rgba(34, 211, 238, 0.8);
+      box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.12);
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    select[multiple] {
+      min-height: 140px;
+    }
+
+    .hint {
+      font-size: 12px;
+      color: #8aa2bb;
+      line-height: 1.5;
+    }
+
+    .actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 26px;
+    }
+
+    .status {
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      font-size: 14px;
+      display: none;
+      white-space: pre-wrap;
+      line-height: 1.6;
+    }
+
+    .status.success {
+      display: block;
+      background: rgba(16, 185, 129, 0.14);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      color: #bbf7d0;
+    }
+
+    .status.error {
+      display: block;
+      background: rgba(239, 68, 68, 0.14);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      color: #fecaca;
+    }
+
+    .response-card {
+      padding: 24px;
+      display: none;
+    }
+
+    .response-card.show {
+      display: block;
+    }
+
+    .response-card h3 {
+      font-size: 20px;
+      margin-bottom: 12px;
+      color: #ffffff;
+    }
+
+    .response-body {
+      background: rgba(2, 6, 23, 0.45);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 14px;
+      padding: 18px;
+      color: #dbeafe;
+      line-height: 1.7;
+      font-size: 14px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    @media (max-width: 1080px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: relative;
+        top: 0;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .top-actions {
+        width: 100%;
+      }
+
+      .top-actions .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <div class="brand">
+        <h1>AI Network Architecture Recommendations</h1>
+        <p>Generate Cisco-aligned network and security solution recommendations for partner opportunities.</p>
+      </div>
+      <div class="top-actions">
+        <button class="btn btn-secondary" type="button" onclick="window.history.back()">Back</button>
+        <button class="btn btn-primary" type="button" onclick="submitRecommendation()">Create Recommendation</button>
+      </div>
+    </div>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <h2>What this does</h2>
+        <p>
+          Capture customer, business, security, cloud, and connectivity requirements,
+          then send them to your AI workflow to generate a recommended architecture,
+          Cisco stack, security design, and estimated cost.
+        </p>
+
+        <ul>
+          <li><strong>Industry-aware</strong><br />Supports vertical-specific inputs like banking, retail, healthcare, public sector, and more.</li>
+          <li><strong>Multi-select ready</strong><br />Choose multiple requirements, security priorities, and preferred technologies.</li>
+          <li><strong>Webhook enabled</strong><br />Submits directly to your n8n workflow for AI-driven recommendations.</li>
+        </ul>
+      </aside>
+
+      <div class="content">
+        <div class="main-card">
+          <h2>Recommendation Request Form</h2>
+          <p class="subtitle">
+            Complete the fields below to generate a network architecture recommendation.
+            Use Ctrl / Cmd + click to select multiple options in the multi-select fields.
+          </p>
+
+          <form id="recommendationForm">
+            <div class="section-title">Customer & Opportunity Details</div>
+            <div class="form-grid">
+              <div class="field">
+                <label for="customerName">Customer Name</label>
+                <input type="text" id="customerName" name="customerName" placeholder="e.g. ABC Bank" />
+              </div>
+
+              <div class="field">
+                <label for="industry">Industry</label>
+                <select id="industry" name="industry">
+                  <option value="">Select industry</option>
+                  <option>Banking</option>
+                  <option>Financial Services</option>
+                  <option>Healthcare</option>
+                  <option>Retail</option>
+                  <option>Education</option>
+                  <option>Manufacturing</option>
+                  <option>Government</option>
+                  <option>Telecommunications</option>
+                  <option>Logistics</option>
+                  <option>Hospitality</option>
+                  <option>Energy</option>
+                  <option>Insurance</option>
+                  <option>Mining</option>
+                  <option>Other</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="customerSize">Customer Size</label>
+                <select id="customerSize" name="customerSize">
+                  <option value="">Select size</option>
+                  <option>Small Business</option>
+                  <option>Mid-Market</option>
+                  <option>Enterprise</option>
+                  <option>Large Enterprise</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="country">Country / Region</label>
+                <input type="text" id="country" name="country" placeholder="e.g. South Africa" />
+              </div>
+
+              <div class="field">
+                <label for="users">Number of Users</label>
+                <input type="number" id="users" name="users" placeholder="e.g. 2500" min="1" />
+              </div>
+
+              <div class="field">
+                <label for="sites">Number of Sites / Branches</label>
+                <input type="number" id="sites" name="sites" placeholder="e.g. 12" min="1" />
+              </div>
+
+              <div class="field">
+                <label for="timeline">Project Timeline</label>
+                <select id="timeline" name="timeline">
+                  <option value="">Select timeline</option>
+                  <option>Immediate</option>
+                  <option>0-3 Months</option>
+                  <option>3-6 Months</option>
+                  <option>6-12 Months</option>
+                  <option>12+ Months</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="budgetRange">Budget Range</label>
+                <select id="budgetRange" name="budgetRange">
+                  <option value="">Select budget range</option>
+                  <option>Under $25,000</option>
+                  <option>$25,000 - $100,000</option>
+                  <option>$100,000 - $250,000</option>
+                  <option>$250,000 - $500,000</option>
+                  <option>$500,000 - $1M</option>
+                  <option>$1M+</option>
+                  <option>Not yet defined</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="section-title">Business & Technical Requirements</div>
+            <div class="form-grid">
+              <div class="field full">
+                <label for="primaryRequirements">Primary Requirements (Multi-select)</label>
+                <select id="primaryRequirements" name="primaryRequirements" multiple>
+                  <option>Secure hybrid cloud</option>
+                  <option>Branch connectivity</option>
+                  <option>Data center modernization</option>
+                  <option>Zero Trust security</option>
+                  <option>SD-WAN</option>
+                  <option>Wireless refresh</option>
+                  <option>Campus LAN refresh</option>
+                  <option>Remote user connectivity</option>
+                  <option>Application visibility</option>
+                  <option>Network segmentation</option>
+                  <option>High availability</option>
+                  <option>Disaster recovery</option>
+                  <option>Cloud interconnectivity</option>
+                  <option>Compliance and auditing</option>
+                  <option>Performance optimization</option>
+                </select>
+                <div class="hint">Use Ctrl / Cmd + click to select multiple requirements.</div>
+              </div>
+
+              <div class="field">
+                <label for="deploymentModel">Deployment Model</label>
+                <select id="deploymentModel" name="deploymentModel">
+                  <option value="">Select model</option>
+                  <option>On-Premises</option>
+                  <option>Private Cloud</option>
+                  <option>Public Cloud</option>
+                  <option>Hybrid Cloud</option>
+                  <option>Multi-Cloud</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="cloudProviders">Cloud Provider</label>
+                <select id="cloudProviders" name="cloudProviders">
+                  <option value="">Select provider</option>
+                  <option>AWS</option>
+                  <option>Microsoft Azure</option>
+                  <option>Google Cloud</option>
+                  <option>Oracle Cloud</option>
+                  <option>Private Cloud</option>
+                  <option>Multiple Providers</option>
+                  <option>None</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="priority">Primary Priority</label>
+                <select id="priority" name="priority">
+                  <option value="">Select priority</option>
+                  <option>Security</option>
+                  <option>Scalability</option>
+                  <option>Performance</option>
+                  <option>Cost Optimization</option>
+                  <option>Resilience</option>
+                  <option>Simplified Management</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="networkMaturity">Current Network Maturity</label>
+                <select id="networkMaturity" name="networkMaturity">
+                  <option value="">Select maturity level</option>
+                  <option>Basic</option>
+                  <option>Intermediate</option>
+                  <option>Advanced</option>
+                  <option>Legacy Environment</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="section-title">Security & Connectivity</div>
+            <div class="form-grid">
+              <div class="field full">
+                <label for="securityRequirements">Security Requirements (Multi-select)</label>
+                <select id="securityRequirements" name="securityRequirements" multiple>
+                  <option>Firewalling</option>
+                  <option>Zero Trust Network Access</option>
+                  <option>Identity and Access Control</option>
+                  <option>Secure Remote Access</option>
+                  <option>Endpoint Security</option>
+                  <option>Threat Detection</option>
+                  <option>Network Access Control</option>
+                  <option>Micro-segmentation</option>
+                  <option>DLP</option>
+                  <option>SIEM / Logging</option>
+                  <option>SASE</option>
+                  <option>VPN</option>
+                  <option>Compliance Reporting</option>
+                  <option>Encryption</option>
+                </select>
+              </div>
+
+              <div class="field full">
+                <label for="connectivityNeeds">Connectivity Needs (Multi-select)</label>
+                <select id="connectivityNeeds" name="connectivityNeeds" multiple>
+                  <option>LAN</option>
+                  <option>WLAN</option>
+                  <option>WAN</option>
+                  <option>SD-WAN</option>
+                  <option>Internet Breakout</option>
+                  <option>Cloud Connectivity</option>
+                  <option>VPN Access</option>
+                  <option>Remote Branch Connectivity</option>
+                  <option>Data Center Interconnect</option>
+                  <option>Guest Access</option>
+                  <option>IoT Connectivity</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="redundancy">Redundancy Requirement</label>
+                <select id="redundancy" name="redundancy">
+                  <option value="">Select redundancy level</option>
+                  <option>Low</option>
+                  <option>Medium</option>
+                  <option>High</option>
+                  <option>Mission Critical</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="complianceNeeds">Compliance Needs</label>
+                <select id="complianceNeeds" name="complianceNeeds">
+                  <option value="">Select compliance</option>
+                  <option>PCI-DSS</option>
+                  <option>POPIA</option>
+                  <option>GDPR</option>
+                  <option>HIPAA</option>
+                  <option>ISO 27001</option>
+                  <option>Internal Policy Only</option>
+                  <option>Multiple Compliance Standards</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="section-title">Preferred Technologies & Notes</div>
+            <div class="form-grid">
+              <div class="field full">
+                <label for="preferredTechnologies">Preferred Technologies / Platforms (Multi-select)</label>
+                <select id="preferredTechnologies" name="preferredTechnologies" multiple>
+                  <option>Cisco Catalyst</option>
+                  <option>Cisco Meraki</option>
+                  <option>Cisco Nexus</option>
+                  <option>Cisco ACI</option>
+                  <option>Cisco SD-WAN</option>
+                  <option>Cisco Secure Firewall</option>
+                  <option>Cisco Umbrella</option>
+                  <option>Cisco ISE</option>
+                  <option>Cisco Duo</option>
+                  <option>Cisco ThousandEyes</option>
+                  <option>Cisco Splunk</option>
+                  <option>Any Cisco Best Fit</option>
+                </select>
+              </div>
+
+              <div class="field full">
+                <label for="existingEnvironment">Existing Environment / Legacy Stack</label>
+                <textarea id="existingEnvironment" name="existingEnvironment" placeholder="Describe the current environment, known vendors, connectivity model, current firewalls, switching, wireless, branch setup, pain points, etc."></textarea>
+              </div>
+
+              <div class="field full">
+                <label for="requirementSummary">Detailed Requirement Summary</label>
+                <textarea id="requirementSummary" name="requirementSummary" placeholder="e.g. Customer is a bank with 2,500 users across 12 branches. Needs secure hybrid cloud, high availability, segmentation, strong compliance, better visibility, and resilient branch connectivity."></textarea>
+              </div>
+            </div>
+
+            <div class="actions">
+              <button class="btn btn-primary" type="button" onclick="submitRecommendation()">Create Recommendation</button>
+              <button class="btn btn-secondary" type="reset" onclick="clearResponse()">Clear Form</button>
+            </div>
+
+            <div id="statusMessage" class="status"></div>
+          </form>
+        </div>
+
+        <div id="responseCard" class="response-card">
+          <h3>Webhook Response</h3>
+          <div id="responseBody" class="response-body">Awaiting response...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const webhookUrl = "https://newgenit.app.n8n.cloud/webhook/842fe6a0-9867-49a4-9a92-c3450d55eee3";
+
+    function getMultiSelectValues(selectId) {
+      const select = document.getElementById(selectId);
+      return Array.from(select.selectedOptions).map(option => option.value);
+    }
+
+    function setStatus(message, type = "success") {
+      const status = document.getElementById("statusMessage");
+      status.className = "status " + type;
+      status.textContent = message;
+    }
+
+    function clearResponse() {
+      document.getElementById("statusMessage").className = "status";
+      document.getElementById("statusMessage").textContent = "";
+      document.getElementById("responseCard").classList.remove("show");
+      document.getElementById("responseBody").textContent = "Awaiting response...";
+    }
+
+    async function submitRecommendation() {
+      const buttonList = document.querySelectorAll(".btn-primary");
+      buttonList.forEach(btn => {
+        btn.disabled = true;
+        btn.textContent = "Submitting...";
+      });
+
+      setStatus("Submitting recommendation request...", "success");
+
+      const payload = {
+        customerName: document.getElementById("customerName").value.trim(),
+        industry: document.getElementById("industry").value,
+        customerSize: document.getElementById("customerSize").value,
+        country: document.getElementById("country").value.trim(),
+        users: document.getElementById("users").value,
+        sites: document.getElementById("sites").value,
+        timeline: document.getElementById("timeline").value,
+        budgetRange: document.getElementById("budgetRange").value,
+        primaryRequirements: getMultiSelectValues("primaryRequirements"),
+        deploymentModel: document.getElementById("deploymentModel").value,
+        cloudProviders: document.getElementById("cloudProviders").value,
+        priority: document.getElementById("priority").value,
+        networkMaturity: document.getElementById("networkMaturity").value,
+        securityRequirements: getMultiSelectValues("securityRequirements"),
+        connectivityNeeds: getMultiSelectValues("connectivityNeeds"),
+        redundancy: document.getElementById("redundancy").value,
+        complianceNeeds: document.getElementById("complianceNeeds").value,
+        preferredTechnologies: getMultiSelectValues("preferredTechnologies"),
+        existingEnvironment: document.getElementById("existingEnvironment").value.trim(),
+        requirementSummary: document.getElementById("requirementSummary").value.trim(),
+        submittedAt: new Date().toISOString(),
+        sourcePage: "networkarcrecomm.html"
+      };
+
+      try {
+        const response = await fetch(webhookUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const responseText = await response.text();
+        let parsed;
+
+        try {
+          parsed = JSON.parse(responseText);
+        } catch {
+          parsed = responseText;
+        }
+
+        document.getElementById("responseCard").classList.add("show");
+        document.getElementById("responseBody").textContent =
+          typeof parsed === "string" ? parsed : JSON.stringify(parsed, null, 2);
+
+        if (!response.ok) {
+          throw new Error("Webhook returned status " + response.status);
+        }
+
+        setStatus("Recommendation request submitted successfully.", "success");
+      } catch (error) {
+        document.getElementById("responseCard").classList.add("show");
+        document.getElementById("responseBody").textContent = "Error: " + error.message;
+        setStatus("Failed to submit recommendation request. " + error.message, "error");
+      } finally {
+        buttonList.forEach(btn => {
+          btn.disabled = false;
+          btn.textContent = "Create Recommendation";
+        });
+      }
+    }
+  </script>
+</body>
+</html>
