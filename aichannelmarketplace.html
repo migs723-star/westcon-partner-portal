@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Channel Marketplace | Westcon AI</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg1:#0f172a;
+  --bg2:#111827;
+  --bg3:#083344;
+  --panel:rgba(255,255,255,0.06);
+  --panel-strong:rgba(255,255,255,0.09);
+  --border:rgba(255,255,255,0.10);
+  --text:#e5eef7;
+  --muted:#9fb0c7;
+  --cyan:#22d3ee;
+  --cyan-strong:#06b6d4;
+  --green:#34d399;
+  --yellow:#fbbf24;
+  --shadow:0 20px 50px rgba(0,0,0,0.28);
+}
+body{
+  font-family:Inter,Arial,sans-serif;
+  background:linear-gradient(135deg,var(--bg1) 0%,var(--bg2) 45%,var(--bg3) 100%);
+  color:var(--text);
+  min-height:100vh;
+}
+.container{
+  max-width:1440px;
+  margin:auto;
+  padding:28px;
+}
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:16px;
+  padding:18px 24px;
+  border-radius:20px;
+  background:var(--panel);
+  border:1px solid var(--border);
+  backdrop-filter:blur(14px);
+  box-shadow:var(--shadow);
+  margin-bottom:24px;
+}
+.brand-wrap{
+  display:flex;
+  align-items:center;
+  gap:16px;
+}
+.logo{
+  width:46px;
+  height:46px;
+  border-radius:14px;
+  background:linear-gradient(135deg, rgba(34,211,238,0.25), rgba(6,182,212,0.08));
+  border:1px solid rgba(34,211,238,0.35);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+  box-shadow:inset 0 0 30px rgba(34,211,238,0.10);
+}
+.topbar h1{font-size:22px;line-height:1.1;margin-bottom:4px}
+.topbar p{color:var(--muted);font-size:13px}
+.top-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.btn{
+  appearance:none;
+  border:none;
+  cursor:pointer;
+  border-radius:12px;
+  padding:12px 16px;
+  font-weight:700;
+  transition:.2s ease;
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+}
+.btn:hover{transform:translateY(-1px)}
+.btn-back{background:rgba(255,255,255,0.05);color:var(--text);border:1px solid var(--border)}
+.btn-primary{background:linear-gradient(135deg,var(--cyan),var(--cyan-strong));color:#06202a}
+.hero{display:grid;grid-template-columns:1.25fr 0.75fr;gap:22px;margin-bottom:22px}
+.hero-card,.summary-card,.filters,.marketplace,.bill-card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:22px;
+  backdrop-filter:blur(14px);
+  box-shadow:var(--shadow);
+}
+.hero-card{padding:28px;position:relative;overflow:hidden}
+.hero-card::after{
+  content:"";
+  position:absolute;
+  right:-80px;
+  top:-80px;
+  width:220px;
+  height:220px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(34,211,238,0.22), transparent 68%);
+}
+.kicker{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:#b6ecf6;
+  background:rgba(34,211,238,0.12);
+  border:1px solid rgba(34,211,238,0.22);
+  padding:8px 10px;
+  border-radius:999px;
+  margin-bottom:16px;
+}
+.hero-card h2{font-size:34px;line-height:1.1;max-width:720px;margin-bottom:12px}
+.hero-card p{color:var(--muted);font-size:15px;line-height:1.7;max-width:760px}
+.hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px}
+.stat{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:16px}
+.stat .label{color:var(--muted);font-size:12px;margin-bottom:6px}
+.stat .value{font-size:24px;font-weight:800}
+.summary-card{padding:24px;display:flex;flex-direction:column;justify-content:space-between}
+.summary-card h3{font-size:18px;margin-bottom:14px}
+.summary-list{display:grid;gap:12px}
+.summary-item{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-radius:14px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.04)}
+.summary-item span{color:var(--muted);font-size:13px}
+.summary-item strong{font-size:16px}
+.layout{display:grid;grid-template-columns:1fr 360px;gap:22px}
+.filters{padding:18px;margin-bottom:18px}
+.filters-row{display:grid;grid-template-columns:1.3fr .8fr auto;gap:14px;align-items:end}
+.field{display:flex;flex-direction:column;gap:8px}
+.field label{color:var(--muted);font-size:12px;font-weight:700}
+.field input,.field select{
+  width:100%;
+  padding:12px 14px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,0.10);
+  background:rgba(255,255,255,0.05);
+  color:var(--text);
+  outline:none;
+}
+.field select[multiple]{min-height:220px;padding:10px}
+.field-hint{color:var(--muted);font-size:12px;line-height:1.5}
+.marketplace{padding:20px}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:18px}
+.section-head h3{font-size:20px}
+.section-head p{color:var(--muted);font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.card{background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.035));border:1px solid rgba(255,255,255,0.09);border-radius:20px;padding:18px;transition:.2s ease;position:relative;overflow:hidden}
+.card:hover{transform:translateY(-3px);border-color:rgba(34,211,238,0.35);box-shadow:0 18px 40px rgba(0,0,0,0.22)}
+.card.selected{border-color:rgba(52,211,153,0.55);box-shadow:0 0 0 1px rgba(52,211,153,0.18), 0 20px 46px rgba(0,0,0,0.24)}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:14px}
+.icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;background:linear-gradient(135deg, rgba(34,211,238,0.18), rgba(255,255,255,0.04));border:1px solid rgba(34,211,238,0.22)}
+.badge{font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:7px 9px;border-radius:999px;border:1px solid rgba(255,255,255,0.10);color:#d7e9f8;background:rgba(255,255,255,0.05)}
+.card h4{font-size:18px;margin-bottom:8px}
+.card p{color:var(--muted);font-size:13px;line-height:1.6;min-height:66px}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.tag{font-size:11px;color:#bfe8f5;padding:6px 9px;border-radius:999px;background:rgba(34,211,238,0.10);border:1px solid rgba(34,211,238,0.18)}
+.price-row{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-top:14px}
+.price small{color:var(--muted);display:block;font-size:11px;margin-bottom:2px}
+.price strong{font-size:28px;line-height:1}
+.price em{font-style:normal;font-size:13px;color:var(--muted);margin-left:4px}
+.select-btn{min-width:120px}
+.select-btn.selected{background:linear-gradient(135deg,#34d399,#10b981);color:#07281f}
+.bill-card{padding:20px;position:sticky;top:24px}
+.bill-card h3{font-size:20px;margin-bottom:6px}
+.bill-card > p{color:var(--muted);font-size:13px;margin-bottom:18px}
+.selected-list{display:grid;gap:10px;margin-bottom:18px;max-height:420px;overflow:auto;padding-right:4px}
+.selected-list::-webkit-scrollbar{width:8px}
+.selected-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.15);border-radius:999px}
+.selected-empty{padding:16px;border-radius:16px;border:1px dashed rgba(255,255,255,0.14);color:var(--muted);background:rgba(255,255,255,0.03);font-size:13px}
+.line-item{display:flex;justify-content:space-between;gap:12px;padding:12px 14px;border-radius:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08)}
+.line-item .name{font-weight:700;font-size:13px}
+.line-item .meta{color:var(--muted);font-size:11px;margin-top:4px}
+.line-item .amount{font-weight:800;white-space:nowrap}
+.totals{border-top:1px solid rgba(255,255,255,0.10);padding-top:16px;display:grid;gap:10px}
+.total-row{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:14px}
+.total-row.grand{color:var(--text);font-size:18px;font-weight:800}
+.bill-note{margin-top:16px;padding:14px;border-radius:14px;background:rgba(34,211,238,0.08);border:1px solid rgba(34,211,238,0.18);color:#c8f2fb;font-size:12px;line-height:1.6}
+.footer-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+@media (max-width:1200px){
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .layout{grid-template-columns:1fr}
+  .bill-card{position:relative;top:0}
+  .hero{grid-template-columns:1fr}
+}
+@media (max-width:820px){
+  .filters-row{grid-template-columns:1fr}
+  .grid{grid-template-columns:1fr}
+  .hero-stats{grid-template-columns:1fr}
+  .topbar{flex-direction:column;align-items:flex-start}
+  .section-head{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <div class="brand-wrap">
+        <div class="logo">🛍️</div>
+        <div>
+          <h1>AI Channel Marketplace</h1>
+          <p>Browse, bundle, and subscribe to AI solutions for partners and resellers.</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <a href="userdashboard.html" class="btn btn-back">← Back to Dashboard</a>
+        <button class="btn btn-primary" id="jumpToBill">View Monthly Bill</button>
+      </div>
+    </div>
+
+    <div class="hero">
+      <div class="hero-card">
+        <div class="kicker">Westcon AI Marketplace</div>
+        <h2>Shop AI solutions like an app store and build your recurring revenue stack.</h2>
+        <p>
+          Select one or multiple AI products from the product dropdown, compare monthly pricing, and create a bundled recurring subscription for your partner business.
+        </p>
+        <div class="hero-stats">
+          <div class="stat">
+            <div class="label">Products Available</div>
+            <div class="value" id="productCount">0</div>
+          </div>
+          <div class="stat">
+            <div class="label">Selected Products</div>
+            <div class="value" id="selectedCount">0</div>
+          </div>
+          <div class="stat">
+            <div class="label">Monthly Recurring Bill</div>
+            <div class="value" id="heroTotal">$0</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="summary-card">
+        <div>
+          <h3>Marketplace Snapshot</h3>
+          <div class="summary-list">
+            <div class="summary-item"><span>Billing Model</span><strong>Monthly Recurring</strong></div>
+            <div class="summary-item"><span>Product Selector</span><strong>Multi Select Dropdown</strong></div>
+            <div class="summary-item"><span>Experience</span><strong>App Store Style</strong></div>
+            <div class="summary-item"><span>Target Users</span><strong>Partners & Resellers</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="layout">
+      <div>
+        <div class="filters">
+          <div class="filters-row">
+            <div class="field">
+              <label for="productSelect">Select Products</label>
+              <select id="productSelect" multiple></select>
+              <div class="field-hint">Hold Ctrl or Cmd to choose multiple products. Each option includes the monthly selling price.</div>
+            </div>
+            <div class="field">
+              <label for="sortFilter">Sort by</label>
+              <select id="sortFilter">
+                <option value="default">Featured</option>
+                <option value="low-high">Price: Low to High</option>
+                <option value="high-low">Price: High to Low</option>
+                <option value="name">Name</option>
+              </select>
+            </div>
+            <div class="field" style="justify-content:end;">
+              <label>&nbsp;</label>
+              <button class="btn btn-back" id="clearSelections">Clear Selection</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="marketplace">
+          <div class="section-head">
+            <div>
+              <h3>Marketplace Catalog</h3>
+              <p>The dropdown controls the selection, and the cards below give a visual overview of each offer.</p>
+            </div>
+            <div class="badge" id="visibleCount">0 Products</div>
+          </div>
+          <div class="grid" id="productGrid"></div>
+        </div>
+      </div>
+
+      <div class="bill-card" id="billCard">
+        <h3>Monthly Recurring Bill</h3>
+        <p>Your selected AI subscriptions and total recurring monthly spend.</p>
+
+        <div class="selected-list" id="selectedList"></div>
+
+        <div class="totals">
+          <div class="total-row"><span>Products Selected</span><strong id="billSelectedCount">0</strong></div>
+          <div class="total-row"><span>Subtotal / month</span><strong id="subtotal">$0</strong></div>
+          <div class="total-row"><span>Bundle Discount</span><strong id="discount">$0</strong></div>
+          <div class="total-row grand"><span>Total Recurring Bill</span><strong id="grandTotal">$0</strong></div>
+        </div>
+
+        <div class="bill-note">
+          Pricing shown is illustrative monthly recurring pricing in USD. A 5% bundle discount applies to 3 to 4 products, and 10% applies to 5 or more.
+        </div>
+
+        <div class="footer-actions">
+          <button class="btn btn-back" id="resetBill">Reset</button>
+          <button class="btn btn-primary">Proceed to Subscribe</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+const products = [
+  {
+    id:'westcon-knowledge-base',
+    icon:'📚',
+    name:'Westcon Knowledge Base',
+    category:'knowledge',
+    audience:'Enablement',
+    price:49,
+    description:'Search product information, documentation and get AI-powered answers instantly.',
+    tags:['RAG Search','Instant Answers','Partner Enablement']
+  },
+  {
+    id:'sales-copilot-resellers',
+    icon:'🤝',
+    name:'AI Sales Copilot for Resellers',
+    category:'sales',
+    audience:'Sales',
+    price:179,
+    description:'Generate sales strategies, proposals and improve partner deal conversions.',
+    tags:['Deal Support','Proposal Help','Reseller Sales']
+  },
+  {
+    id:'network-architecture-recommendations',
+    icon:'🌐',
+    name:'AI Network Architecture Recommendations',
+    category:'operations',
+    audience:'Pre-Sales',
+    price:299,
+    description:'Get AI-driven network designs and architecture guidance for customer solutions.',
+    tags:['Architecture AI','Design Guidance','Solution Planning']
+  },
+  {
+    id:'security-threat-intelligence-dashboard',
+    icon:'🛡️',
+    name:'AI Security Threat Intelligence Dashboard',
+    category:'security',
+    audience:'Security',
+    price:249,
+    description:'Monitor threat signals, review security events and gain AI-driven visibility into emerging risks.',
+    tags:['Threat Alerts','SOC Visibility','Risk Insights']
+  },
+  {
+    id:'channel-marketplace',
+    icon:'🛍️',
+    name:'AI Channel Marketplace',
+    category:'marketplace',
+    audience:'Commercial',
+    price:129,
+    description:'Browse and select partner-ready AI services with clear monthly pricing and bundled solution options.',
+    tags:['App Store','Bundles','Subscription Catalog']
+  },
+  {
+    id:'pricing-margin-optimization',
+    icon:'💹',
+    name:'AI Pricing and Margin Optimization',
+    category:'analytics',
+    audience:'Commercial',
+    price:219,
+    description:'Improve pricing decisions, protect margins and uncover smarter commercial opportunities with AI insights.',
+    tags:['Pricing AI','Margin Protection','Commercial Insight']
+  },
+  {
+    id:'network-recommendation-engine-v2',
+    icon:'⚙️',
+    name:'AI Network Recommendation Engine V2',
+    category:'operations',
+    audience:'Engineering',
+    price:349,
+    description:'Generate next-generation network recommendations with richer inputs, sharper outputs and faster solution planning.',
+    tags:['V2 Engine','Advanced Outputs','Faster Planning']
+  }
+];
+
+const state = {
+  selected: new Set(),
+  sort: 'default'
+};
+
+const productGrid = document.getElementById('productGrid');
+const selectedList = document.getElementById('selectedList');
+const visibleCount = document.getElementById('visibleCount');
+const selectedCount = document.getElementById('selectedCount');
+const billSelectedCount = document.getElementById('billSelectedCount');
+const subtotalEl = document.getElementById('subtotal');
+const discountEl = document.getElementById('discount');
+const grandTotalEl = document.getElementById('grandTotal');
+const heroTotal = document.getElementById('heroTotal');
+const productCount = document.getElementById('productCount');
+const productSelect = document.getElementById('productSelect');
+const sortFilter = document.getElementById('sortFilter');
+
+productCount.textContent = products.length;
+visibleCount.textContent = `${products.length} Products`;
+
+function currency(num){
+  return `$${num.toLocaleString()}`;
+}
+
+function populateDropdown(){
+  productSelect.innerHTML = products.map(product => `
+    <option value="${product.id}">${product.name} — ${currency(product.price)}/month</option>
+  `).join('');
+}
+
+function syncDropdownSelection(){
+  [...productSelect.options].forEach(option => {
+    option.selected = state.selected.has(option.value);
+  });
+}
+
+function getSortedProducts(){
+  const sorted = [...products];
+  if(state.sort === 'low-high') sorted.sort((a,b)=>a.price-b.price);
+  if(state.sort === 'high-low') sorted.sort((a,b)=>b.price-a.price);
+  if(state.sort === 'name') sorted.sort((a,b)=>a.name.localeCompare(b.name));
+  return sorted;
+}
+
+function renderProducts(){
+  const sorted = getSortedProducts();
+  productGrid.innerHTML = sorted.map(product => {
+    const selected = state.selected.has(product.id);
+    return `
+      <div class="card ${selected ? 'selected' : ''}">
+        <div class="card-top">
+          <div class="icon">${product.icon}</div>
+          <div class="badge">${product.audience}</div>
+        </div>
+        <h4>${product.name}</h4>
+        <p>${product.description}</p>
+        <div class="tags">
+          ${product.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+        </div>
+        <div class="price-row">
+          <div class="price">
+            <small>Recurring monthly price</small>
+            <strong>${currency(product.price)}</strong><em>/mo</em>
+          </div>
+          <button class="btn ${selected ? 'btn-primary selected' : 'btn-back'} select-btn" onclick="toggleProduct('${product.id}')">
+            ${selected ? 'Selected' : 'Add to Bill'}
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function getSelectedProducts(){
+  return products.filter(product => state.selected.has(product.id));
+}
+
+function calculateDiscount(subtotal, count){
+  if(count >= 5) return Math.round(subtotal * 0.10);
+  if(count >= 3) return Math.round(subtotal * 0.05);
+  return 0;
+}
+
+function renderBill(){
+  const chosen = getSelectedProducts();
+  const subtotal = chosen.reduce((sum, product) => sum + product.price, 0);
+  const discount = calculateDiscount(subtotal, chosen.length);
+  const grandTotal = subtotal - discount;
+
+  selectedCount.textContent = chosen.length;
+  billSelectedCount.textContent = chosen.length;
+  subtotalEl.textContent = currency(subtotal);
+  discountEl.textContent = `-${currency(discount)}`;
+  grandTotalEl.textContent = currency(grandTotal);
+  heroTotal.textContent = currency(grandTotal);
+
+  if(!chosen.length){
+    selectedList.innerHTML = `<div class="selected-empty">No products selected yet. Choose one or more products from the multi-select dropdown to build your monthly recurring AI subscription.</div>`;
+    return;
+  }
+
+  selectedList.innerHTML = chosen.map(product => `
+    <div class="line-item">
+      <div>
+        <div class="name">${product.name}</div>
+        <div class="meta">${product.audience} • ${product.category}</div>
+      </div>
+      <div class="amount">${currency(product.price)}/mo</div>
+    </div>
+  `).join('');
+}
+
+function updateAll(){
+  syncDropdownSelection();
+  renderProducts();
+  renderBill();
+}
+
+function toggleProduct(id){
+  if(state.selected.has(id)) state.selected.delete(id);
+  else state.selected.add(id);
+  updateAll();
+}
+window.toggleProduct = toggleProduct;
+
+productSelect.addEventListener('change', () => {
+  state.selected = new Set([...productSelect.selectedOptions].map(option => option.value));
+  updateAll();
+});
+
+sortFilter.addEventListener('change', (event) => {
+  state.sort = event.target.value;
+  renderProducts();
+});
+
+document.getElementById('clearSelections').addEventListener('click', () => {
+  state.selected.clear();
+  updateAll();
+});
+
+document.getElementById('resetBill').addEventListener('click', () => {
+  state.selected.clear();
+  updateAll();
+});
+
+document.getElementById('jumpToBill').addEventListener('click', () => {
+  document.getElementById('billCard').scrollIntoView({ behavior:'smooth', block:'start' });
+});
+
+populateDropdown();
+updateAll();
+</script>
+</body>
+</html>
