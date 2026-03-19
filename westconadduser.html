@@ -1,740 +1,415 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Westcon - Add New Partner User</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>User Dashboard | Westcon AI</title>
 
-    :root {
-      --bg-1: #020817;
-      --bg-2: #06142d;
-      --bg-3: #032b3f;
-      --panel: rgba(10, 16, 30, 0.82);
-      --panel-2: rgba(15, 24, 43, 0.86);
-      --border: rgba(255,255,255,0.08);
-      --text: #eef4ff;
-      --muted: #9fb0c8;
-      --input-bg: rgba(3, 10, 24, 0.9);
-      --input-border: rgba(255,255,255,0.08);
-      --primary-1: #2f6df6;
-      --primary-2: #20b4f2;
-      --chip: rgba(255,255,255,0.05);
-      --danger: #ff8f8f;
-      --success: #83f0a8;
-    }
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
 
-    body {
-      margin: 0;
-      font-family: Inter, Arial, sans-serif;
-      color: var(--text);
-      min-height: 100vh;
-      background:
-        radial-gradient(circle at 15% 20%, rgba(52, 87, 183, 0.35), transparent 28%),
-        radial-gradient(circle at 85% 18%, rgba(0, 176, 255, 0.18), transparent 24%),
-        linear-gradient(90deg, #182a5b 0%, #020817 46%, #022434 100%);
-    }
+body{
+font-family:Inter,Arial,sans-serif;
+background:linear-gradient(135deg,#0f172a 0%,#111827 45%,#083344 100%);
+color:#e5eef7;
+min-height:100vh;
+}
 
-    .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-      padding: 14px 28px;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      background: rgba(5, 9, 18, 0.72);
-      backdrop-filter: blur(12px);
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
+.container{
+max-width:1400px;
+margin:auto;
+padding:28px;
+}
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      min-width: 0;
-    }
+/* HEADER */
+.topbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:18px 24px;
+border-radius:18px;
+background:rgba(255,255,255,0.05);
+border:1px solid rgba(255,255,255,0.08);
+margin-bottom:25px;
+}
 
-    .brand-mark {
-      width: 56px;
-      height: 56px;
-      border-radius: 16px;
-      background: linear-gradient(135deg, #58a5ff 0%, #0ea5e9 100%);
-      box-shadow: inset 0 10px 18px rgba(255,255,255,0.18);
-      flex-shrink: 0;
-    }
+.brand{
+display:flex;
+align-items:center;
+gap:12px;
+}
 
-    .brand-text {
-      line-height: 1.1;
-    }
+.logo{
+width:58px;
+height:58px;
+border-radius:16px;
+background:linear-gradient(135deg,#2d6df6,#17b7ff);
+}
 
-    .brand-text .title {
-      font-size: 22px;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-    }
+.brand h1{
+font-size:1.2rem;
+font-weight:700;
+}
 
-    .brand-text .subtitle {
-      font-size: 14px;
-      color: rgba(255,255,255,0.72);
-    }
+.user{
+font-size:0.95rem;
+color:#9fb0c9;
+}
 
-    .top-actions {
-      display: flex;
-      gap: 14px;
-      align-items: center;
-    }
+/* STATS */
+.stats{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:18px;
+margin-bottom:25px;
+}
 
-    .top-btn {
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.03);
-      color: #fff;
-      border-radius: 18px;
-      padding: 14px 20px;
-      font-size: 16px;
-      font-weight: 700;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
+.card{
+background:rgba(255,255,255,0.05);
+border:1px solid rgba(255,255,255,0.08);
+padding:22px;
+border-radius:18px;
+}
 
-    .top-btn.primary {
-      background: linear-gradient(135deg, var(--primary-1) 0%, var(--primary-2) 100%);
-      border: none;
-    }
+.card h4{
+font-size:0.95rem;
+color:#9fb0c9;
+margin-bottom:14px;
+}
 
-    .page {
-      max-width: 1680px;
-      margin: 0 auto;
-      padding: 34px 28px 48px;
-    }
+.card h2{
+font-size:2rem;
+font-weight:800;
+line-height:1.1;
+}
 
-    .layout {
-      display: grid;
-      grid-template-columns: 1.2fr 0.95fr;
-      gap: 34px;
-      align-items: start;
-    }
+.blue{color:#60a5fa}
+.cyan{color:#22d3ee}
+.green{color:#34d399}
+.yellow{color:#fbbf24}
 
-    .hero {
-      padding-top: 26px;
-    }
+/* GRAPH */
+.graph{
+background:rgba(255,255,255,0.05);
+border:1px solid rgba(255,255,255,0.08);
+padding:24px;
+border-radius:18px;
+margin-bottom:30px;
+}
 
-    .eyebrow {
-      display: inline-block;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.04);
-      color: #bfd0ef;
-      border-radius: 999px;
-      padding: 14px 18px;
-      font-size: 14px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      margin-bottom: 22px;
-    }
+.graph h3{
+font-size:1.15rem;
+font-weight:700;
+margin-bottom:6px;
+}
 
-    .hero h1 {
-      font-size: 72px;
-      line-height: 0.97;
-      letter-spacing: -0.05em;
-      margin: 0 0 22px;
-      max-width: 760px;
-    }
+.graph p{
+font-size:0.92rem;
+color:#9fb0c9;
+margin-bottom:18px;
+}
 
-    .hero p {
-      font-size: 22px;
-      line-height: 1.55;
-      color: #c3d0e6;
-      max-width: 760px;
-      margin: 0 0 28px;
-    }
+.chart-area{
+width:100%;
+overflow-x:auto;
+}
 
-    .hero-chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 14px;
-    }
+.chart-svg{
+width:100%;
+height:auto;
+display:block;
+min-width:1100px;
+}
 
-    .chip {
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.03);
-      color: #dbe7ff;
-      border-radius: 999px;
-      padding: 14px 18px;
-      font-size: 14px;
-    }
 
-    .panel {
-      background: linear-gradient(90deg, rgba(18, 24, 38, 0.94) 0%, rgba(19, 31, 45, 0.9) 58%, rgba(13, 50, 61, 0.9) 100%);
-      border: 1px solid var(--border);
-      border-radius: 30px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.24);
-      overflow: hidden;
-    }
 
-    .panel-inner {
-      padding: 30px 28px 26px;
-    }
+.product-selector-wrap{margin-bottom:30px;}.product-selector{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);padding:24px;border-radius:18px;}.product-selector h3{font-size:1.15rem;font-weight:700;margin-bottom:6px;}.product-selector p{font-size:0.92rem;color:#9fb0c9;margin-bottom:16px;line-height:1.5;}.product-selector label{display:block;font-size:0.92rem;color:#c8d6ea;margin-bottom:10px;font-weight:600;}.product-selector select{width:100%;min-height:220px;padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,0.10);background:rgba(10,20,40,0.75);color:#e5eef7;font-size:0.96rem;outline:none;}.product-selector select option{padding:12px 10px;background:#0f172a;color:#e5eef7;}.selector-footnote{margin-top:12px;font-size:0.88rem;color:#7f93b2;}
 
-    .panel h2 {
-      margin: 0 0 8px;
-      font-size: 28px;
-      letter-spacing: -0.03em;
-    }
+/* SERVICES */
+.services{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:20px;
+}
 
-    .panel-subtitle {
-      margin: 0 0 24px;
-      color: var(--muted);
-      font-size: 16px;
-      line-height: 1.5;
-    }
+.service{
+padding:28px;
+border-radius:18px;
+background:rgba(255,255,255,0.05);
+border:1px solid rgba(255,255,255,0.08);
+text-decoration:none;
+color:white;
+transition:0.3s;
+display:block;
+min-height:160px;
+}
 
-    .form-grid {
-      display: grid;
-      gap: 18px;
-    }
+.service:hover{
+box-shadow:0 0 20px rgba(23,183,255,0.35);
+transform:translateY(-5px);
+border-color:#17b7ff;
+}
 
-    .field {
-      display: grid;
-      gap: 10px;
-    }
+.service h3{
+font-size:1rem;
+margin-bottom:12px;
+line-height:1.2;
+}
 
-    .field label {
-      font-size: 15px;
-      color: #dfe9fb;
-      font-weight: 600;
-    }
+.service p{
+color:#9fb0c9;
+font-size:0.95rem;
+line-height:1.5;
+}
 
-    .input,
-    .textarea {
-      width: 100%;
-      border-radius: 18px;
-      border: 1px solid var(--input-border);
-      background: var(--input-bg);
-      color: #f3f7ff;
-      padding: 16px 18px;
-      font-size: 17px;
-      outline: none;
-      transition: 0.18s ease;
-    }
+/* RESPONSIVE */
+@media(max-width:1000px){
+.stats{grid-template-columns:1fr 1fr}
+.services{grid-template-columns:1fr}
+}
 
-    .input::placeholder,
-    .textarea::placeholder {
-      color: #6f839f;
-    }
-
-    .input:focus,
-    .textarea:focus {
-      border-color: rgba(59,130,246,0.65);
-      box-shadow: 0 0 0 3px rgba(59,130,246,0.16);
-    }
-
-    .services-box {
-      display: grid;
-      gap: 12px;
-      padding: 12px;
-      border-radius: 22px;
-      border: 1px solid rgba(255,255,255,0.06);
-      background: rgba(1, 8, 22, 0.7);
-    }
-
-    .service-option {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 18px 18px;
-      border-radius: 18px;
-      background: linear-gradient(90deg, rgba(6, 14, 35, 0.95) 0%, rgba(5, 13, 28, 0.96) 100%);
-      border: 1px solid rgba(255,255,255,0.04);
-      cursor: pointer;
-    }
-
-    .service-left {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      min-width: 0;
-    }
-
-    .service-option input[type="checkbox"] {
-      width: 23px;
-      height: 23px;
-      accent-color: #3b82f6;
-      flex-shrink: 0;
-      cursor: pointer;
-    }
-
-    .service-name {
-      font-size: 17px;
-      font-weight: 700;
-      color: #f2f7ff;
-    }
-
-    .service-price {
-      font-size: 18px;
-      font-weight: 800;
-      white-space: nowrap;
-    }
-
-    .two-col {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 18px;
-    }
-
-    .stat-box {
-      display: grid;
-      gap: 8px;
-      padding: 18px 20px;
-      border-radius: 20px;
-      border: 1px solid rgba(255,255,255,0.06);
-      background: rgba(255,255,255,0.03);
-    }
-
-    .stat-label {
-      font-size: 14px;
-      color: var(--muted);
-      font-weight: 600;
-    }
-
-    .stat-value {
-      font-size: 32px;
-      font-weight: 800;
-      line-height: 1;
-      letter-spacing: -0.03em;
-    }
-
-    .actions {
-      display: flex;
-      gap: 16px;
-      margin-top: 10px;
-    }
-
-    .btn {
-      border: none;
-      border-radius: 18px;
-      padding: 16px 24px;
-      font-size: 17px;
-      font-weight: 800;
-      cursor: pointer;
-      transition: 0.18s ease;
-    }
-
-    .btn:hover {
-      transform: translateY(-1px);
-    }
-
-    .btn:disabled {
-      opacity: 0.7;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .btn-primary {
-      flex: 1;
-      color: #fff;
-      background: linear-gradient(135deg, var(--primary-1) 0%, var(--primary-2) 100%);
-      box-shadow: 0 14px 28px rgba(47,109,246,0.22);
-    }
-
-    .btn-secondary {
-      min-width: 150px;
-      color: #fff;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.06);
-    }
-
-    .status {
-      margin-top: 14px;
-      min-height: 24px;
-      font-size: 14px;
-      font-weight: 700;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-
-    .status.info { color: #9fc2ff; }
-    .status.success { color: var(--success); }
-    .status.error { color: var(--danger); }
-
-    .helper-card-row {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-      margin-top: 18px;
-    }
-
-    .helper-card {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 22px;
-      padding: 18px 16px;
-    }
-
-    .helper-card h3 {
-      margin: 0 0 8px;
-      font-size: 17px;
-    }
-
-    .helper-card p {
-      margin: 0;
-      color: #9eb0cb;
-      font-size: 14px;
-      line-height: 1.45;
-    }
-
-    @media (max-width: 1180px) {
-      .layout {
-        grid-template-columns: 1fr;
-      }
-
-      .hero h1 {
-        font-size: 56px;
-      }
-    }
-
-    @media (max-width: 760px) {
-      .topbar {
-        padding: 12px 16px;
-      }
-
-      .page {
-        padding: 20px 16px 34px;
-      }
-
-      .hero h1 {
-        font-size: 42px;
-      }
-
-      .hero p {
-        font-size: 18px;
-      }
-
-      .panel-inner {
-        padding: 22px 18px;
-      }
-
-      .two-col,
-      .helper-card-row {
-        grid-template-columns: 1fr;
-      }
-
-      .actions {
-        flex-direction: column;
-      }
-
-      .btn-secondary {
-        min-width: 0;
-      }
-
-      .brand-text .subtitle {
-        display: none;
-      }
-    }
-  </style>
+@media(max-width:640px){
+.container{padding:18px}
+.topbar{flex-direction:column;align-items:flex-start;gap:12px}
+.stats{grid-template-columns:1fr}
+.card h2{font-size:1.7rem}
+}
+</style>
 </head>
+
 <body>
-  <header class="topbar">
-    <div class="brand">
-      <div class="brand-mark"></div>
-      <div class="brand-text">
-        <div class="title">Westcon</div>
-        <div class="subtitle">AI Partner Enablement Platform</div>
-      </div>
-    </div>
 
-    <div class="top-actions">
-      <a class="top-btn" href="WestconAdmin.html">Partner Admin</a>
-      <a class="top-btn primary" href="WestconAdmin.html">Back to Admin</a>
-    </div>
-  </header>
+<div class="container">
 
-  <main class="page">
-    <section class="layout">
-      <div class="hero">
-        <div class="eyebrow">Partner-first • secure access • ai-enabled services</div>
-        <h1>Add New Partner User</h1>
-        <p>
-          Create a new partner record, assign services, and send the full onboarding payload
-          directly to your n8n workflow for automation and downstream actions.
-        </p>
+<!-- HEADER -->
+<div class="topbar">
+<div class="brand">
+<div class="logo"></div>
+<h1>Westcon AI Platform</h1>
+</div>
+<div class="user">demo.partner@westcon.ai</div>
+</div>
 
-        <div class="hero-chips">
-          <div class="chip">Webhook-ready</div>
-          <div class="chip">Role-based onboarding</div>
-          <div class="chip">Automation-friendly</div>
-          <div class="chip">Enterprise-grade UX</div>
-        </div>
-      </div>
+<!-- STATS -->
+<div class="stats">
+<div class="card">
+<h4>Total Tokens</h4>
+<h2 class="blue">120,000</h2>
+</div>
 
-      <div>
-        <div class="panel">
-          <div class="panel-inner">
-            <h2>Create Partner User</h2>
-            <p class="panel-subtitle">
-              Complete the user details below. On submit, all values are posted to your n8n webhook
-              and only then redirected back to the admin page.
-            </p>
+<div class="card">
+<h4>Used</h4>
+<h2 class="cyan">46,350</h2>
+</div>
 
-            <form id="addUserForm" class="form-grid">
-              <div class="two-col">
-                <div class="field">
-                  <label for="userId">User ID</label>
-                  <input type="text" id="userId" class="input" placeholder="Enter User ID e.g. West01-00012" required />
-                </div>
+<div class="card">
+<h4>Remaining</h4>
+<h2 class="green">73,650</h2>
+</div>
 
-                <div class="field">
-                  <label for="rowId">Row ID</label>
-                  <input type="number" id="rowId" class="input" placeholder="Enter Row ID e.g. 12" required />
-                </div>
-              </div>
+<div class="card">
+<h4>Next Billing</h4>
+<h2 class="yellow">01 Apr 2026</h2>
+</div>
+</div>
 
-              <div class="field">
-                <label for="username">Username (Login Email)</label>
-                <input type="email" id="username" class="input" placeholder="Enter login email" required />
-              </div>
+<!-- GRAPH -->
+<div class="graph">
+<h3>Monthly Usage</h3>
+<p>Daily token consumption across the current month.</p>
 
-              <div class="field">
-                <label for="company">Company</label>
-                <input type="text" id="company" class="input" placeholder="Enter company name" required />
-              </div>
+<div class="chart-area">
+<svg class="chart-svg" viewBox="0 0 1200 380" xmlns="http://www.w3.org/2000/svg">
 
-              <div class="field">
-                <label>Services Purchased</label>
-                <div class="services-box">
-                  <label class="service-option">
-                    <div class="service-left">
-                      <input type="checkbox" value="Westcon Knowledge Base" data-price="49" />
-                      <div class="service-name">Westcon Knowledge Base</div>
-                    </div>
-                    <div class="service-price">$49</div>
-                  </label>
+<!-- grid lines -->
+<line x1="70" y1="50" x2="1150" y2="50" stroke="rgba(255,255,255,0.10)" />
+<line x1="70" y1="110" x2="1150" y2="110" stroke="rgba(255,255,255,0.08)" />
+<line x1="70" y1="170" x2="1150" y2="170" stroke="rgba(255,255,255,0.08)" />
+<line x1="70" y1="230" x2="1150" y2="230" stroke="rgba(255,255,255,0.08)" />
+<line x1="70" y1="290" x2="1150" y2="290" stroke="rgba(255,255,255,0.08)" />
+<line x1="70" y1="330" x2="1150" y2="330" stroke="rgba(255,255,255,0.12)" />
 
-                  <label class="service-option">
-                    <div class="service-left">
-                      <input type="checkbox" value="AI Sales Copilot for Resellers" data-price="178" />
-                      <div class="service-name">AI Sales Copilot for Resellers</div>
-                    </div>
-                    <div class="service-price">$178</div>
-                  </label>
+<!-- y-axis labels -->
+<text x="18" y="55" fill="#9fb0c9" font-size="13">50k</text>
+<text x="18" y="115" fill="#9fb0c9" font-size="13">40k</text>
+<text x="18" y="175" fill="#9fb0c9" font-size="13">30k</text>
+<text x="18" y="235" fill="#9fb0c9" font-size="13">20k</text>
+<text x="18" y="295" fill="#9fb0c9" font-size="13">10k</text>
+<text x="30" y="335" fill="#9fb0c9" font-size="13">0</text>
 
-                  <label class="service-option">
-                    <div class="service-left">
-                      <input type="checkbox" value="AI Network Architecture Recommendations" data-price="289" />
-                      <div class="service-name">AI Network Architecture Recommendations</div>
-                    </div>
-                    <div class="service-price">$289</div>
-                  </label>
-                </div>
-              </div>
+<!-- area fill -->
+<path d="
+M70 318
+L105 314
+L140 310
+L175 304
+L210 298
+L245 292
+L280 285
+L315 279
+L350 270
+L385 262
+L420 256
+L455 248
+L490 240
+L525 233
+L560 226
+L595 218
+L630 210
+L665 202
+L700 195
+L735 188
+L770 176
+L805 170
+L840 162
+L875 150
+L910 142
+L945 132
+L980 122
+L1015 114
+L1050 104
+L1085 98
+L1120 92
+L1120 330
+L70 330
+Z"
+fill="rgba(34,211,238,0.10)" />
 
-              <div class="field">
-                <label for="billingDate">Billing Date</label>
-                <input type="date" id="billingDate" class="input" required />
-              </div>
+<!-- usage line -->
+<polyline
+fill="none"
+stroke="#22d3ee"
+stroke-width="4"
+stroke-linecap="round"
+stroke-linejoin="round"
+points="
+70,318
+105,314
+140,310
+175,304
+210,298
+245,292
+280,285
+315,279
+350,270
+385,262
+420,256
+455,248
+490,240
+525,233
+560,226
+595,218
+630,210
+665,202
+700,195
+735,188
+770,176
+805,170
+840,162
+875,150
+910,142
+945,132
+980,122
+1015,114
+1050,104
+1085,98
+1120,92
+" />
 
-              <div class="two-col">
-                <div class="stat-box">
-                  <div class="stat-label">Monthly Cost</div>
-                  <div class="stat-value" id="monthlyCost">$0</div>
-                </div>
+<!-- points -->
+<circle cx="70" cy="318" r="4" fill="#22d3ee" />
+<circle cx="210" cy="298" r="4" fill="#22d3ee" />
+<circle cx="350" cy="270" r="4" fill="#22d3ee" />
+<circle cx="490" cy="240" r="4" fill="#22d3ee" />
+<circle cx="630" cy="210" r="4" fill="#22d3ee" />
+<circle cx="770" cy="176" r="4" fill="#22d3ee" />
+<circle cx="910" cy="142" r="4" fill="#22d3ee" />
+<circle cx="1050" cy="104" r="4" fill="#22d3ee" />
+<circle cx="1120" cy="92" r="5" fill="#22d3ee" />
 
-                <div class="stat-box">
-                  <div class="stat-label">Tokens Purchased</div>
-                  <div class="stat-value" id="tokensPurchased">0</div>
-                </div>
-              </div>
+<!-- x-axis day labels -->
+<text x="66" y="355" fill="#9fb0c9" font-size="12">1</text>
+<text x="138" y="355" fill="#9fb0c9" font-size="12">3</text>
+<text x="208" y="355" fill="#9fb0c9" font-size="12">5</text>
+<text x="278" y="355" fill="#9fb0c9" font-size="12">7</text>
+<text x="348" y="355" fill="#9fb0c9" font-size="12">9</text>
+<text x="414" y="355" fill="#9fb0c9" font-size="12">11</text>
+<text x="484" y="355" fill="#9fb0c9" font-size="12">13</text>
+<text x="554" y="355" fill="#9fb0c9" font-size="12">15</text>
+<text x="624" y="355" fill="#9fb0c9" font-size="12">17</text>
+<text x="694" y="355" fill="#9fb0c9" font-size="12">19</text>
+<text x="764" y="355" fill="#9fb0c9" font-size="12">21</text>
+<text x="834" y="355" fill="#9fb0c9" font-size="12">23</text>
+<text x="904" y="355" fill="#9fb0c9" font-size="12">25</text>
+<text x="974" y="355" fill="#9fb0c9" font-size="12">27</text>
+<text x="1044" y="355" fill="#9fb0c9" font-size="12">29</text>
+<text x="1112" y="355" fill="#9fb0c9" font-size="12">31</text>
 
-              <div class="actions">
-                <button type="submit" class="btn btn-primary" id="createUserBtn">Create User</button>
-                <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
-              </div>
+</svg>
+</div>
+</div>
 
-              <div id="statusMessage" class="status info"></div>
-            </form>
-          </div>
-        </div>
 
-        <div class="helper-card-row">
-          <div class="helper-card">
-            <h3>Webhook Delivery</h3>
-            <p>All submitted values are sent to n8n in a single JSON payload.</p>
-          </div>
-          <div class="helper-card">
-            <h3>Token Logic</h3>
-            <p>Each selected service adds 100000 tokens to the new user allocation.</p>
-          </div>
-          <div class="helper-card">
-            <h3>Admin Redirect</h3>
-            <p>Users are returned to WestconAdmin.html only after successful submission.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
+<!-- PRODUCT SELECTOR -->
+<div class="product-selector-wrap">
+<div class="product-selector">
+<h3>Select Products</h3>
+<p>Choose one or more monthly services for this partner account. Pricing is shown per product and supports bundled commercial packaging.</p>
+<label for="productSelect">Available Products</label>
+<select id="productSelect" name="products" multiple>
+<option value="westcon-kb">Westcon Knowledge Base — $49/month</option>
+<option value="ai-sales-copilot">AI Sales Copilot for Resellers — $179/month</option>
+<option value="ai-network-architecture">AI Network Architecture Recommendations — $299/month</option>
+<option value="ai-security-threat-intelligence">AI Security Threat Intelligence Dashboard — $249/month</option>
+<option value="ai-channel-marketplace">AI Channel Marketplace — $129/month</option>
+<option value="ai-pricing-margin">AI Pricing and Margin Optimization — $219/month</option>
+<option value="ai-network-recommendation-v2">AI Network Recommendation Engine V2 — $349/month</option>
+</select>
+<div class="selector-footnote">Hold Ctrl (Windows) or Command (Mac) to select multiple products.</div>
+</div>
+</div>
 
-  <script>
-    const WEBHOOK_URL = "https://newgenit.app.n8n.cloud/webhook/026f5eec-6fda-4a02-a80d-7256f7e4c3a2";
-    const REDIRECT_URL = "WestconAdmin.html";
+<!-- SERVICES -->
+<div class="services">
 
-    const form = document.getElementById("addUserForm");
-    const userIdInput = document.getElementById("userId");
-    const rowIdInput = document.getElementById("rowId");
-    const usernameInput = document.getElementById("username");
-    const companyInput = document.getElementById("company");
-    const billingDateInput = document.getElementById("billingDate");
-    const monthlyCostEl = document.getElementById("monthlyCost");
-    const tokensPurchasedEl = document.getElementById("tokensPurchased");
-    const createUserBtn = document.getElementById("createUserBtn");
-    const cancelBtn = document.getElementById("cancelBtn");
-    const statusMessage = document.getElementById("statusMessage");
-    const serviceCheckboxes = document.querySelectorAll('.services-box input[type="checkbox"]');
+<a href="westconKB.html" class="service">
+<h3>Westcon Knowledge Base</h3>
+<p>Search product information, documentation and get AI-powered answers instantly.</p>
+</a>
 
-    function setStatus(message, type = "info") {
-      statusMessage.textContent = message;
-      statusMessage.className = `status ${type}`;
-    }
+<a href="aisalescopilot.html" class="service">
+<h3>AI Sales Copilot for Resellers</h3>
+<p>Generate sales strategies, proposals and improve partner deal conversions.</p>
+</a>
 
-    function formatDateForInput(date) {
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, "0");
-      const day = String(date.getDate()).padStart(2, "0");
-      return `${year}-${month}-${day}`;
-    }
+<a href="networkarcrecomm.html" class="service">
+<h3>AI Network Architecture Recommendations</h3>
+<p>Get AI-driven network designs and architecture guidance for customer solutions.</p>
+</a>
 
-    function getSelectedServices() {
-      return Array.from(serviceCheckboxes)
-        .filter(cb => cb.checked)
-        .map(cb => ({
-          name: cb.value,
-          price: Number(cb.dataset.price || 0)
-        }));
-    }
+<a href="Ai-security-threat-intelligence-dashboard.html" class="service">
+<h3>AI Security Threat Intelligence Dashboard</h3>
+<p>Monitor threat signals, review security events and gain AI-driven visibility into emerging risks.</p>
+</a>
 
-    function updateComputedValues() {
-      const selectedServices = getSelectedServices();
-      const monthlyCost = selectedServices.reduce((sum, service) => sum + service.price, 0);
-      const tokensPurchased = selectedServices.length * 100000;
+<a href="ai-channel-marketplace.html" class="service">
+<h3>AI Channel Marketplace</h3>
+<p>Browse and select partner-ready AI services with clear monthly pricing and bundled solution options.</p>
+</a>
 
-      monthlyCostEl.textContent = `$${monthlyCost}`;
-      tokensPurchasedEl.textContent = String(tokensPurchased);
+<a href="ai-pricing-and-margin-optimization.html" class="service">
+<h3>AI Pricing and Margin Optimization</h3>
+<p>Improve pricing decisions, protect margins and uncover smarter commercial opportunities with AI insights.</p>
+</a>
 
-      return {
-        monthlyCost,
-        tokensPurchased,
-        selectedServices,
-        servicesAsText: selectedServices.map(service => service.name).join(", ")
-      };
-    }
+<a href="anrp.html" class="service">
+<h3>AI Network Recommendation Engine V2</h3>
+<p>Generate next-generation network recommendations with richer inputs, sharper outputs and faster solution planning.</p>
+</a>
 
-    async function sendToWebhook(payload) {
-      const response = await fetch(WEBHOOK_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload)
-      });
+</div>
 
-      const rawText = await response.text();
+</div>
 
-      if (!response.ok) {
-        throw new Error(rawText || "Webhook request failed.");
-      }
-
-      try {
-        return JSON.parse(rawText);
-      } catch {
-        return rawText;
-      }
-    }
-
-    serviceCheckboxes.forEach(cb => {
-      cb.addEventListener("change", updateComputedValues);
-    });
-
-    cancelBtn.addEventListener("click", () => {
-      window.location.href = REDIRECT_URL;
-    });
-
-    billingDateInput.value = formatDateForInput(new Date());
-    updateComputedValues();
-
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault();
-
-      const computed = updateComputedValues();
-
-      const payload = {
-        userId: userIdInput.value.trim(),
-        rowId: Number(rowIdInput.value),
-        username: usernameInput.value.trim(),
-        company: companyInput.value.trim(),
-        servicesPurchased: computed.servicesAsText,
-        servicesPurchasedList: computed.selectedServices.map(service => service.name),
-        monthlyCost: computed.monthlyCost,
-        tokensPurchased: computed.tokensPurchased,
-        billingDate: billingDateInput.value,
-        createdAt: new Date().toISOString(),
-        sourcePage: "westconadduser.html"
-      };
-
-      if (!payload.userId) {
-        setStatus("Please enter a User ID.", "error");
-        return;
-      }
-
-      if (!payload.rowId || Number.isNaN(payload.rowId)) {
-        setStatus("Please enter a valid Row ID.", "error");
-        return;
-      }
-
-      if (!payload.username) {
-        setStatus("Please enter the login email.", "error");
-        return;
-      }
-
-      if (!payload.company) {
-        setStatus("Please enter the company name.", "error");
-        return;
-      }
-
-      if (!payload.servicesPurchasedList.length) {
-        setStatus("Please select at least one service.", "error");
-        return;
-      }
-
-      if (!payload.billingDate) {
-        setStatus("Please choose a billing date.", "error");
-        return;
-      }
-
-      try {
-        createUserBtn.disabled = true;
-        createUserBtn.textContent = "Sending...";
-        setStatus("Sending user data to webhook...", "info");
-
-        await sendToWebhook(payload);
-
-        setStatus("User data sent successfully. Redirecting...", "success");
-
-        setTimeout(() => {
-          window.location.href = REDIRECT_URL;
-        }, 900);
-      } catch (error) {
-        console.error("Webhook error:", error);
-        setStatus(`Failed to send data: ${error.message}`, "error");
-      } finally {
-        createUserBtn.disabled = false;
-        createUserBtn.textContent = "Create User";
-      }
-    });
-  </script>
 </body>
 </html>
