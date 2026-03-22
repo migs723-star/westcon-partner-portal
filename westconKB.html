@@ -120,7 +120,6 @@
       color: white;
       cursor: pointer;
     }
-
   </style>
 </head>
 
@@ -170,7 +169,7 @@
 
 <script>
 
-const WEBHOOK_URL = "https://newgenit.app.n8n.cloud/webhook/563811b6-590b-487f-8d65-9e6f8e56cebb";
+const WEBHOOK_URL = "https://newgenit.app.n8n.cloud/webhook/916e36ec-a45c-454a-bd9b-8cb7605ef3fb/chat";
 
 const chatMessages = document.getElementById("chatMessages");
 const chatInput = document.getElementById("chatInput");
@@ -207,8 +206,7 @@ async function sendMessage() {
 
     const data = await response.json();
 
-    // IMPORTANT: your n8n returns { response: "text" }
-    const reply = data.response || "No response from AI";
+    const reply = data.response || data.output || "No response from AI";
 
     addMessage(reply, "bot");
 
