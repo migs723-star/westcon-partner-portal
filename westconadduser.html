@@ -1,415 +1,1398 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>User Dashboard | Westcon AI</title>
-
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-
-body{
-font-family:Inter,Arial,sans-serif;
-background:linear-gradient(135deg,#0f172a 0%,#111827 45%,#083344 100%);
-color:#e5eef7;
-min-height:100vh;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Westcon AI Partner Assistant Demo</title>
+  <style>
+:root {
+  --bg: #08111b;
+  --bg-alt: #0d1623;
+  --panel: rgba(255, 255, 255, 0.06);
+  --panel-border: rgba(255, 255, 255, 0.12);
+  --text: #e7eef8;
+  --muted: #9fb1c8;
+  --primary: #00c4c4;
+  --primary-2: #2e90ff;
+  --success: #17c964;
+  --warning: #ffd166;
+  --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  --radius: 24px;
 }
 
-.container{
-max-width:1400px;
-margin:auto;
-padding:28px;
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: Inter, Arial, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at top left, rgba(0,196,196,0.15), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(46,144,255,0.14), transparent 30%),
+    linear-gradient(135deg, #071018 0%, #0a131f 45%, #0c1a28 100%);
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
-/* HEADER */
-.topbar{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:18px 24px;
-border-radius:18px;
-background:rgba(255,255,255,0.05);
-border:1px solid rgba(255,255,255,0.08);
-margin-bottom:25px;
+.bg-grid,
+.bg-orb {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
 }
 
-.brand{
-display:flex;
-align-items:center;
-gap:12px;
+.bg-grid {
+  background-image:
+    linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: radial-gradient(circle at center, rgba(0,0,0,0.9), transparent 85%);
 }
 
-.logo{
-width:58px;
-height:58px;
-border-radius:16px;
-background:linear-gradient(135deg,#2d6df6,#17b7ff);
+.bg-orb {
+  width: 520px;
+  height: 520px;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.35;
 }
 
-.brand h1{
-font-size:1.2rem;
-font-weight:700;
+.orb-1 {
+  background: rgba(0, 196, 196, 0.35);
+  top: -120px;
+  left: -140px;
 }
 
-.user{
-font-size:0.95rem;
-color:#9fb0c9;
+.orb-2 {
+  background: rgba(46, 144, 255, 0.28);
+  right: -180px;
+  bottom: -180px;
 }
 
-/* STATS */
-.stats{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:18px;
-margin-bottom:25px;
+.shell {
+  position: relative;
+  z-index: 1;
+  width: min(1440px, calc(100% - 32px));
+  margin: 20px auto;
 }
 
-.card{
-background:rgba(255,255,255,0.05);
-border:1px solid rgba(255,255,255,0.08);
-padding:22px;
-border-radius:18px;
+.glass {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(16px);
 }
 
-.card h4{
-font-size:0.95rem;
-color:#9fb0c9;
-margin-bottom:14px;
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 22px;
+  border-radius: 22px;
+  margin-bottom: 18px;
+  gap: 16px;
 }
 
-.card h2{
-font-size:2rem;
-font-weight:800;
-line-height:1.1;
+.brand-wrap {
+  display: flex;
+  align-items: center;
+  gap: 14px;
 }
 
-.blue{color:#60a5fa}
-.cyan{color:#22d3ee}
-.green{color:#34d399}
-.yellow{color:#fbbf24}
-
-/* GRAPH */
-.graph{
-background:rgba(255,255,255,0.05);
-border:1px solid rgba(255,255,255,0.08);
-padding:24px;
-border-radius:18px;
-margin-bottom:30px;
+.brand-mark {
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  font-size: 24px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--primary), var(--primary-2));
+  color: white;
 }
 
-.graph h3{
-font-size:1.15rem;
-font-weight:700;
-margin-bottom:6px;
+.eyebrow,
+.section-label,
+.solution-type,
+.summary-label {
+  display: inline-block;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 11px;
+  color: var(--primary);
 }
 
-.graph p{
-font-size:0.92rem;
-color:#9fb0c9;
-margin-bottom:18px;
+.topbar h1,
+.hero h2,
+.card-head h3,
+.stage-head h3,
+.timeline h3,
+.modal-head h3 {
+  margin: 4px 0 0;
 }
 
-.chart-area{
-width:100%;
-overflow-x:auto;
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
-.chart-svg{
-width:100%;
-height:auto;
-display:block;
-min-width:1100px;
+.status-pill,
+.micro-tag,
+.mini-badge {
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.05);
+  color: var(--text);
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  display: inline-block;
+  border-radius: 50%;
+  margin-right: 8px;
+  background: var(--success);
+  box-shadow: 0 0 0 6px rgba(23, 201, 100, 0.15);
+}
+
+.ghost-btn,
+.secondary-btn,
+.icon-btn {
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.04);
+  color: var(--text);
+  border-radius: 14px;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.ghost-btn:hover,
+.secondary-btn:hover,
+.icon-btn:hover {
+  transform: translateY(-1px);
+  background: rgba(255,255,255,0.08);
+}
+
+.primary-btn {
+  border: 0;
+  background: linear-gradient(135deg, var(--primary), var(--primary-2));
+  color: white;
+  border-radius: 14px;
+  padding: 13px 18px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s ease;
+}
+
+.primary-btn:hover { transform: translateY(-1px) scale(1.01); }
+
+.layout {
+  display: grid;
+  grid-template-columns: 1.08fr 0.92fr;
+  gap: 18px;
+}
+
+.left-panel,
+.right-panel {
+  display: grid;
+  gap: 18px;
+}
+
+.hero,
+.input-card,
+.demo-stage,
+.timeline,
+.modal-card {
+  border-radius: var(--radius);
+}
+
+.hero {
+  padding: 28px;
+}
+
+.hero h2 {
+  font-size: clamp(28px, 3vw, 42px);
+  line-height: 1.05;
+}
+
+.hero p,
+.empty-state p,
+.insight-panel p,
+.proposal-block p,
+.solution-card p,
+.flow-step strong,
+label span,
+.thinking-steps li,
+.card-head p {
+  color: var(--muted);
+}
+
+.hero-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.metric-card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  padding: 18px;
+}
+
+.metric-card.accent {
+  background: linear-gradient(135deg, rgba(0,196,196,0.12), rgba(46,144,255,0.14));
+}
+
+.metric-value {
+  display: block;
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.metric-label { font-size: 13px; color: var(--muted); }
+
+.input-card,
+.demo-stage,
+.timeline {
+  padding: 24px;
+}
+
+.card-head,
+.stage-head,
+.modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.card-head.compact { margin-bottom: 14px; }
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.full-width { grid-column: 1 / -1; }
+
+label {
+  display: grid;
+  gap: 8px;
+}
+
+select,
+input {
+  width: 100%;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(8, 17, 27, 0.75);
+  color: var(--text);
+  padding: 14px 14px;
+  outline: none;
+}
+
+select:focus,
+input:focus {
+  border-color: rgba(0,196,196,0.7);
+  box-shadow: 0 0 0 4px rgba(0,196,196,0.12);
+}
+
+.button-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.empty-state,
+.thinking-state {
+  min-height: 480px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+
+.empty-icon {
+  width: 78px;
+  height: 78px;
+  margin: 0 auto 12px;
+  border-radius: 22px;
+  display: grid;
+  place-items: center;
+  font-size: 32px;
+  background: linear-gradient(135deg, rgba(0,196,196,0.2), rgba(46,144,255,0.22));
+}
+
+.thinking-state {
+  grid-template-columns: 100px 1fr;
+  gap: 28px;
+  text-align: left;
+  padding: 42px 12px;
+}
+
+.thinking-ring {
+  width: 82px;
+  height: 82px;
+  border-radius: 50%;
+  border: 4px solid rgba(255,255,255,0.08);
+  border-top-color: var(--primary);
+  border-right-color: var(--primary-2);
+  animation: spin 1.05s linear infinite;
+}
+
+.thinking-steps {
+  list-style: none;
+  padding: 0;
+  margin: 14px 0 0;
+  display: grid;
+  gap: 10px;
+}
+
+.thinking-steps li {
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.03);
+}
+
+.thinking-steps li.active {
+  border-color: rgba(0,196,196,0.45);
+  color: var(--text);
+  background: rgba(0,196,196,0.08);
+}
+
+.results-state {
+  display: grid;
+  gap: 18px;
+}
+
+.summary-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.solution-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.solution-card {
+  display: grid;
+  grid-template-columns: 58px 1fr;
+  gap: 14px;
+  padding: 18px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.045);
+}
+
+.solution-card.network { box-shadow: inset 0 0 0 1px rgba(46,144,255,0.12); }
+.solution-card.security { box-shadow: inset 0 0 0 1px rgba(255,209,102,0.15); }
+.solution-card.endpoint { box-shadow: inset 0 0 0 1px rgba(23,201,100,0.12); }
+.solution-card.identity { box-shadow: inset 0 0 0 1px rgba(0,196,196,0.15); }
+
+.solution-icon {
+  width: 58px;
+  height: 58px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  font-size: 26px;
+  background: rgba(255,255,255,0.06);
+}
+
+.solution-card h4,
+.insight-panel h4,
+.proposal-block h4 {
+  margin: 6px 0 8px;
+}
+
+.insight-panels {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 14px;
+}
+
+.insight-panel {
+  padding: 18px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.04);
+}
+
+.revenue-panel {
+  background: linear-gradient(135deg, rgba(23,201,100,0.11), rgba(0,196,196,0.08));
+}
+
+.flow-line {
+  display: grid;
+  gap: 12px;
+}
+
+.flow-step {
+  display: grid;
+  grid-template-columns: 42px 1fr;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.035);
+}
+
+.flow-step span {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  background: rgba(255,255,255,0.06);
+}
+
+.flow-step.active,
+.flow-step.current {
+  border-color: rgba(0,196,196,0.42);
+  background: rgba(0,196,196,0.08);
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 7, 12, 0.72);
+  display: grid;
+  place-items: center;
+  z-index: 20;
+  padding: 20px;
+}
+
+.modal-card {
+  width: min(960px, 100%);
+  padding: 24px;
+}
+
+.proposal-body {
+  display: grid;
+  gap: 16px;
+}
+
+.proposal-block {
+  padding: 18px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.04);
+}
+
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+#proposalStack {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--muted);
+}
+
+.hidden { display: none !important; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 1100px) {
+  .layout,
+  .solution-grid,
+  .insight-panels,
+  .two-col,
+  .hero-metrics {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .shell { width: min(100% - 16px, 1440px); }
+  .topbar,
+  .summary-bar,
+  .card-head,
+  .stage-head,
+  .modal-head,
+  .thinking-state {
+    grid-template-columns: 1fr;
+    display: grid;
+  }
+  .form-grid { grid-template-columns: 1fr; }
+  .button-row { flex-direction: column; }
 }
 
 
-
-.product-selector-wrap{margin-bottom:30px;}.product-selector{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);padding:24px;border-radius:18px;}.product-selector h3{font-size:1.15rem;font-weight:700;margin-bottom:6px;}.product-selector p{font-size:0.92rem;color:#9fb0c9;margin-bottom:16px;line-height:1.5;}.product-selector label{display:block;font-size:0.92rem;color:#c8d6ea;margin-bottom:10px;font-weight:600;}.product-selector select{width:100%;min-height:220px;padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,0.10);background:rgba(10,20,40,0.75);color:#e5eef7;font-size:0.96rem;outline:none;}.product-selector select option{padding:12px 10px;background:#0f172a;color:#e5eef7;}.selector-footnote{margin-top:12px;font-size:0.88rem;color:#7f93b2;}
-
-/* SERVICES */
-.services{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:20px;
+.modal-card {
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
 }
 
-.service{
-padding:28px;
-border-radius:18px;
-background:rgba(255,255,255,0.05);
-border:1px solid rgba(255,255,255,0.08);
-text-decoration:none;
-color:white;
-transition:0.3s;
-display:block;
-min-height:160px;
+.modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 14px;
 }
 
-.service:hover{
-box-shadow:0 0 20px rgba(23,183,255,0.35);
-transform:translateY(-5px);
-border-color:#17b7ff;
+.proposal-body {
+  overflow-y: auto;
+  max-height: calc(88vh - 110px);
+  padding-right: 10px;
 }
 
-.service h3{
-font-size:1rem;
-margin-bottom:12px;
-line-height:1.2;
+.custom-scroll::-webkit-scrollbar {
+  width: 10px;
 }
 
-.service p{
-color:#9fb0c9;
-font-size:0.95rem;
-line-height:1.5;
+.custom-scroll::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.04);
+  border-radius: 999px;
 }
 
-/* RESPONSIVE */
-@media(max-width:1000px){
-.stats{grid-template-columns:1fr 1fr}
-.services{grid-template-columns:1fr}
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(0,196,196,0.95), rgba(46,144,255,0.95));
+  border-radius: 999px;
+  border: 2px solid rgba(8,17,27,0.65);
 }
 
-@media(max-width:640px){
-.container{padding:18px}
-.topbar{flex-direction:column;align-items:flex-start;gap:12px}
-.stats{grid-template-columns:1fr}
-.card h2{font-size:1.7rem}
+.custom-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0,196,196,0.95) rgba(255,255,255,0.04);
 }
-</style>
+
+.proposal-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.meta-chip {
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.035);
+}
+
+.meta-chip span {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--primary);
+  margin-bottom: 6px;
+}
+
+.meta-chip strong {
+  display: block;
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.proposal-block ul {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 10px;
+  color: var(--muted);
+}
+
+.proposal-block li {
+  line-height: 1.5;
+}
+
+@media (max-width: 1100px) {
+  .proposal-meta-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 760px) {
+  .proposal-meta-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .proposal-body {
+    max-height: calc(88vh - 120px);
+  }
+}
+  </style>
 </head>
-
 <body>
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+  <div class="bg-grid"></div>
 
-<div class="container">
+  <div class="shell">
+    <header class="topbar glass">
+      <div class="brand-wrap">
+        <div class="brand-mark">W</div>
+        <div>
+          <div class="eyebrow">Strategic Demo</div>
+          <h1>Westcon AI Partner Assistant</h1>
+        </div>
+      </div>
+      <div class="top-actions">
+        <span class="status-pill"><span class="dot"></span> Live Demo Mode</span>
+        <button class="ghost-btn" id="resetBtn" type="button">Reset Demo</button>
+      </div>
+    </header>
 
-<!-- HEADER -->
-<div class="topbar">
-<div class="brand">
-<div class="logo"></div>
-<h1>Westcon AI Platform</h1>
-</div>
-<div class="user">demo.partner@westcon.ai</div>
-</div>
+    <main class="layout">
+      <section class="left-panel">
+        <div class="hero glass">
+          <div class="hero-copy">
+            <span class="section-label">AI-Enabled Channel Growth</span>
+            <h2>Every partner gets the knowledge of your best engineer. Instantly.</h2>
+            <p>
+              This demo shows how a partner can describe a customer need, receive a vendor-aligned
+              solution recommendation in seconds, and generate a proposal-ready output.
+            </p>
+          </div>
+          <div class="hero-metrics">
+            <div class="metric-card">
+              <span class="metric-value">+30%</span>
+              <span class="metric-label">Faster Deal Cycles</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-value">-40%</span>
+              <span class="metric-label">Presales Load</span>
+            </div>
+            <div class="metric-card accent">
+              <span class="metric-value">24/7</span>
+              <span class="metric-label">Partner Enablement</span>
+            </div>
+          </div>
+        </div>
 
-<!-- STATS -->
-<div class="stats">
-<div class="card">
-<h4>Total Tokens</h4>
-<h2 class="blue">120,000</h2>
-</div>
+        <div class="input-card glass">
+          <div class="card-head">
+            <div>
+              <span class="section-label">Partner Input</span>
+              <h3>Generate a solution recommendation</h3>
+            </div>
+            <span class="micro-tag">Demo workflow</span>
+          </div>
 
-<div class="card">
-<h4>Used</h4>
-<h2 class="cyan">46,350</h2>
-</div>
+          <form id="solutionForm" class="form-grid">
+            <label>
+              <span>Industry</span>
+              <select id="industry" name="industry" required>
+                <option value="">Select industry</option>
+                <option value="Banking">Banking</option>
+                <option value="Healthcare">Healthcare</option>
+                <option value="Retail">Retail</option>
+                <option value="Insurance">Insurance</option>
+                <option value="Telecommunications">Telecommunications</option>
+                <option value="Education">Education</option>
+                <option value="Manufacturing">Manufacturing</option>
+              </select>
+            </label>
 
-<div class="card">
-<h4>Remaining</h4>
-<h2 class="green">73,650</h2>
-</div>
+            <label>
+              <span>Users</span>
+              <input id="users" name="users" type="number" min="1" placeholder="e.g. 2000" required />
+            </label>
 
-<div class="card">
-<h4>Next Billing</h4>
-<h2 class="yellow">01 Apr 2026</h2>
-</div>
-</div>
+            <label class="full-width">
+              <span>Primary Requirement</span>
+              <input id="requirement" name="requirement" type="text" placeholder="e.g. Secure hybrid workforce" required />
+            </label>
 
-<!-- GRAPH -->
-<div class="graph">
-<h3>Monthly Usage</h3>
-<p>Daily token consumption across the current month.</p>
+            <label>
+              <span>Budget</span>
+              <input id="budget" name="budget" type="text" placeholder="e.g. $300k" required />
+            </label>
 
-<div class="chart-area">
-<svg class="chart-svg" viewBox="0 0 1200 380" xmlns="http://www.w3.org/2000/svg">
+            <label>
+              <span>Cloud Strategy</span>
+              <select id="cloud" name="cloud" required>
+                <option value="">Select strategy</option>
+                <option value="On-premise">On-premise</option>
+                <option value="Private cloud">Private cloud</option>
+                <option value="Public cloud">Public cloud</option>
+                <option value="Hybrid cloud">Hybrid cloud</option>
+                <option value="Multi-cloud">Multi-cloud</option>
+              </select>
+            </label>
 
-<!-- grid lines -->
-<line x1="70" y1="50" x2="1150" y2="50" stroke="rgba(255,255,255,0.10)" />
-<line x1="70" y1="110" x2="1150" y2="110" stroke="rgba(255,255,255,0.08)" />
-<line x1="70" y1="170" x2="1150" y2="170" stroke="rgba(255,255,255,0.08)" />
-<line x1="70" y1="230" x2="1150" y2="230" stroke="rgba(255,255,255,0.08)" />
-<line x1="70" y1="290" x2="1150" y2="290" stroke="rgba(255,255,255,0.08)" />
-<line x1="70" y1="330" x2="1150" y2="330" stroke="rgba(255,255,255,0.12)" />
+            <label>
+              <span>Priority Outcome</span>
+              <select id="priority" name="priority" required>
+                <option value="">Select priority</option>
+                <option value="Security resilience">Security resilience</option>
+                <option value="Performance and uptime">Performance and uptime</option>
+                <option value="Compliance and governance">Compliance and governance</option>
+                <option value="Scalability">Scalability</option>
+                <option value="Cost optimisation">Cost optimisation</option>
+              </select>
+            </label>
 
-<!-- y-axis labels -->
-<text x="18" y="55" fill="#9fb0c9" font-size="13">50k</text>
-<text x="18" y="115" fill="#9fb0c9" font-size="13">40k</text>
-<text x="18" y="175" fill="#9fb0c9" font-size="13">30k</text>
-<text x="18" y="235" fill="#9fb0c9" font-size="13">20k</text>
-<text x="18" y="295" fill="#9fb0c9" font-size="13">10k</text>
-<text x="30" y="335" fill="#9fb0c9" font-size="13">0</text>
+            <label>
+              <span>Region</span>
+              <select id="region" name="region" required>
+                <option value="">Select region</option>
+                <option value="South Africa">South Africa</option>
+                <option value="Sub-Saharan Africa">Sub-Saharan Africa</option>
+                <option value="EMEA">EMEA</option>
+                <option value="Global">Global</option>
+              </select>
+            </label>
 
-<!-- area fill -->
-<path d="
-M70 318
-L105 314
-L140 310
-L175 304
-L210 298
-L245 292
-L280 285
-L315 279
-L350 270
-L385 262
-L420 256
-L455 248
-L490 240
-L525 233
-L560 226
-L595 218
-L630 210
-L665 202
-L700 195
-L735 188
-L770 176
-L805 170
-L840 162
-L875 150
-L910 142
-L945 132
-L980 122
-L1015 114
-L1050 104
-L1085 98
-L1120 92
-L1120 330
-L70 330
-Z"
-fill="rgba(34,211,238,0.10)" />
+            <div class="button-row full-width">
+              <button class="primary-btn" type="submit">Generate Solution</button>
+              <button class="secondary-btn" type="button" id="populateDemoBtn">Load Banking Demo</button>
+            </div>
+          </form>
+        </div>
+      </section>
 
-<!-- usage line -->
-<polyline
-fill="none"
-stroke="#22d3ee"
-stroke-width="4"
-stroke-linecap="round"
-stroke-linejoin="round"
-points="
-70,318
-105,314
-140,310
-175,304
-210,298
-245,292
-280,285
-315,279
-350,270
-385,262
-420,256
-455,248
-490,240
-525,233
-560,226
-595,218
-630,210
-665,202
-700,195
-735,188
-770,176
-805,170
-840,162
-875,150
-910,142
-945,132
-980,122
-1015,114
-1050,104
-1085,98
-1120,92
-" />
+      <section class="right-panel">
+        <div class="demo-stage glass">
+          <div class="stage-head">
+            <div>
+              <span class="section-label">AI Output</span>
+              <h3>Partner-ready recommendation</h3>
+            </div>
+            <div class="stage-badges">
+              <span class="mini-badge">Vendor-aligned</span>
+              <span class="mini-badge">Proposal-ready</span>
+            </div>
+          </div>
 
-<!-- points -->
-<circle cx="70" cy="318" r="4" fill="#22d3ee" />
-<circle cx="210" cy="298" r="4" fill="#22d3ee" />
-<circle cx="350" cy="270" r="4" fill="#22d3ee" />
-<circle cx="490" cy="240" r="4" fill="#22d3ee" />
-<circle cx="630" cy="210" r="4" fill="#22d3ee" />
-<circle cx="770" cy="176" r="4" fill="#22d3ee" />
-<circle cx="910" cy="142" r="4" fill="#22d3ee" />
-<circle cx="1050" cy="104" r="4" fill="#22d3ee" />
-<circle cx="1120" cy="92" r="5" fill="#22d3ee" />
+          <div id="emptyState" class="empty-state">
+            <div class="empty-icon">⚡</div>
+            <h4>Ready for a live walkthrough</h4>
+            <p>Enter a partner scenario on the left, then generate a solution recommendation.</p>
+          </div>
 
-<!-- x-axis day labels -->
-<text x="66" y="355" fill="#9fb0c9" font-size="12">1</text>
-<text x="138" y="355" fill="#9fb0c9" font-size="12">3</text>
-<text x="208" y="355" fill="#9fb0c9" font-size="12">5</text>
-<text x="278" y="355" fill="#9fb0c9" font-size="12">7</text>
-<text x="348" y="355" fill="#9fb0c9" font-size="12">9</text>
-<text x="414" y="355" fill="#9fb0c9" font-size="12">11</text>
-<text x="484" y="355" fill="#9fb0c9" font-size="12">13</text>
-<text x="554" y="355" fill="#9fb0c9" font-size="12">15</text>
-<text x="624" y="355" fill="#9fb0c9" font-size="12">17</text>
-<text x="694" y="355" fill="#9fb0c9" font-size="12">19</text>
-<text x="764" y="355" fill="#9fb0c9" font-size="12">21</text>
-<text x="834" y="355" fill="#9fb0c9" font-size="12">23</text>
-<text x="904" y="355" fill="#9fb0c9" font-size="12">25</text>
-<text x="974" y="355" fill="#9fb0c9" font-size="12">27</text>
-<text x="1044" y="355" fill="#9fb0c9" font-size="12">29</text>
-<text x="1112" y="355" fill="#9fb0c9" font-size="12">31</text>
+          <div id="thinkingState" class="thinking-state hidden">
+            <div class="thinking-ring"></div>
+            <div class="thinking-copy">
+              <h4>Analyzing requirements...</h4>
+              <ul class="thinking-steps" id="thinkingSteps">
+                <li class="active">Interpreting customer need</li>
+                <li>Matching vendor portfolio</li>
+                <li>Building architecture recommendation</li>
+                <li>Preparing proposal summary</li>
+              </ul>
+            </div>
+          </div>
 
-</svg>
-</div>
-</div>
+          <div id="resultsState" class="results-state hidden">
+            <div class="summary-bar">
+              <div>
+                <span class="summary-label">Scenario</span>
+                <strong id="scenarioTitle">Banking | 2000 users</strong>
+              </div>
+              <button class="ghost-btn" id="proposalBtn" type="button">Generate Proposal View</button>
+            </div>
+
+            <div class="solution-grid">
+              <article class="solution-card network">
+                <div class="solution-icon">🌐</div>
+                <div>
+                  <span class="solution-type">Network Layer</span>
+                  <h4 id="networkTitle">Cisco SD-WAN</h4>
+                  <p id="networkDesc">Secure, resilient branch and hybrid connectivity for distributed users.</p>
+                </div>
+              </article>
+
+              <article class="solution-card security">
+                <div class="solution-icon">🛡️</div>
+                <div>
+                  <span class="solution-type">Security Layer</span>
+                  <h4 id="securityTitle">Palo Alto NGFW</h4>
+                  <p id="securityDesc">Centralised policy enforcement and threat prevention across hybrid environments.</p>
+                </div>
+              </article>
+
+              <article class="solution-card endpoint">
+                <div class="solution-icon">💻</div>
+                <div>
+                  <span class="solution-type">Endpoint Protection</span>
+                  <h4 id="endpointTitle">CrowdStrike Falcon</h4>
+                  <p id="endpointDesc">AI-driven endpoint detection and response for modern workforces.</p>
+                </div>
+              </article>
+
+              <article class="solution-card identity">
+                <div class="solution-icon">🔐</div>
+                <div>
+                  <span class="solution-type">Identity</span>
+                  <h4 id="identityTitle">Okta Identity</h4>
+                  <p id="identityDesc">Strong identity and conditional access for secure user experiences.</p>
+                </div>
+              </article>
+            </div>
+
+            <div class="insight-panels">
+              <div class="insight-panel">
+                <span class="section-label">Architecture Summary</span>
+                <p id="architectureSummary">
+                  Recommended architecture prioritises secure access, resilient connectivity, and layered protection
+                  for a hybrid workforce operating across regulated environments.
+                </p>
+              </div>
+              <div class="insight-panel revenue-panel">
+                <span class="section-label">Revenue Signal</span>
+                <p id="revenueSignal">This recommendation creates a strong cross-sell opportunity across networking, security, endpoint, and identity.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline glass">
+          <div class="card-head compact">
+            <div>
+              <span class="section-label">Motion Logic</span>
+              <h3>How the experience flows</h3>
+            </div>
+          </div>
+          <div class="flow-line">
+            <div class="flow-step active">
+              <span>1</span>
+              <strong>Partner enters need</strong>
+            </div>
+            <div class="flow-step">
+              <span>2</span>
+              <strong>AI interprets intent</strong>
+            </div>
+            <div class="flow-step">
+              <span>3</span>
+              <strong>Vendors matched</strong>
+            </div>
+            <div class="flow-step">
+              <span>4</span>
+              <strong>Proposal-ready output</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal hidden" id="proposalModal" aria-hidden="true">
+    <div class="modal-card glass">
+      <div class="modal-head">
+        <div>
+          <span class="section-label">Proposal View</span>
+          <h3>Customer-ready solution summary</h3>
+        </div>
+        <button class="icon-btn" id="closeModalBtn" type="button">✕</button>
+      </div>
+
+      <div class="proposal-body custom-scroll">
+        <div class="proposal-block">
+          <h4>Executive Summary</h4>
+          <p id="proposalExecutive"></p>
+        </div>
+
+        <div class="proposal-block">
+          <h4>Customer Context</h4>
+          <div class="proposal-meta-grid" id="proposalMetaGrid"></div>
+        </div>
+
+        <div class="proposal-block two-col">
+          <div>
+            <h4>Recommended Stack</h4>
+            <ul id="proposalStack"></ul>
+          </div>
+          <div>
+            <h4>Business Outcome</h4>
+            <p id="proposalOutcome"></p>
+          </div>
+        </div>
+
+        <div class="proposal-block">
+          <h4>Architecture Rationale</h4>
+          <p id="proposalRationale"></p>
+        </div>
+
+        <div class="proposal-block two-col">
+          <div>
+            <h4>Business Drivers</h4>
+            <ul id="proposalDrivers"></ul>
+          </div>
+          <div>
+            <h4>Implementation Phases</h4>
+            <ul id="proposalPhases"></ul>
+          </div>
+        </div>
+
+        <div class="proposal-block two-col">
+          <div>
+            <h4>Expected Value</h4>
+            <ul id="proposalValue"></ul>
+          </div>
+          <div>
+            <h4>Partner Next Steps</h4>
+            <ul id="proposalNextSteps"></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+const form = document.getElementById('solutionForm');
+const populateDemoBtn = document.getElementById('populateDemoBtn');
+const resetBtn = document.getElementById('resetBtn');
+const emptyState = document.getElementById('emptyState');
+const thinkingState = document.getElementById('thinkingState');
+const resultsState = document.getElementById('resultsState');
+const thinkingSteps = document.querySelectorAll('#thinkingSteps li');
+const flowSteps = document.querySelectorAll('.flow-step');
+const proposalBtn = document.getElementById('proposalBtn');
+const proposalModal = document.getElementById('proposalModal');
+const closeModalBtn = document.getElementById('closeModalBtn');
+
+const content = {
+  Banking: {
+    network: ['Cisco SD-WAN', 'Resilient branch-to-cloud connectivity for highly distributed banking operations.'],
+    security: ['Palo Alto NGFW', 'Advanced threat prevention and centralised policy control for regulated workloads.'],
+    endpoint: ['CrowdStrike Falcon', 'AI-driven endpoint protection and rapid incident response for hybrid users.'],
+    identity: ['Okta Identity', 'Strong user authentication and adaptive access for secure workforce enablement.'],
+    architecture: 'Recommended architecture balances secure remote access, zero-trust identity, resilient WAN connectivity, and layered threat protection for a regulated hybrid environment.',
+    revenue: 'High-value multi-vendor opportunity spanning networking, security, identity, and recurring managed services.',
+    executive: 'For this banking scenario, the recommended architecture delivers secure hybrid access, stronger control over user identity, and resilient connectivity while aligning to an enterprise-grade security posture.',
+    outcome: 'Accelerates deal velocity by giving the partner a credible, vendor-aligned design and a clearer path to proposal creation.'
+  },
+  Healthcare: {
+    network: ['Cisco Secure Network Fabric', 'Reliable, segmented connectivity to support clinical systems and distributed sites.'],
+    security: ['Palo Alto Prisma Access', 'Protects users, applications, and sensitive data across hybrid access points.'],
+    endpoint: ['CrowdStrike Falcon', 'Continuous endpoint monitoring for medical staff and critical devices.'],
+    identity: ['Okta Workforce Identity', 'Secure role-based access and governance for clinicians and administrators.'],
+    architecture: 'This recommendation supports secure access to sensitive patient systems, segmented connectivity, and improved visibility across distributed healthcare environments.',
+    revenue: 'Strong upsell potential across security, remote access, compliance, and managed endpoint protection.',
+    executive: 'The healthcare recommendation is built to strengthen data protection, secure distributed access, and reduce operational risk while maintaining clinical agility.',
+    outcome: 'Helps the partner position a compliant, security-led transformation conversation with measurable business value.'
+  },
+  Retail: {
+    network: ['Cisco Meraki SD-WAN', 'Centralised branch networking for stores, head office, and cloud applications.'],
+    security: ['Palo Alto NGFW', 'Consistent policy enforcement and threat prevention across retail locations.'],
+    endpoint: ['CrowdStrike Falcon', 'Protects store endpoints, POS systems, and distributed user devices.'],
+    identity: ['Okta Customer & Workforce Identity', 'Secure access for both internal teams and digital retail experiences.'],
+    architecture: 'Retail architecture prioritises uptime, branch agility, endpoint protection, and secure access across distributed locations and digital channels.',
+    revenue: 'Creates a scalable branch refresh and security modernisation opportunity with cross-sell potential.',
+    executive: 'For retail, the recommendation focuses on resilient store connectivity, stronger security posture, and better control across distributed operations.',
+    outcome: 'Positions the partner to reduce operational risk while improving customer experience and store performance.'
+  },
+  Insurance: {
+    network: ['Cisco SD-WAN', 'Secure connectivity for branch teams, brokers, and cloud-based policy systems.'],
+    security: ['Palo Alto Prisma SASE', 'Unified security controls for distributed users and applications.'],
+    endpoint: ['CrowdStrike Falcon', 'Protects underwriter and claims endpoints with modern detection and response.'],
+    identity: ['Okta Identity', 'Improves secure access and policy-based authentication across the organisation.'],
+    architecture: 'Insurance-focused architecture combines secure access, modern branch connectivity, and endpoint protection for highly distributed knowledge workers.',
+    revenue: 'Attractive recurring services motion across SASE, identity, and endpoint protection.',
+    executive: 'This design supports a secure digital insurance workforce while improving visibility, policy control, and protection of sensitive client data.',
+    outcome: 'Enables the partner to lead with business resilience, user productivity, and modern security operations.'
+  },
+  Telecommunications: {
+    network: ['Cisco Routed Optical & SD-WAN', 'High-performance network fabric for distributed telecom operations and branch resilience.'],
+    security: ['Palo Alto NGFW', 'Protects critical infrastructure, internet edges, and user access.'],
+    endpoint: ['CrowdStrike Falcon', 'Extends endpoint defence across corporate and operational user environments.'],
+    identity: ['Okta Identity', 'Strengthens secure admin and workforce access to critical systems.'],
+    architecture: 'The telecom recommendation centres on resilient connectivity, secure service operations, and improved visibility across critical infrastructure.',
+    revenue: 'Strong enterprise solution value with infrastructure, security, and managed support opportunities.',
+    executive: 'For telecom customers, this architecture supports performance, service continuity, and stronger control over operational risk.',
+    outcome: 'Allows the partner to connect network modernisation directly to service reliability and protection outcomes.'
+  },
+  Education: {
+    network: ['Cisco Campus & SD-WAN', 'Supports secure campus connectivity and hybrid learning requirements.'],
+    security: ['Palo Alto NGFW', 'Protects users, campuses, and cloud services from distributed threats.'],
+    endpoint: ['CrowdStrike Falcon', 'Protects academic and administrative endpoints with central visibility.'],
+    identity: ['Okta Identity', 'Simplifies secure access for staff, students, and administration systems.'],
+    architecture: 'Education architecture focuses on secure access, campus resilience, and scalable user management for hybrid learning models.',
+    revenue: 'Compelling cross-sell across campus refresh, security, identity, and managed support.',
+    executive: 'This solution helps education providers balance open access needs with stronger security and operational control.',
+    outcome: 'Gives the partner a credible modernization story tied to user experience, protection, and scalability.'
+  },
+  Manufacturing: {
+    network: ['Cisco Industrial Networking', 'Secure, resilient connectivity between plants, users, and hybrid cloud systems.'],
+    security: ['Palo Alto NGFW', 'Protects IT and OT environments with stronger segmentation and visibility.'],
+    endpoint: ['CrowdStrike Falcon', 'Improves protection for users, engineering endpoints, and critical workstations.'],
+    identity: ['Okta Identity', 'Applies secure access controls to internal teams and external contractors.'],
+    architecture: 'Manufacturing design prioritises uptime, plant connectivity, IT/OT protection, and secure user access across multiple sites.',
+    revenue: 'Creates a high-value transformation motion across networking, OT security, and managed protection services.',
+    executive: 'For manufacturing, the recommendation is designed to protect operations, improve resilience, and secure access across a complex environment.',
+    outcome: 'Supports a value-led conversation around risk reduction, productivity, and operational continuity.'
+  }
+};
+
+function setFlowStep(index) {
+  flowSteps.forEach((step, i) => {
+    step.classList.toggle('active', i === 0 && index === 0);
+    step.classList.toggle('current', i === index);
+  });
+}
+
+function runThinkingAnimation() {
+  let current = 0;
+  setFlowStep(1);
+  thinkingSteps.forEach((li, i) => li.classList.toggle('active', i === 0));
+
+  return new Promise((resolve) => {
+    const interval = setInterval(() => {
+      thinkingSteps.forEach((li, i) => li.classList.toggle('active', i === current));
+      const flowIndex = Math.min(current + 1, 3);
+      setFlowStep(flowIndex);
+      current += 1;
+      if (current === thinkingSteps.length) {
+        clearInterval(interval);
+        setTimeout(resolve, 450);
+      }
+    }, 650);
+  });
+}
+
+function updateResults(values) {
+  const industryData = enrichIndustryData(values.industry, content[values.industry] || content.Banking);
+
+  document.getElementById('scenarioTitle').textContent = `${values.industry} | ${values.users} users`;
+  document.getElementById('networkTitle').textContent = industryData.network[0];
+  document.getElementById('networkDesc').textContent = industryData.network[1];
+  document.getElementById('securityTitle').textContent = industryData.security[0];
+  document.getElementById('securityDesc').textContent = industryData.security[1];
+  document.getElementById('endpointTitle').textContent = industryData.endpoint[0];
+  document.getElementById('endpointDesc').textContent = industryData.endpoint[1];
+  document.getElementById('identityTitle').textContent = industryData.identity[0];
+  document.getElementById('identityDesc').textContent = industryData.identity[1];
+
+  document.getElementById('architectureSummary').textContent = `${industryData.architecture} Requirement focus: ${values.requirement}. Budget context: ${values.budget}.`;
+  document.getElementById('revenueSignal').textContent = `${industryData.revenue} Priority outcome: ${values.priority}.`;
+
+  document.getElementById('proposalExecutive').textContent = industryData.executive;
+  document.getElementById('proposalOutcome').textContent = industryData.outcome;
+  document.getElementById('proposalRationale').textContent = industryData.rationale || industryData.architecture;
+
+  const stack = document.getElementById('proposalStack');
+  stack.innerHTML = '';
+  [
+    `${industryData.network[0]} — ${industryData.network[1]}`,
+    `${industryData.security[0]} — ${industryData.security[1]}`,
+    `${industryData.endpoint[0]} — ${industryData.endpoint[1]}`,
+    `${industryData.identity[0]} — ${industryData.identity[1]}`
+  ].forEach(item => {
+    const li = document.createElement('li');
+    li.textContent = item;
+    stack.appendChild(li);
+  });
+
+  const metaGrid = document.getElementById('proposalMetaGrid');
+  metaGrid.innerHTML = '';
+  [
+    ['Industry', values.industry],
+    ['Users', values.users],
+    ['Requirement', values.requirement],
+    ['Budget', values.budget],
+    ['Cloud', values.cloud],
+    ['Priority', values.priority],
+    ['Region', values.region],
+    ['Delivery Motion', 'Partner-led with distributor-backed guidance']
+  ].forEach(([label, value]) => {
+    const chip = document.createElement('div');
+    chip.className = 'meta-chip';
+    chip.innerHTML = `<span>${label}</span><strong>${value}</strong>`;
+    metaGrid.appendChild(chip);
+  });
+
+  const setList = (id, items) => {
+    const el = document.getElementById(id);
+    el.innerHTML = '';
+    (items || []).forEach(item => {
+      const li = document.createElement('li');
+      li.textContent = item;
+      el.appendChild(li);
+    });
+  };
+
+  setList('proposalDrivers', industryData.drivers || [
+    `Support ${values.requirement.toLowerCase()} initiatives`,
+    'Improve technical confidence during solution design',
+    'Create a stronger business case for customer stakeholders'
+  ]);
+
+  setList('proposalPhases', industryData.phases || [
+    'Discovery and solution validation',
+    'Architecture design and commercial alignment',
+    'Deployment planning and managed service positioning'
+  ]);
+
+  setList('proposalValue', industryData.value || [
+    'Accelerates proposal creation and customer response times',
+    'Creates stronger multi-vendor attach opportunities',
+    'Positions the partner for follow-on services revenue'
+  ]);
+
+  setList('proposalNextSteps', industryData.nextSteps || [
+    'Review the recommended stack with the customer',
+    'Validate technical assumptions and delivery timeline',
+    'Convert the recommendation into a formal proposal'
+  ]);
+}
+
+async function generateDemo(values) {
+  emptyState.classList.add('hidden');
+  resultsState.classList.add('hidden');
+  thinkingState.classList.remove('hidden');
+  await runThinkingAnimation();
+  thinkingState.classList.add('hidden');
+  updateResults(values);
+  resultsState.classList.remove('hidden');
+  setFlowStep(3);
+}
+
+function getFormValues() {
+  return {
+    industry: document.getElementById('industry').value,
+    users: document.getElementById('users').value,
+    requirement: document.getElementById('requirement').value,
+    budget: document.getElementById('budget').value,
+    cloud: document.getElementById('cloud').value,
+    priority: document.getElementById('priority').value,
+    region: document.getElementById('region').value,
+  };
+}
+
+function resetDemo() {
+  form.reset();
+  proposalModal.classList.add('hidden');
+  proposalModal.setAttribute('aria-hidden', 'true');
+  thinkingState.classList.add('hidden');
+  resultsState.classList.add('hidden');
+  emptyState.classList.remove('hidden');
+  setFlowStep(0);
+}
+
+form.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const values = getFormValues();
+  await generateDemo(values);
+});
+
+populateDemoBtn.addEventListener('click', () => {
+  document.getElementById('industry').value = 'Banking';
+  document.getElementById('users').value = '2000';
+  document.getElementById('requirement').value = 'Secure hybrid workforce';
+  document.getElementById('budget').value = '$300k';
+  document.getElementById('cloud').value = 'Hybrid cloud';
+  document.getElementById('priority').value = 'Security resilience';
+  document.getElementById('region').value = 'South Africa';
+});
+
+resetBtn.addEventListener('click', resetDemo);
+
+proposalBtn.addEventListener('click', () => {
+  proposalModal.classList.remove('hidden');
+  proposalModal.setAttribute('aria-hidden', 'false');
+});
+
+closeModalBtn.addEventListener('click', () => {
+  proposalModal.classList.add('hidden');
+  proposalModal.setAttribute('aria-hidden', 'true');
+});
+
+proposalModal.addEventListener('click', (event) => {
+  if (event.target === proposalModal) {
+    proposalModal.classList.add('hidden');
+    proposalModal.setAttribute('aria-hidden', 'true');
+  }
+});
+
+setFlowStep(0);
 
 
-<!-- PRODUCT SELECTOR -->
-<div class="product-selector-wrap">
-<div class="product-selector">
-<h3>Select Products</h3>
-<p>Choose one or more monthly services for this partner account. Pricing is shown per product and supports bundled commercial packaging.</p>
-<label for="productSelect">Available Products</label>
-<select id="productSelect" name="products" multiple>
-<option value="westcon-kb">Westcon Knowledge Base — $49/month</option>
-<option value="ai-sales-copilot">AI Sales Copilot for Resellers — $179/month</option>
-<option value="ai-network-architecture">AI Network Architecture Recommendations — $299/month</option>
-<option value="ai-security-threat-intelligence">AI Security Threat Intelligence Dashboard — $249/month</option>
-<option value="ai-channel-marketplace">AI Channel Marketplace — $129/month</option>
-<option value="ai-pricing-margin">AI Pricing and Margin Optimization — $219/month</option>
-<option value="ai-network-recommendation-v2">AI Network Recommendation Engine V2 — $349/month</option>
-</select>
-<div class="selector-footnote">Hold Ctrl (Windows) or Command (Mac) to select multiple products.</div>
-</div>
-</div>
+const proposalEnhancements = {
+  Banking: {
+    rationale: 'This design combines resilient branch and cloud connectivity, strong perimeter and user security, and modern endpoint protection to support a regulated hybrid banking model without adding unnecessary complexity.',
+    drivers: [
+      'Reduce cyber risk across hybrid users and branch offices',
+      'Strengthen identity-led access controls for sensitive systems',
+      'Standardise connectivity and security policy across sites'
+    ],
+    phases: [
+      'Assess current network, security, and identity posture',
+      'Deploy core connectivity and next-generation perimeter controls',
+      'Roll out endpoint and identity controls, then optimise through managed services'
+    ],
+    value: [
+      'Creates cross-sell potential across networking, security, identity, and services',
+      'Improves executive confidence with a clear transformation narrative',
+      'Shortens time from discovery to proposal-ready solution'
+    ],
+    nextSteps: [
+      'Validate customer priorities and current-state environment',
+      'Confirm budget alignment and preferred deployment model',
+      'Present architecture and commercial proposal to stakeholders'
+    ]
+  },
+  Healthcare: {
+    rationale: 'The architecture is designed to protect sensitive clinical data, support distributed care environments, and simplify secure access for healthcare staff, contractors, and connected devices.',
+    drivers: [
+      'Protect patient data and sensitive workloads',
+      'Enable secure access across hospitals, clinics, and remote users',
+      'Improve visibility and response across distributed environments'
+    ],
+    phases: [
+      'Assess applications, sites, and compliance requirements',
+      'Implement secure connectivity and access controls',
+      'Layer endpoint protection, monitoring, and policy optimisation'
+    ],
+    value: [
+      'Opens a broader compliance and managed security conversation',
+      'Aligns infrastructure with operational resilience goals',
+      'Supports a phased modernisation journey rather than a one-time refresh'
+    ],
+    nextSteps: [
+      'Confirm regulatory requirements and critical systems',
+      'Map required integrations and deployment timing',
+      'Create a proposal covering architecture, rollout, and support services'
+    ]
+  },
+  Retail: {
+    rationale: 'This retail-focused design balances branch simplicity, operational resilience, and stronger security across stores, users, and digital channels while keeping management centralised.',
+    drivers: [
+      'Improve uptime across stores and core business systems',
+      'Protect POS, endpoints, and customer-facing services',
+      'Standardise policy and visibility across a distributed retail estate'
+    ],
+    phases: [
+      'Review current branch connectivity and store technology footprint',
+      'Deploy centralised SD-WAN and security controls',
+      'Expand endpoint, identity, and managed service capabilities'
+    ],
+    value: [
+      'Supports refresh and expansion opportunities across many sites',
+      'Creates attach potential for managed services and support',
+      'Helps partners position both operational and security outcomes'
+    ],
+    nextSteps: [
+      'Validate store count, application dependencies, and risk priorities',
+      'Confirm rollout sequencing and support expectations',
+      'Prepare a branch modernisation proposal with commercial options'
+    ]
+  },
+  Insurance: {
+    rationale: 'The recommendation aligns secure user access, policy control, and endpoint resilience to support distributed insurance teams handling sensitive policyholder and claims data.',
+    drivers: [
+      'Protect sensitive customer and claims information',
+      'Improve resilience for branch and hybrid operations',
+      'Create a stronger foundation for digital servicing and compliance'
+    ],
+    phases: [
+      'Assess branch, broker, and remote-user access requirements',
+      'Deploy secure network and perimeter controls',
+      'Enhance identity, endpoint, and monitoring maturity over time'
+    ],
+    value: [
+      'Creates a broader discussion across security, access, and managed services',
+      'Supports a consultative sales motion with compliance alignment',
+      'Improves speed to proposal for high-value insurance accounts'
+    ],
+    nextSteps: [
+      'Confirm regulatory and data protection priorities',
+      'Map user groups and access policies',
+      'Develop a phased proposal with service options'
+    ]
+  },
+  Telecommunications: {
+    rationale: 'This architecture is designed to improve performance visibility, secure distributed operations, and support scalable service delivery across a demanding telecom environment.',
+    drivers: [
+      'Improve resilience across distributed network operations',
+      'Strengthen access and security posture for critical platforms',
+      'Support scalable growth with consistent policy and visibility'
+    ],
+    phases: [
+      'Review core network and operations requirements',
+      'Deploy resilient connectivity and layered protection',
+      'Expand monitoring, endpoint, and identity capabilities'
+    ],
+    value: [
+      'Creates opportunities for broader infrastructure refresh and services',
+      'Supports executive discussions around resilience and customer impact',
+      'Accelerates a consultative pre-sales motion'
+    ],
+    nextSteps: [
+      'Validate core service dependencies and customer priorities',
+      'Confirm architecture assumptions and operational constraints',
+      'Translate the recommendation into a commercial proposal'
+    ]
+  },
+  Education: {
+    rationale: 'The design balances secure access, campus and remote connectivity, and endpoint control to support students, staff, and distributed digital learning environments.',
+    drivers: [
+      'Protect users and devices across campus and remote environments',
+      'Improve reliability for learning platforms and collaboration tools',
+      'Simplify access and security management for lean IT teams'
+    ],
+    phases: [
+      'Assess current campus, branch, and remote access needs',
+      'Deploy core connectivity and perimeter controls',
+      'Roll out endpoint protection and identity-led access improvements'
+    ],
+    value: [
+      'Supports a phased digital campus transformation story',
+      'Creates attach opportunities for support and managed services',
+      'Improves proposal quality and speed for education opportunities'
+    ],
+    nextSteps: [
+      'Confirm institution size, campuses, and digital service dependencies',
+      'Validate budget priorities and rollout windows',
+      'Build a proposal aligned to operational and user outcomes'
+    ]
+  },
+  Manufacturing: {
+    rationale: 'This manufacturing recommendation focuses on resilient site connectivity, stronger security segmentation, and better control across plants, offices, and operational technology environments.',
+    drivers: [
+      'Reduce operational risk across distributed sites and users',
+      'Improve segmentation and visibility across critical systems',
+      'Support uptime and secure remote access for operations teams'
+    ],
+    phases: [
+      'Assess plant, office, and OT/IT connectivity requirements',
+      'Deploy resilient networking and security controls',
+      'Layer endpoint protection, identity, and ongoing optimisation'
+    ],
+    value: [
+      'Creates broad infrastructure, security, and services attach potential',
+      'Supports a strong resilience and productivity business case',
+      'Shortens time to a partner-ready recommendation and proposal'
+    ],
+    nextSteps: [
+      'Confirm site footprint and critical production dependencies',
+      'Validate security and segmentation priorities',
+      'Prepare a phased architecture and proposal response'
+    ]
+  }
+};
 
-<!-- SERVICES -->
-<div class="services">
-
-<a href="westconKB.html" class="service">
-<h3>Westcon Knowledge Base</h3>
-<p>Search product information, documentation and get AI-powered answers instantly.</p>
-</a>
-
-<a href="aisalescopilot.html" class="service">
-<h3>AI Sales Copilot for Resellers</h3>
-<p>Generate sales strategies, proposals and improve partner deal conversions.</p>
-</a>
-
-<a href="networkarcrecomm.html" class="service">
-<h3>AI Network Architecture Recommendations</h3>
-<p>Get AI-driven network designs and architecture guidance for customer solutions.</p>
-</a>
-
-<a href="Ai-security-threat-intelligence-dashboard.html" class="service">
-<h3>AI Security Threat Intelligence Dashboard</h3>
-<p>Monitor threat signals, review security events and gain AI-driven visibility into emerging risks.</p>
-</a>
-
-<a href="ai-channel-marketplace.html" class="service">
-<h3>AI Channel Marketplace</h3>
-<p>Browse and select partner-ready AI services with clear monthly pricing and bundled solution options.</p>
-</a>
-
-<a href="ai-pricing-and-margin-optimization.html" class="service">
-<h3>AI Pricing and Margin Optimization</h3>
-<p>Improve pricing decisions, protect margins and uncover smarter commercial opportunities with AI insights.</p>
-</a>
-
-<a href="anrp.html" class="service">
-<h3>AI Network Recommendation Engine V2</h3>
-<p>Generate next-generation network recommendations with richer inputs, sharper outputs and faster solution planning.</p>
-</a>
-
-</div>
-
-</div>
-
+function enrichIndustryData(industryKey, industryData) {
+  return {
+    ...industryData,
+    ...(proposalEnhancements[industryKey] || {})
+  };
+}
+  </script>
 </body>
 </html>
