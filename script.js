@@ -1,184 +1,93 @@
-/* ===========================
-   Weston Partner Landing Page
-   - Simple local login for now (swap for API/SSO later)
-   - Multi-user + role routing
-=========================== */
-
-const LOGIN_USERS = [
-  // Demo Partner
-  {
-    login: "demo.partner@westcon.ai",
-    password: "WestconDemo2026",
-    name: "Demo Partner",
-    role: "partner",
-    redirect: "userdashboard.html"
+// ==============================
+// LANGUAGE TRANSLATIONS
+// ==============================
+const translations = {
+  en: {
+    title: "Westcon Partner AI Portal",
+    subtitle: "Empowering Partners with AI-Driven Intelligence",
+    login: "Partner Login",
+    heroTitle: "Welcome to the Future of Distribution",
+    heroDesc: "Leverage AI to accelerate sales, design solutions, and unlock new revenue streams.",
+    btnExplore: "Explore Platform"
   },
-
-  // Admin
-  {
-    login: "WestconAdmin",
-    password: "NewGenIT.ai2026",
-    name: "Westcon Admin",
-    role: "admin",
-    redirect: "WestconAdmin.html"
+  af: {
+    title: "Westcon Vennoot AI Portaal",
+    subtitle: "Bemagtig vennote met KI-gedrewe intelligensie",
+    login: "Vennoot Aanmelding",
+    heroTitle: "Welkom by die Toekoms van Verspreiding",
+    heroDesc: "Gebruik KI om verkope te versnel, oplossings te ontwerp en nuwe inkomste te ontsluit.",
+    btnExplore: "Verken Platform"
   },
-];
-
-/**
- * Basic token/session helpers
- */
-const session = {
-  key: "weston_partner_session",
-  set(data, remember) {
-    const payload = { ...data, ts: Date.now() };
-    if (remember) localStorage.setItem(this.key, JSON.stringify(payload));
-    else sessionStorage.setItem(this.key, JSON.stringify(payload));
+  zu: {
+    title: "I-Westcon Partner AI Portal",
+    subtitle: "Ukuqinisa ozakwethu ngobuhlakani bokwenziwa",
+    login: "Ukungena Kozakwethu",
+    heroTitle: "Uyemukelwa Ekusaseni Lokusatshalaliswa",
+    heroDesc: "Sebenzisa i-AI ukusheshisa ukuthengisa, ukuklama izixazululo nokuvula amathuba amasha.",
+    btnExplore: "Hlola Inkundla"
   },
-  clear() {
-    localStorage.removeItem(this.key);
-    sessionStorage.removeItem(this.key);
+  fr: {
+    title: "Portail IA Partenaire Westcon",
+    subtitle: "Autonomiser les partenaires grâce à l'IA",
+    login: "Connexion Partenaire",
+    heroTitle: "Bienvenue dans le Futur de la Distribution",
+    heroDesc: "Exploitez l'IA pour accélérer les ventes et débloquer de nouvelles opportunités.",
+    btnExplore: "Explorer la Plateforme"
   },
-  get() {
-    const a = localStorage.getItem(this.key);
-    const b = sessionStorage.getItem(this.key);
-    return a ? JSON.parse(a) : (b ? JSON.parse(b) : null);
+  pt: {
+    title: "Portal de IA Parceiro Westcon",
+    subtitle: "Capacitando parceiros com IA",
+    login: "Login do Parceiro",
+    heroTitle: "Bem-vindo ao Futuro da Distribuição",
+    heroDesc: "Use IA para acelerar vendas e desbloquear novas receitas.",
+    btnExplore: "Explorar Plataforma"
+  },
+  ha: {
+    title: "Westcon Portal AI na Abokan Hulɗa",
+    subtitle: "Ƙarfafa abokan hulɗa da AI",
+    login: "Shiga Abokin Hulɗa",
+    heroTitle: "Barka da zuwa Gaban Rarrabawa",
+    heroDesc: "Yi amfani da AI don haɓaka tallace-tallace da sabbin damar kuɗi.",
+    btnExplore: "Duba Dandali"
+  },
+  yo: {
+    title: "Westcon AI Portal Fun Awọn Alabaṣepọ",
+    subtitle: "Fifunni ni agbara AI si awọn alabaṣepọ",
+    login: "Wọle Alabaṣepọ",
+    heroTitle: "Kaabọ si Ọjọ iwaju Pinpin",
+    heroDesc: "Lo AI lati mu tita pọ si ati ṣii awọn aye tuntun.",
+    btnExplore: "Ṣawari Platform"
   }
 };
 
-const $ = (id) => document.getElementById(id);
+// ==============================
+// APPLY TRANSLATION
+// ==============================
+function setLanguage(lang) {
+  const t = translations[lang];
 
-function show(el){ el.classList.remove("hidden"); }
-function hide(el){ el.classList.add("hidden"); }
+  document.querySelector("[data-key='title']").innerText = t.title;
+  document.querySelector("[data-key='subtitle']").innerText = t.subtitle;
+  document.querySelector("[data-key='login']").innerText = t.login;
+  document.querySelector("[data-key='heroTitle']").innerText = t.heroTitle;
+  document.querySelector("[data-key='heroDesc']").innerText = t.heroDesc;
+  document.querySelector("[data-key='btnExplore']").innerText = t.btnExplore;
 
-function setAlert(message){
-  const alert = $("alert");
-  alert.textContent = message;
-  show(alert);
+  localStorage.setItem("lang", lang);
 }
 
-function clearAlert(){
-  const alert = $("alert");
-  alert.textContent = "";
-  hide(alert);
-}
-
-function setSuccess(){
-  show($("successBox"));
-}
-
-function clearSuccess(){
-  hide($("successBox"));
-}
-
-function normalizeLogin(val){
-  return String(val || "").trim().toLowerCase();
-}
-
-function findUser(login, password){
-  const l = normalizeLogin(login);
-  const p = String(password || "");
-  return LOGIN_USERS.find(u => normalizeLogin(u.login) === l && u.password === p);
-}
-
-function updateSuccessCTA(user){
-  const btn = document.querySelector("#successBox a.btn");
-  if (!btn) return;
-
-  // Keep styling identical; only adjust destination + label
-  btn.href = user.redirect;
-
-  if (user.role === "admin") {
-    btn.textContent = "Continue to Admin Portal";
-  } else {
-    btn.textContent = "Continue to Dashboard";
-  }
-}
-
-/* ===== UI init ===== */
+// ==============================
+// INIT
+// ==============================
 document.addEventListener("DOMContentLoaded", () => {
-  // Footer year
-  $("year").textContent = new Date().getFullYear();
+  const savedLang = localStorage.getItem("lang") || "en";
+  setLanguage(savedLang);
 
-  // Mobile nav
-  const hamburger = $("hamburger");
-  const mobileNav = $("mobileNav");
-  hamburger?.addEventListener("click", () => {
-    mobileNav.classList.toggle("hidden");
-  });
-
-  // Open login (scroll)
-  const goLogin = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    $("email")?.focus();
-  };
-  $("openLoginTop")?.addEventListener("click", goLogin);
-  $("openLoginHero")?.addEventListener("click", goLogin);
-  $("openLoginMobile")?.addEventListener("click", () => {
-    mobileNav.classList.add("hidden");
-    goLogin();
-  });
-
-  // Toggle password visibility
-  $("togglePw")?.addEventListener("click", () => {
-    const pw = $("password");
-    if (!pw) return;
-    pw.type = pw.type === "password" ? "text" : "password";
-  });
-
-  // Forgot password (placeholder)
-  $("forgotLink")?.addEventListener("click", (e) => {
-    e.preventDefault();
-    clearSuccess();
-    setAlert("Password reset isn’t wired yet. Connect this to your IAM/SSO or support flow.");
-  });
-
-  // If already logged in, show success UI
-  const existing = session.get();
-  if (existing?.login){
-    clearAlert();
-    setSuccess();
-    $("loginHint").innerHTML = `Signed in as <b>${existing.login}</b>.`;
-    updateSuccessCTA(existing);
+  const langDropdown = document.getElementById("languageSwitcher");
+  if (langDropdown) {
+    langDropdown.value = savedLang;
+    langDropdown.addEventListener("change", (e) => {
+      setLanguage(e.target.value);
+    });
   }
-
-  // Login submit
-  $("loginForm")?.addEventListener("submit", (e) => {
-    e.preventDefault();
-    clearAlert();
-    clearSuccess();
-
-    const login = $("email")?.value;
-    const password = $("password")?.value;
-    const remember = $("remember")?.checked;
-
-    if (!login || !password){
-      setAlert("Please enter both email/username and password.");
-      return;
-    }
-
-    const user = findUser(login, password);
-    if (!user){
-      setAlert("Invalid credentials. Check your login/password or request access.");
-      return;
-    }
-
-    // Set session
-    const sessionData = {
-      login: user.login,
-      name: user.name,
-      role: user.role,
-      redirect: user.redirect
-    };
-    session.set(sessionData, !!remember);
-
-    // Show success state
-    $("loginHint").innerHTML = `Signed in as <b>${user.login}</b>.`;
-    updateSuccessCTA(user);
-    setSuccess();
-
-    // Auto-route admin immediately (as requested)
-    if (user.role === "admin") {
-      window.location.href = user.redirect; // WestconAdmin.html
-    }
-  });
 });
