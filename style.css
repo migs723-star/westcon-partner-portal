@@ -450,3 +450,36 @@ pre code{ color: rgba(234,242,255,.78); font-size: 12px; line-height:1.55; }
   .cards{ grid-template-columns: 1fr; }
   .nav-actions{ display:none; }
 }
+
+.language-switcher{display:flex;align-items:center;}
+.language-select{
+  min-width:140px;
+  padding:10px 12px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.04);
+  color:var(--text);
+  font-size:13px;
+  font-weight:700;
+  outline:none;
+  cursor:pointer;
+}
+.language-select:focus{
+  border-color:rgba(46,107,255,.55);
+  box-shadow:0 0 0 4px rgba(46,107,255,.16);
+}
+.language-select option{background:#0A0F1A;color:var(--text);}
+.sr-only{
+  position:absolute;
+  width:1px;
+  height:1px;
+  padding:0;
+  margin:-1px;
+  overflow:hidden;
+  clip:rect(0,0,0,0);
+  white-space:nowrap;
+  border:0;
+}
+@media (max-width:560px){
+  .language-select{min-width:120px;}
+}
